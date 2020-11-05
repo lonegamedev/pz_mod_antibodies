@@ -1,5 +1,5 @@
 Antibodies = {}
-Antibodies.version = "1.0"
+Antibodies.version = "1.1"
 Antibodies.author = "lonegamedev.com"
 Antibodies.modName = "Antibodies"
 
@@ -18,7 +18,7 @@ DEBUG_BREAKDOWN["TraitsEffects"] = false
 -----------------------------------------------------
 
 --base antibody growth per infection unit
-local BaseAntibodyGrowth = 1.5
+local BaseAntibodyGrowth = 1.6
 
 -----------------------------------------------------
 
@@ -127,9 +127,10 @@ local function cureVirus()
     local bodyPart = bodyDamage:getBodyParts():get(i)
     bodyPart:SetInfected(false)
   end
-  bodyDamage:setInfectionTime(player:getHoursSurvived())
-  bodyDamage:setInfectionLevel(0)
   bodyDamage:setInf(false)
+  bodyDamage:setInfectionLevel(0)
+  bodyDamage:setInfectionTime(-1.0)
+  bodyDamage:setInfectionMortalityDuration(-1.0)
   player:getModData().virusAntibodiesLevel = 0.0
 end
 
