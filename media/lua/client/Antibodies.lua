@@ -1,5 +1,5 @@
 Antibodies = {}
-Antibodies.version = "1.1"
+Antibodies.version = "1.11"
 Antibodies.author = "lonegamedev.com"
 Antibodies.modName = "Antibodies"
 
