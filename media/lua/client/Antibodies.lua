@@ -1,5 +1,6 @@
-Antibodies = {}
-Antibodies.version = "1.11"
+Antibodies = Antibodies or {}
+
+Antibodies.version = "1.13"
 Antibodies.author = "lonegamedev.com"
 Antibodies.modName = "Antibodies"
 
@@ -14,79 +15,21 @@ DEBUG_BREAKDOWN["DamageEffects"] = false
 DEBUG_BREAKDOWN["TraitsEffects"] = false
 
 -----------------------------------------------------
---BALANCE--------------------------------------------
+--STATE----------------------------------------------
 -----------------------------------------------------
 
---base antibody growth per infection unit
-local BaseAntibodyGrowth = 1.6
+local General = nil
+local DamageEffects = nil
+local MoodleEffects = nil
+local TraitsEffects = nil
 
------------------------------------------------------
-
---multiplied by effect level 0-4
-local MoodleEffects = {}
-
-MoodleEffects["Bleeding"] = -0.1
-MoodleEffects["Hypothermia"] = -0.1
-MoodleEffects["Injured"] = 0.0
-
-MoodleEffects["Thirst"] = -0.04
-MoodleEffects["Hungry"] = -0.03
-MoodleEffects["Sick"] = -0.02
-MoodleEffects["HasACold"] = -0.02
-
-MoodleEffects["Tired"] = -0.01
-MoodleEffects["Endurance"] = -0.01
-MoodleEffects["Pain"] = -0.01
-MoodleEffects["Wet"] = -0.01
-MoodleEffects["HeavyLoad"] = -0.01
-MoodleEffects["Windchill"] = -0.01
-
-MoodleEffects["Panic"] = -0.01
-MoodleEffects["Stress"] = -0.01
-MoodleEffects["Unhappy"] = -0.01
-MoodleEffects["Bored"] = -0.01
-
-MoodleEffects["Hyperthermia"] = 0.01
-MoodleEffects["Drunk"] = 0.01
-MoodleEffects["FoodEaten"] = 0.05
-
-MoodleEffects["Dead"] = 0.0
-MoodleEffects["Zombie"] = 0.0
-MoodleEffects["Angry"] = 0.0
-
------------------------------------------------------
-
-local DamageEffects = {}
---per bodyPart, multiplied by infection level
-DamageEffects["InfectedWound"] = -0.001
-
------------------------------------------------------
-
-local TraitsEffects = {}
-
-TraitsEffects["Asthmatic"] = -0.01
-TraitsEffects["Smoker"] = -0.01
-
-TraitsEffects["Unfit"] = -0.02
-TraitsEffects["Out of Shape"] = -0.01
-TraitsEffects["Athletic"] = 0.01
-
-TraitsEffects["SlowHealer"] = -0.01
-TraitsEffects["FastHealer"] = 0.01
-
-TraitsEffects["ProneToIllness"] = -0.01
-TraitsEffects["Resilient"] = 0.01
-
-TraitsEffects["Weak"] = -0.02
-TraitsEffects["Feeble"] = -0.01
-TraitsEffects["Strong"] = 0.01
-TraitsEffects["Stout"] = 0.02
-
-TraitsEffects["Emaciated"] = -0.02
-TraitsEffects["Very Underweight"] = -0.01
-TraitsEffects["Underweight"] = 0.005
-TraitsEffects["Overweight"] = 0.005
-TraitsEffects["Obese"] = -0.02
+local function hasOptions()
+  if not General then return false end 
+  if not DamageEffects then return false end
+  if not MoodleEffects then return false end
+  if not TraitsEffects then return false end
+  return true
+end
 
 -----------------------------------------------------
 --UTILS----------------------------------------------
@@ -114,6 +57,19 @@ end
 
 local function clamp(num, min, max)
   return math.max(min, math.min(num, max))
+end
+
+local function deepcopy(val)
+  local val_copy
+  if type(val) == 'table' then
+      val_copy = {}
+      for k,v in pairs(val) do
+        val_copy[k] = deepcopy(v)
+      end
+  else
+      val_copy = val
+  end
+  return val_copy
 end
 
 -----------------------------------------------------
@@ -195,7 +151,7 @@ local function getAntibodiesGrowth(infectionChange)
   local moodleEffect = getMoodleEffect()
   local damageEffect = getDamageEffect()
   local traitEffect = getTraitEffect()
-  local growthSum = (BaseAntibodyGrowth + moodleEffect + damageEffect + traitEffect)
+  local growthSum = (General.baseAntibodyGrowth + moodleEffect + damageEffect + traitEffect)
   local infectionProgress = (bodyDamage:getInfectionLevel() / 100)
   local growthMax = math.max(0, math.abs(infectionChange) * growthSum)
   return lerp(0.0, growthMax, clamp(math.sin(infectionProgress * math.pi), 0.0, 1.0))
@@ -231,6 +187,196 @@ local function consumeInfection(infectionDelta, infectionChange)
   	return true --ready to cure
   end
   return false
+end
+
+-----------------------------------------------------
+--OPTIONS--------------------------------------------
+-----------------------------------------------------
+
+local function getOptionsPreset(preset)
+  --todo: add presets
+  return {
+    ["General"] = {
+      ["baseAntibodyGrowth"] = 1.6
+    },
+    ["DamageEffects"] = {
+      ["InfectedWound"] = -0.001
+    },
+    ["MoodleEffects"] = {
+      ["Bleeding"] = -0.1,
+      ["Hypothermia"] = -0.1,
+      ["Injured"] = 0.0,
+      
+      ["Thirst"] = -0.04,
+      ["Hungry"] = -0.03,
+      ["Sick"] = -0.02,
+      ["HasACold"] = -0.02,
+
+      ["Tired"] = -0.01,
+      ["Endurance"] = -0.01,
+      ["Pain"] = -0.01,
+      ["Wet"] = -0.01,
+      ["HeavyLoad"] = -0.01,
+      ["Windchill"] = -0.01,
+      
+      ["Panic"] = -0.01,
+      ["Stress"] = -0.01,
+      ["Unhappy"] = -0.01,
+      ["Bored"] = -0.01,
+      
+      ["Hyperthermia"] = 0.01,
+      ["Drunk"] = 0.01,
+      ["FoodEaten"] = 0.05,
+      
+      ["Dead"] = 0.0,
+      ["Zombie"] = 0.0,
+      ["Angry"] = 0.0,
+    },
+    ["TraitsEffects"] = {
+      ["Asthmatic"] = -0.01,
+      ["Smoker"] = -0.01,
+      
+      ["Unfit"] = -0.02,
+      ["Out of Shape"] = -0.01,
+      ["Athletic"] = 0.01,
+    
+      ["SlowHealer"] = -0.01,
+      ["FastHealer"] = 0.01,
+      
+      ["ProneToIllness"] = -0.01,
+      ["Resilient"] = 0.01,
+    
+      ["Weak"] = -0.02,
+      ["Feeble"] = -0.01,
+      ["Strong"] = 0.01,
+      ["Stout"] = 0.02,
+    
+      ["Emaciated"] = -0.02,
+      ["Very Underweight"] = -0.01,
+      ["Underweight"] = 0.005,
+      ["Overweight"] = 0.005,
+      ["Obese"] = -0.02
+    }
+  }
+end
+
+local function applyOptions(options)
+  if (type(options) ~= "table") then
+    return false
+  end
+  if(options["Antibodies"] ~= nil) then
+    if(options["Antibodies"]["version"] ~= Antibodies.version) then
+      return false
+    end
+  else
+    return false
+  end
+  if(options["General"] ~= nil) then
+    for k,v in pairs(General) do
+      if(options["General"][k] ~= nil) then
+        General[k] = options["General"][k]
+      end
+    end
+  end
+  if(options["MoodleEffects"] ~= nil) then
+    for k,v in pairs(MoodleEffects) do
+      if(options["MoodleEffects"][k] ~= nil) then
+        MoodleEffects[k] = options["MoodleEffects"][k]
+      end
+    end
+  end
+  if(options["DamageEffects"] ~= nil) then
+    for k,v in pairs(DamageEffects) do
+      if(options["DamageEffects"][k] ~= nil) then
+        DamageEffects[k] = options["DamageEffects"][k]
+      end
+    end
+  end
+  if(options["TraitsEffects"] ~= nil) then
+    for k,v in pairs(TraitsEffects) do
+      if(options["TraitsEffects"][k] ~= nil) then
+        TraitsEffects[k] = options["TraitsEffects"][k]
+      end
+    end
+  end
+  return true
+end
+
+local function loadOptions()
+  local options = {}
+	local reader = getFileReader("antibodies_options.ini", false)
+	if not reader then
+    return false
+	end
+  local current_group = nil
+	while true do
+		local line = reader:readLine()
+		if not line then
+			reader:close()
+			break
+		end
+		line = line:trim()
+		if line ~= "" then
+			local k,v = line:match("^([^=%[]+)=([^=]+)$")
+			if k then
+        if not current_group then
+        else
+				  k = k:trim()
+				  options[current_group][k] = v:trim()
+        end
+      else
+				local group = line:match("^%[([^%[%]%%]+)%]$")
+				if group then
+					current_group = group:trim()
+          options[current_group] = {}
+        end
+      end
+	  end
+  end
+  if(options["Antibodies"] ~= nil) then
+    if(options["Antibodies"]["version"] ~= nil) then
+      if(options["Antibodies"]["version"] == Antibodies.version) then
+        return options
+      end
+    end
+  end
+  return false
+end
+
+local function saveOptions(options)
+  if (type(options) ~= "table") then
+    return false
+  end
+  local writer = getFileWriter("antibodies_options.ini", true, false)
+  for id,group in pairs(options) do
+    writer:write("\r\n["..id.."]\r\n")
+    for k,v in pairs(group) do
+      writer:write(k..' = '..v.."\r\n")
+    end
+	end
+  writer:close();
+  return true
+end
+
+local function getOptions()
+  if not hasOptions() then
+    local default = getOptionsPreset()
+    General = default["General"]
+    DamageEffects = default["DamageEffects"]
+    MoodleEffects = default["MoodleEffects"]
+    TraitsEffects = default["TraitsEffects"]
+    applyOptions(loadOptions())
+  end
+  local options = {}
+  options["Antibodies"] = {}
+  options["Antibodies"]["version"] = Antibodies.version
+  options["Antibodies"]["author"] = Antibodies.author
+  options["Antibodies"]["modName"] = Antibodies.modName
+  options["General"] = deepcopy(General)
+  options["MoodleEffects"] = deepcopy(MoodleEffects)
+  options["DamageEffects"] = deepcopy(DamageEffects)
+  options["TraitsEffects"] = deepcopy(TraitsEffects)
+  return options
 end
 
 -----------------------------------------------------
@@ -306,13 +452,13 @@ local function printDebug()
   local antibodiesChange = getAntibodiesGrowth(infectionChange)
   local infectionProgress = (infectionLevel / 100)
 
-  print("[ VirusAntibodies ]========================>")
+  print("[ Antibodies ]========================>")
   print(indent(1).."IsInfected: "..tostring(isInfected).." ("..format_float(infectionProgress)..")")
   print(indent(1).."Virus/Antibodies: "..format_float(infectionLevel).." ("..format_float(infectionChange)..") / "..format_float(save.virusAntibodiesLevel).." ("..format_float(antibodiesChange)..")")
   printMoodleEffect()
   printDamageEffect()
   printTraitEffect()
-  print("<========================[ VirusAntibodies ]")
+  print("<========================[ Antibodies ]")
 end
 
 -----------------------------------------------------
@@ -337,4 +483,14 @@ local function onEveryTenMinutes()
   end
 end
 
-Events.EveryTenMinutes.Add(onEveryTenMinutes)
+Events.OnMainMenuEnter.Add(function()
+  getOptions() --make sure options are loaded
+end)
+
+Antibodies.applyOptions = applyOptions
+Antibodies.getOptions = getOptions
+Antibodies.loadOptions = loadOptions
+Antibodies.saveOptions = saveOptions
+Antibodies.getOptionsPreset = getOptionsPreset
+
+return Antibodies
