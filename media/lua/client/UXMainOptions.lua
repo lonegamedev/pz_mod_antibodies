@@ -13,7 +13,7 @@ local damageEffectToolTip = "Applied per affected body part."
 local moodleEffectToolTip = "Will be multipled by moodle level (0-4)."
 local traitEffectToolTip = "Constant trait bonus."
 
-function MainOptions:addTextEntryBox(w, h, name, text, minValue, maxValue)
+function MainOptions:Antibodies_addTextEntryBox(w, h, name, text, minValue, maxValue)
 	h = FONT_HGT_SMALL + 3 * 2
 	local label = ISLabel:new(self.addX, self.addY, h, name, 1, 1, 1, 1, UIFont.Small);
 	label:initialise();
@@ -29,8 +29,8 @@ function MainOptions:addTextEntryBox(w, h, name, text, minValue, maxValue)
     return panel;
 end
 
-function MainOptions:addTextField(w, h, options, group, name, tooltip, minValue, maxValue)
-    local textEntry = self:addTextEntryBox(FIELD_WIDTH, 20, name, tostring(options[group][name]), minValue, maxValue)
+function MainOptions:Antibodies_addTextField(w, h, options, group, name, tooltip, minValue, maxValue)
+    local textEntry = self:Antibodies_addTextEntryBox(FIELD_WIDTH, 20, name, tostring(options[group][name]), minValue, maxValue)
     textEntry:setTooltip(tooltip);
     local function parseTxt(txt)
         local val = tonumber(txt) or 0
@@ -46,7 +46,7 @@ function MainOptions:addTextField(w, h, options, group, name, tooltip, minValue,
     self.gameOptions:add(gameOption)
 end
 
-function MainOptions:addGroup(txt)
+function MainOptions:Antibodies_addGroup(txt)
     local label = ISLabel:new(self.addX, self.addY + Y_SPACING, FONT_HGT_MEDIUM, txt, 1, 1, 1, 1, UIFont.Medium)
     label:initialise();
     label:setAnchorRight(true);
@@ -55,10 +55,10 @@ function MainOptions:addGroup(txt)
     self.mainPanel:setScrollHeight(self.addY + PANEL_MARGIN)
 end
 
-function MainOptions:addGroupFields(options, group, tooltip)
-    self:addGroup(group)
+function MainOptions:Antibodies_addGroupFields(options, group, tooltip)
+    self:Antibodies_addGroup(group)
     for k,v in pairs(options[group]) do
-        self:addTextField(FIELD_WIDTH, FIELD_HEIGHT, options, group, k, tooltip, -1.0, 1.0)
+        self:Antibodies_addTextField(FIELD_WIDTH, FIELD_HEIGHT, options, group, k, tooltip, -1.0, 1.0)
     end  
 end
 
@@ -71,18 +71,19 @@ local oldMainOptionsCreateFunction = MainOptions.create
 function MainOptions:create()
     oldMainOptionsCreateFunction(self)
 
+    --
     self:addPage(Antibodies.modName)
     self.addX = self:getWidth() * 0.5
     self.addY = PANEL_MARGIN
 
     local options = Antibodies:getOptions()
 
-    self:addGroup("General")
-    self:addTextField(FIELD_WIDTH, FIELD_HEIGHT, options, "General", "baseAntibodyGrowth", baseAntibodyGrowthTip, 1.0, 2.0)
+    self:Antibodies_addGroup("General")
+    self:Antibodies_addTextField(FIELD_WIDTH, FIELD_HEIGHT, options, "General", "baseAntibodyGrowth", baseAntibodyGrowthTip, 1.0, 2.0)
 
-    self:addGroupFields(options, "DamageEffects", damageEffectToolTip)
-    self:addGroupFields(options, "MoodleEffects", moodleEffectToolTip)
-    self:addGroupFields(options, "TraitsEffects", traitEffectToolTip)
+    self:Antibodies_addGroupFields(options, "DamageEffects", damageEffectToolTip)
+    self:Antibodies_addGroupFields(options, "MoodleEffects", moodleEffectToolTip)
+    self:Antibodies_addGroupFields(options, "TraitsEffects", traitEffectToolTip)
 
     --OnApply
     do
@@ -92,4 +93,5 @@ function MainOptions:create()
             ApplyOptions(options)
 	    end
     end
+    --
 end
