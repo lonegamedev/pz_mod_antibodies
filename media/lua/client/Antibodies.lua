@@ -483,6 +483,8 @@ local function onEveryTenMinutes()
   end
 end
 
+Events.EveryTenMinutes.Add(onEveryTenMinutes)
+
 Events.OnMainMenuEnter.Add(function()
   getOptions() --make sure options are loaded
 end)
