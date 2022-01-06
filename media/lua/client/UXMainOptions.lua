@@ -13,6 +13,13 @@ local damageEffectToolTip = "Applied per affected body part."
 local moodleEffectToolTip = "Will be multipled by moodle level (0-4)."
 local traitEffectToolTip = "Constant trait bonus."
 
+function MainOptions:Antibodies_addLabel(text)
+    h = FONT_HGT_SMALL + 3 * 2
+    local label = ISLabel:new(self.addX, self.addY, h, text, 1, 1, 1, 1, UIFont.Small);
+    label:initialise();
+    self.mainPanel:addChild(label);
+end  
+
 function MainOptions:Antibodies_addTextEntryBox(w, h, name, text, minValue, maxValue)
 	h = FONT_HGT_SMALL + 3 * 2
 	local label = ISLabel:new(self.addX, self.addY, h, name, 1, 1, 1, 1, UIFont.Small);
@@ -63,8 +70,8 @@ function MainOptions:Antibodies_addGroupFields(options, group, tooltip)
 end
 
 function ApplyOptions(options)
-    Antibodies.applyOptions(options)
-    Antibodies.saveOptions(options)
+    AntibodiesShared.applyOptions(options)
+    AntibodiesShared.saveOptions(options)
 end
 
 local oldMainOptionsCreateFunction = MainOptions.create
@@ -72,11 +79,16 @@ function MainOptions:create()
     oldMainOptionsCreateFunction(self)
 
     --
-    self:addPage(Antibodies.modName)
+    self:addPage(AntibodiesShared.modName)
     self.addX = self:getWidth() * 0.5
     self.addY = PANEL_MARGIN
 
-    local options = Antibodies:getOptions()
+    if isClient() then
+        self:Antibodies_addLabel("Server overrides all local options. Once disconneted, your settings will be restored.")
+        return
+    end
+
+    local options = AntibodiesShared.getCurrentOptions()
 
     self:Antibodies_addGroup("General")
     self:Antibodies_addTextField(FIELD_WIDTH, FIELD_HEIGHT, options, "General", "baseAntibodyGrowth", baseAntibodyGrowthTip, 1.0, 2.0)

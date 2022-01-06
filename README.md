@@ -21,10 +21,6 @@ Remember that time to zombification is randomized at the infection time (somethi
 
 If you need more, you can always look ‘under the hood’. I have commented on the main bits you might want to tweak.
 
-## Compatibility
-
-It is developed for **IWBUMS 41**.
-
 ## Installation
 
 Place mod directory under `/Zomboid/mods`.
