@@ -5,7 +5,7 @@ AntibodiesShared.__index = AntibodiesShared
 --CONST----------------------------------------------
 -----------------------------------------------------
 
-AntibodiesShared.version = "1.14"
+AntibodiesShared.version = "1.141"
 AntibodiesShared.author = "lonegamedev.com"
 AntibodiesShared.modName = "Antibodies"
 AntibodiesShared.modId = "lgd_antibodies"
@@ -222,6 +222,12 @@ local function loadOptions()
   return false
 end
 
+local function saveHostOptions(options)
+  if isClient() then
+    sendClientCommand(getPlayer(), AntibodiesShared.modId, "saveOptions", options)
+  end
+end
+
 local function saveOptions(options)
   if (type(options) ~= "table") then
     return false
@@ -275,6 +281,7 @@ AntibodiesShared.applyOptions = applyOptions
 AntibodiesShared.getCurrentOptions = getCurrentOptions
 AntibodiesShared.loadOptions = loadOptions
 AntibodiesShared.saveOptions = saveOptions
+AntibodiesShared.saveHostOptions = saveHostOptions
 AntibodiesShared.getOptionsPreset = getOptionsPreset
 
 return AntibodiesShared
