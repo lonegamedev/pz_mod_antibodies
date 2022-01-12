@@ -252,4 +252,19 @@ local function onServerCommand(module, command, args)
     end
   end
 end
-Events.OnServerCommand.Add(onServerCommand);
+Events.OnServerCommand.Add(onServerCommand)
+
+local function onConnected()
+  sendClientCommand(getPlayer(), AntibodiesShared.modId, "getOptions", {})
+end
+Events.OnConnected.Add(onConnected)
+
+local function onDisconnect()
+  local default = getOptionsPreset()
+  AntibodiesShared.General = default["General"]
+  AntibodiesShared.DamageEffects = default["DamageEffects"]
+  AntibodiesShared.MoodleEffects = default["MoodleEffects"]
+  AntibodiesShared.TraitsEffects = default["TraitsEffects"]
+  applyOptions(loadOptions())
+end
+Events.OnDisconnect.Add(onDisconnect)

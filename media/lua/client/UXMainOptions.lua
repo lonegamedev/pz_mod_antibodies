@@ -13,31 +13,59 @@ local damageEffectToolTip = "Applied per affected body part."
 local moodleEffectToolTip = "Will be multipled by moodle level (0-4)."
 local traitEffectToolTip = "Constant trait bonus."
 
-function MainOptions:Antibodies_addLabel(text)
+local pageElement = nil
+local options = nil
+
+local function canEditOptions()
+    if not isClient() then
+        return true
+    end
+    if isAdmin() then
+        return true
+    end
+    return false
+end
+
+local function shouldSaveHostOptions()
+    return isClient() and isAdmin()
+end
+
+local function Antibodies_addLabel(text)
     h = FONT_HGT_SMALL + 3 * 2
-    local label = ISLabel:new(self.addX, self.addY, h, text, 1, 1, 1, 1, UIFont.Small);
+    local label = ISLabel:new(
+        pageElement.addX, 
+        pageElement.addY, 
+        h, text, 1, 1, 1, 1, UIFont.Small);
     label:initialise();
-    self.mainPanel:addChild(label);
+    pageElement.mainPanel:addChild(label);
+    pageElement.addY = pageElement.addY + h + Y_SPACING;
 end  
 
-function MainOptions:Antibodies_addTextEntryBox(w, h, name, text, minValue, maxValue)
+local function Antibodies_addTextEntryBox(w, h, name, text, minValue, maxValue)
 	h = FONT_HGT_SMALL + 3 * 2
-	local label = ISLabel:new(self.addX, self.addY, h, name, 1, 1, 1, 1, UIFont.Small);
+	local label = ISLabel:new(
+        pageElement.addX, pageElement.addY, 
+        h, name, 1, 1, 1, 1, UIFont.Small);
 	label:initialise();
-	self.mainPanel:addChild(label);
-	local panel = UXTextEntryBox:new(text, self.addX + 20, self.addY, w, h, minValue, maxValue)
+	pageElement.mainPanel:addChild(label);
+	local panel = UXTextEntryBox:new(
+        text, 
+        pageElement.addX + 20, pageElement.addY, 
+        w, h, minValue, maxValue)
 	panel:initialise();
     panel:instantiate()
     panel:setOnlyNumbers(true)
-	self.mainPanel:addChild(panel);
-	self.mainPanel:insertNewLineOfButtons(panel)
-	self.addY = self.addY + h + Y_SPACING;
-    self.mainPanel:setScrollHeight(self.addY + PANEL_MARGIN)
+	pageElement.mainPanel:addChild(panel);
+	pageElement.mainPanel:insertNewLineOfButtons(panel)
+	pageElement.addY = pageElement.addY + h + Y_SPACING;
+    pageElement.mainPanel:setScrollHeight(pageElement.addY + PANEL_MARGIN)
     return panel;
 end
 
-function MainOptions:Antibodies_addTextField(w, h, options, group, name, tooltip, minValue, maxValue)
-    local textEntry = self:Antibodies_addTextEntryBox(FIELD_WIDTH, 20, name, tostring(options[group][name]), minValue, maxValue)
+local function Antibodies_addTextField(w, h, options, group, name, tooltip, minValue, maxValue)
+    local textEntry = Antibodies_addTextEntryBox(
+        FIELD_WIDTH, 20, name, 
+        tostring(options[group][name]), minValue, maxValue)
     textEntry:setTooltip(tooltip);
     local function parseTxt(txt)
         local val = tonumber(txt) or 0
@@ -50,60 +78,85 @@ function MainOptions:Antibodies_addTextField(w, h, options, group, name, tooltip
     function gameOption.apply(self)
         options[group][name] = parseTxt(self.control:getText())
     end
-    self.gameOptions:add(gameOption)
+    pageElement.gameOptions:add(gameOption)
 end
 
-function MainOptions:Antibodies_addGroup(txt)
-    local label = ISLabel:new(self.addX, self.addY + Y_SPACING, FONT_HGT_MEDIUM, txt, 1, 1, 1, 1, UIFont.Medium)
+local function Antibodies_addGroup(txt)
+    local label = ISLabel:new(
+        pageElement.addX, pageElement.addY + Y_SPACING, 
+        FONT_HGT_MEDIUM, txt, 1, 1, 1, 1, UIFont.Medium)
     label:initialise();
     label:setAnchorRight(true);
-    self.mainPanel:addChild(label);
-    self.addY = self.addY + (FONT_HGT_MEDIUM * 2.0) + Y_SPACING
-    self.mainPanel:setScrollHeight(self.addY + PANEL_MARGIN)
+    pageElement.mainPanel:addChild(label);
+    pageElement.addY = pageElement.addY + (FONT_HGT_MEDIUM * 2.0) + Y_SPACING
+    pageElement.mainPanel:setScrollHeight(pageElement.addY + PANEL_MARGIN)
 end
 
-function MainOptions:Antibodies_addGroupFields(options, group, tooltip)
-    self:Antibodies_addGroup(group)
+local function Antibodies_addGroupFields(options, group, tooltip)
+    Antibodies_addGroup(group)
     for k,v in pairs(options[group]) do
-        self:Antibodies_addTextField(FIELD_WIDTH, FIELD_HEIGHT, options, group, k, tooltip, -1.0, 1.0)
+        Antibodies_addTextField(
+            FIELD_WIDTH, FIELD_HEIGHT, 
+            options, group, k, tooltip, -1.0, 1.0)
     end  
 end
 
-function ApplyOptions(options)
-    AntibodiesShared.applyOptions(options)
-    AntibodiesShared.saveOptions(options)
+local function applyOptions(options)
+    if shouldSaveHostOptions() then
+        AntibodiesShared.applyOptions(options)
+        AntibodiesShared.saveHostOptions(options)
+    else
+        AntibodiesShared.applyOptions(options)
+        AntibodiesShared.saveOptions(options)
+    end
 end
+
+local function redrawUX()
+    options = AntibodiesShared.getCurrentOptions()
+    if not pageElement then
+        return
+    end
+    pageElement.mainPanel:clearChildren()
+    if canEditOptions() then
+        Antibodies_addGroup("General")
+        Antibodies_addTextField(FIELD_WIDTH, FIELD_HEIGHT, options, "General", "baseAntibodyGrowth", baseAntibodyGrowthTip, 1.0, 2.0)
+        Antibodies_addGroupFields(options, "DamageEffects", damageEffectToolTip)
+        Antibodies_addGroupFields(options, "MoodleEffects", moodleEffectToolTip)
+        Antibodies_addGroupFields(options, "TraitsEffects", traitEffectToolTip)
+    else
+        Antibodies_addLabel("Server overrides all local options. Once disconneted, your settings will be restored.")
+        Antibodies_addLabel("You can edit server options by assuming admin role.")
+    end     
+end
+
 
 local oldMainOptionsCreateFunction = MainOptions.create
 function MainOptions:create()
     oldMainOptionsCreateFunction(self)
 
-    --
     self:addPage(AntibodiesShared.modName)
     self.addX = self:getWidth() * 0.5
     self.addY = PANEL_MARGIN
 
-    if isClient() then
-        self:Antibodies_addLabel("Server overrides all local options. Once disconneted, your settings will be restored.")
-        return
-    end
-
-    local options = AntibodiesShared.getCurrentOptions()
-
-    self:Antibodies_addGroup("General")
-    self:Antibodies_addTextField(FIELD_WIDTH, FIELD_HEIGHT, options, "General", "baseAntibodyGrowth", baseAntibodyGrowthTip, 1.0, 2.0)
-
-    self:Antibodies_addGroupFields(options, "DamageEffects", damageEffectToolTip)
-    self:Antibodies_addGroupFields(options, "MoodleEffects", moodleEffectToolTip)
-    self:Antibodies_addGroupFields(options, "TraitsEffects", traitEffectToolTip)
+    pageElement = self
+    redrawUX()
 
     --OnApply
     do
 	    local oldApply = self.apply
 	    function self.apply(...)
             oldApply(...)
-            ApplyOptions(options)
+            applyOptions(options)
 	    end
     end
     --
 end
+
+local wasCanEditOptions = canEditOptions()
+local function onPlayerUpdate()
+    if canEditOptions() ~= wasCanEditOptions then
+        wasCanEditOptions = canEditOptions()
+        redrawUX()
+    end
+end
+Events.OnPlayerUpdate.Add(onPlayerUpdate)

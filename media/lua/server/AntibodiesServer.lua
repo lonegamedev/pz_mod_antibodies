@@ -7,7 +7,14 @@ local function onClientCommand(module, command, player, args)
 	  		"postOptions", 
 	  		AntibodiesShared.getCurrentOptions()
 	  	)
-	end
+		end
+		if command == "saveOptions" then
+			if player:getAccessLevel() == "Admin" then
+        AntibodiesShared.applyOptions(args)
+        AntibodiesShared.saveOptions(args)
+        print("getPlayers: ",getPlayers())
+			end
+		end
   end
 end
 Events.OnClientCommand.Add(onClientCommand)
