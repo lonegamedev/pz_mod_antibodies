@@ -12,7 +12,6 @@ local function onClientCommand(module, command, player, args)
 			if player:getAccessLevel() == "Admin" then
         AntibodiesShared.applyOptions(args)
         AntibodiesShared.saveOptions(args)
-        print("getPlayers: ",getPlayers())
 			end
 		end
   end

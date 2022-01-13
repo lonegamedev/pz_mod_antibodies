@@ -1,3 +1,4 @@
 .vscode
+.update-workshop.sh
 /promo/*
 /Workshop/*
