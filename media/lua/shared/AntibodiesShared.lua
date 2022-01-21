@@ -5,25 +5,33 @@ AntibodiesShared.__index = AntibodiesShared
 --CONST----------------------------------------------
 -----------------------------------------------------
 
-AntibodiesShared.version = "1.142"
+AntibodiesShared.version = "1.2"
 AntibodiesShared.author = "lonegamedev.com"
 AntibodiesShared.modName = "Antibodies"
 AntibodiesShared.modId = "lgd_antibodies"
+
+local zeroMoodles = {"Angry", "Dead", "Zombie", "Injured"}
 
 -----------------------------------------------------
 --STATE----------------------------------------------
 -----------------------------------------------------
 
-AntibodiesShared.General = nil
-AntibodiesShared.DamageEffects = nil
-AntibodiesShared.MoodleEffects = nil
-AntibodiesShared.TraitsEffects = nil
+AntibodiesShared.currentOptions = nil
 
 -----------------------------------------------------
 --COMMON---------------------------------------------
 -----------------------------------------------------
 
-local function has_key(table,key)
+local function has_value(table, val)
+  for k,v in pairs(table) do
+    if v == val then
+      return true
+    end
+  end
+  return false
+end
+
+local function has_key(table, key)
     return table[key] ~= nil
 end
 
@@ -60,23 +68,49 @@ local function deepcopy(val)
   return val_copy
 end
 
+local function parse_value(txt)
+  if txt == "true" then return true end
+  if txt == "false" then return false end
+  local num = tonumber(txt)
+  if num == nil then
+    return txt
+  end
+  return num
+end
+
+local function print_options(options)
+  for group_key, group in pairs(options) do
+    for prop_key, prop_val in pairs(group) do
+      print(group_key.."."..prop_key.." = "..tostring(prop_val))
+    end
+  end
+end
+
 -----------------------------------------------------
 --OPTIONS--------------------------------------------
 -----------------------------------------------------
 
 local function hasOptions()
-  if not AntibodiesShared.General then return false end 
-  if not AntibodiesShared.DamageEffects then return false end
-  if not AntibodiesShared.MoodleEffects then return false end
-  if not AntibodiesShared.TraitsEffects then return false end
-  return true
+  --validate
+  return AntibodiesShared.currentOptions ~= nil
 end
 
-local function getOptionsPreset(preset)
-  --todo: add presets
+local function getDefaultOptions()
   return {
+    ["Antibodies"] = {
+      ["version"] = AntibodiesShared.version,
+      ["author"] = AntibodiesShared.author,
+      ["modName"] = AntibodiesShared.modName,
+      ["modId"] = AntibodiesShared.modId
+    },
     ["General"] = {
       ["baseAntibodyGrowth"] = 1.6
+    },
+    ["Debug"] = {
+      ["enabled"] = false,
+      ["moodleEffects"] = false,
+      ["damageEffects"] = false,
+      ["traitsEffects"] = false
     },
     ["DamageEffects"] = {
       ["InfectedWound"] = -0.001
@@ -143,83 +177,59 @@ local function applyOptions(options)
   if (type(options) ~= "table") then
     return false
   end
-  if(options["Antibodies"] ~= nil) then
-    if(options["Antibodies"]["version"] ~= AntibodiesShared.version) then
-      return false
-    end
-  else
-    return false
-  end
-  if(options["General"] ~= nil) then
-    for k,v in pairs(AntibodiesShared.General) do
-      if(options["General"][k] ~= nil) then
-        AntibodiesShared.General[k] = options["General"][k]
-      end
-    end
-  end
-  if(options["MoodleEffects"] ~= nil) then
-    for k,v in pairs(AntibodiesShared.MoodleEffects) do
-      if(options["MoodleEffects"][k] ~= nil) then
-        AntibodiesShared.MoodleEffects[k] = options["MoodleEffects"][k]
-      end
-    end
-  end
-  if(options["DamageEffects"] ~= nil) then
-    for k,v in pairs(AntibodiesShared.DamageEffects) do
-      if(options["DamageEffects"][k] ~= nil) then
-        AntibodiesShared.DamageEffects[k] = options["DamageEffects"][k]
-      end
-    end
-  end
-  if(options["TraitsEffects"] ~= nil) then
-    for k,v in pairs(AntibodiesShared.TraitsEffects) do
-      if(options["TraitsEffects"][k] ~= nil) then
-        AntibodiesShared.TraitsEffects[k] = options["TraitsEffects"][k]
-      end
-    end
-  end
-  return true
+  AntibodiesShared.currentOptions = deepcopy(options)
 end
 
 local function loadOptions()
   local options = {}
-	local reader = getFileReader("antibodies_options.ini", false)
-	if not reader then
+  local reader = getFileReader("antibodies_options.ini", false)
+  if not reader then
     return false
-	end
-  local current_group = nil
-	while true do
-		local line = reader:readLine()
-		if not line then
-			reader:close()
-			break
-		end
-		line = line:trim()
-		if line ~= "" then
-			local k,v = line:match("^([^=%[]+)=([^=]+)$")
-			if k then
-        if not current_group then
-        else
-			k = k:trim()
-			options[current_group][k] = v:trim()
-        end
-      	else
-			local group = line:match("^%[([^%[%]%%]+)%]$")
-			if group then
-				current_group = group:trim()
-          	options[current_group] = {}
-        end
-      end
-	end
   end
-  if(options["Antibodies"] ~= nil) then
-    if(options["Antibodies"]["version"] ~= nil) then
-      if(options["Antibodies"]["version"] == AntibodiesShared.version) then
-        return options
+  local current_group = nil
+  while true do
+    local line = reader:readLine()
+    if not line then
+		  reader:close()
+		  break
+		end
+    line = line:trim()
+    if line ~= "" then
+    local k,v = line:match("^([^=%[]+)=([^=]+)$")
+		  if k then
+        if current_group then
+          k = k:trim()
+          if current_group == "Antibodies" then         
+            options[current_group][k] = v:trim()
+          else
+            options[current_group][k] = parse_value(v:trim())
+          end
+        end
+      else
+        local group = line:match("^%[([^%[%]%%]+)%]$")
+        if group then
+          current_group = group:trim()
+          options[current_group] = {}
+        end
       end
     end
   end
-  return false
+  if(options["Antibodies"] == nil) then 
+    return false
+  end
+  if options["Antibodies"]["author"] ~= AntibodiesShared.author then
+    return false
+  end
+  if options["Antibodies"]["modName"] ~= AntibodiesShared.modName then
+    return false
+  end
+  if options["Antibodies"]["modId"] ~= AntibodiesShared.modId then
+    return false
+  end
+  if(options["Antibodies"]["version"] == nil) then 
+    return false
+  end
+  return options
 end
 
 local function saveHostOptions(options)
@@ -236,52 +246,59 @@ local function saveOptions(options)
   for id,group in pairs(options) do
     writer:write("\r\n["..id.."]\r\n")
     for k,v in pairs(group) do
-      writer:write(k..' = '..v.."\r\n")
+      writer:write(k..' = '..tostring(v).."\r\n")
     end
 	end
-  writer:close();
+  writer:close()
   return true
 end
 
-local function getCurrentOptions()
-  if not hasOptions() then
-    local default = getOptionsPreset()
-    AntibodiesShared.General = default["General"]
-    AntibodiesShared.DamageEffects = default["DamageEffects"]
-    AntibodiesShared.MoodleEffects = default["MoodleEffects"]
-    AntibodiesShared.TraitsEffects = default["TraitsEffects"]
-    applyOptions(loadOptions())
+local function mergeOptions(default, loaded)
+  local result = deepcopy(default)
+  if type(loaded) ~= "table" then
+    return default
   end
-  local options = {}
-  options["Antibodies"] = {}
-  options["Antibodies"]["version"] = AntibodiesShared.version
-  options["Antibodies"]["author"] = AntibodiesShared.author
-  options["Antibodies"]["modName"] = AntibodiesShared.modName
-  options["Antibodies"]["modId"] = AntibodiesShared.modId
-  options["General"] = deepcopy(AntibodiesShared.General)
-  options["MoodleEffects"] = deepcopy(AntibodiesShared.MoodleEffects)
-  options["DamageEffects"] = deepcopy(AntibodiesShared.DamageEffects)
-  options["TraitsEffects"] = deepcopy(AntibodiesShared.TraitsEffects)
-  return options
+  local groups = {"General", "MoodleEffects", "TraitEffect", "DamageEffects", "Debug"}
+  for group_index, group_key in pairs(groups) do
+    if type(loaded[group_key]) == "table" then
+      for prop_key, prop_val in pairs(default[group_key]) do
+        if loaded[group_key][prop_key] ~= nil then
+          result[group_key][prop_key] = loaded[group_key][prop_key]
+        end
+      end
+    end
+  end
+  for moodle_index, moodle_key in pairs(zeroMoodles) do
+    result["MoodleEffects"][moodle_key] = 0
+  end
+  return result
+end
+
+local function getOptions()
+  return mergeOptions(getDefaultOptions(), loadOptions())
 end
 
 -----------------------------------------------------
 --EXPORTS--------------------------------------------
 -----------------------------------------------------
 
+AntibodiesShared.has_value = has_value
 AntibodiesShared.has_key = has_key
 AntibodiesShared.lerp = lerp
 AntibodiesShared.format_float = format_float
 AntibodiesShared.is_number = is_number
 AntibodiesShared.clamp = clamp
 AntibodiesShared.deepcopy = deepcopy
+AntibodiesShared.parse_value = parse_value
+AntibodiesShared.print_options = print_options
+AntibodiesShared.zeroMoodles = zeroMoodles
 
 AntibodiesShared.hasOptions = hasOptions
 AntibodiesShared.applyOptions = applyOptions
-AntibodiesShared.getCurrentOptions = getCurrentOptions
+AntibodiesShared.getOptions = getOptions
 AntibodiesShared.loadOptions = loadOptions
 AntibodiesShared.saveOptions = saveOptions
 AntibodiesShared.saveHostOptions = saveHostOptions
-AntibodiesShared.getOptionsPreset = getOptionsPreset
+AntibodiesShared.getDefaultOptions = getDefaultOptions
 
 return AntibodiesShared
