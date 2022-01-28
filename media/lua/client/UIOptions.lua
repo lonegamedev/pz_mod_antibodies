@@ -210,7 +210,13 @@ local function addTickbox(groupName, propName, tooltip)
 end
 
 local function showOptions()
-    options = AntibodiesShared.getOptions()
+
+    if shouldSaveHostOptions() then
+        options = AntibodiesShared.deepcopy(AntibodiesShared.currentOptions)
+    else
+        options = AntibodiesShared.getLocalOptions()
+    end
+
     addLabel("General", {
         ["font"] = UIFont.Large,
         ["offsetX"] = -16,

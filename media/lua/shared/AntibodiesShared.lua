@@ -5,7 +5,7 @@ AntibodiesShared.__index = AntibodiesShared
 --CONST----------------------------------------------
 -----------------------------------------------------
 
-AntibodiesShared.version = "1.2"
+AntibodiesShared.version = "1.22"
 AntibodiesShared.author = "lonegamedev.com"
 AntibodiesShared.modName = "Antibodies"
 AntibodiesShared.modId = "lgd_antibodies"
@@ -274,7 +274,7 @@ local function mergeOptions(default, loaded)
   return result
 end
 
-local function getOptions()
+local function getLocalOptions()
   return mergeOptions(getDefaultOptions(), loadOptions())
 end
 
@@ -295,7 +295,7 @@ AntibodiesShared.zeroMoodles = zeroMoodles
 
 AntibodiesShared.hasOptions = hasOptions
 AntibodiesShared.applyOptions = applyOptions
-AntibodiesShared.getOptions = getOptions
+AntibodiesShared.getLocalOptions = getLocalOptions
 AntibodiesShared.loadOptions = loadOptions
 AntibodiesShared.saveOptions = saveOptions
 AntibodiesShared.saveHostOptions = saveHostOptions

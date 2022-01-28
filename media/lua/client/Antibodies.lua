@@ -60,7 +60,7 @@ local function ensureInitialization(player)
     save.virusAntibodiesLevel = 0.0
   end
   if not AntibodiesShared.hasOptions() then
-    AntibodiesShared.applyOptions(AntibodiesShared.getOptions())
+    AntibodiesShared.applyOptions(AntibodiesShared.getLocalOptions())
   end
 end
 
@@ -248,7 +248,7 @@ end
 Events.EveryTenMinutes.Add(onEveryTenMinutes)
 
 local function onMainMenuEnter()
-  AntibodiesShared.applyOptions(AntibodiesShared.getOptions())
+  AntibodiesShared.applyOptions(AntibodiesShared.getLocalOptions())
 end
 Events.OnMainMenuEnter.Add(onMainMenuEnter)
 
@@ -271,6 +271,6 @@ end
 Events.OnConnected.Add(onConnected)
 
 local function onDisconnect()
-  applyOptions(getOptions())
+  applyOptions(getLocalOptions())
 end
 Events.OnDisconnect.Add(onDisconnect)
