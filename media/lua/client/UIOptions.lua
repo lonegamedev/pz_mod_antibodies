@@ -216,6 +216,9 @@ local function showOptions()
     else
         options = AntibodiesShared.getLocalOptions()
     end
+    if options == nil then
+        options = AntibodiesShared.getLocalOptions()
+    end
 
     addLabel("General", {
         ["font"] = UIFont.Large,

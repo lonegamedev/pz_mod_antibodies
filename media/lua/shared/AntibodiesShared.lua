@@ -5,7 +5,7 @@ AntibodiesShared.__index = AntibodiesShared
 --CONST----------------------------------------------
 -----------------------------------------------------
 
-AntibodiesShared.version = "1.22"
+AntibodiesShared.version = "1.25"
 AntibodiesShared.author = "lonegamedev.com"
 AntibodiesShared.modName = "Antibodies"
 AntibodiesShared.modId = "lgd_antibodies"
@@ -166,9 +166,12 @@ local function getDefaultOptions()
     
       ["Emaciated"] = -0.02,
       ["Very Underweight"] = -0.01,
-      ["Underweight"] = 0.005,
-      ["Overweight"] = 0.005,
-      ["Obese"] = -0.02
+      ["Underweight"] = -0.005,
+      ["Overweight"] = -0.005,
+      ["Obese"] = -0.02,
+
+      ["Lucky"] = 0.0,
+      ["Unlucky"] = 0.0
     }
   }
 end
@@ -258,7 +261,7 @@ local function mergeOptions(default, loaded)
   if type(loaded) ~= "table" then
     return default
   end
-  local groups = {"General", "MoodleEffects", "TraitEffect", "DamageEffects", "Debug"}
+  local groups = {"General", "MoodleEffects", "TraitsEffects", "DamageEffects", "Debug"}
   for group_index, group_key in pairs(groups) do
     if type(loaded[group_key]) == "table" then
       for prop_key, prop_val in pairs(default[group_key]) do
