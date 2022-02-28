@@ -355,7 +355,7 @@ local function showOptions()
             ["Obese"] = getText("UI_trait_obese"),
             ["Lucky"] = getText("UI_trait_lucky"),
             ["Unlucky"] = getText("UI_trait_unlucky")
-        }, getText("UI_TraitsEffectsToolTip"))
+        }, getText("UI_Antibodies_TraitsEffectsToolTip"))
     addOffsetY(SPACING_Y * 1)
 
     addLabel(getText("UI_Antibodies_Debug"), {
