@@ -53,7 +53,11 @@ UI_Antibodies_EN = {
     UI_Antibodies_DebugInfectionToolTip = "Print more details for infection effects.",
     UI_Antibodies_DebugHygiene = "Hygiene breakdown",
     UI_Antibodies_DebugHygieneToolTip = "Print more details for hygiene effects.",
+<<<<<<< HEAD
     UI_Antibodies_DebugMoodle = "Moodles breakdown",
+=======
+    UI_Antibodies_DebugMoodle = "Moodle breakdown",
+>>>>>>> f2c6178ba565dfd30c31c516e7ebfbd9af78fb43
     UI_Antibodies_DebugMoodleToolTip = "Print more details for moodle effects.",
     UI_Antibodies_DebugTraits = "Traits breakdown",
     UI_Antibodies_DebugTraitsToolTip = "Print more details for trait effects.",
