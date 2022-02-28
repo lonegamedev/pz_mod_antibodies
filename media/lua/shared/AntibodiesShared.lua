@@ -5,12 +5,16 @@ AntibodiesShared.__index = AntibodiesShared
 --CONST----------------------------------------------
 -----------------------------------------------------
 
-AntibodiesShared.version = "1.25"
+AntibodiesShared.version = "1.30"
 AntibodiesShared.author = "lonegamedev.com"
 AntibodiesShared.modName = "Antibodies"
 AntibodiesShared.modId = "lgd_antibodies"
 
 local zeroMoodles = {"Angry", "Dead", "Zombie", "Injured"}
+
+local bodyPartTypes = {"Back", "Foot_L", "Foot_R", "ForeArm_L", "ForeArm_R", "Groin", 
+"Hand_L", "Hand_R", "Head", "LowerLeg_L", "LowerLeg_R", "Neck", "Torso_Lower", 
+"Torso_Upper", "UpperArm_L", "UpperArm_R", "UpperLeg_L", "UpperLeg_R"}
 
 -----------------------------------------------------
 --STATE----------------------------------------------
@@ -108,17 +112,36 @@ local function getDefaultOptions()
     },
     ["Debug"] = {
       ["enabled"] = false,
+      ["infectionEffects"] = false,
+      ["hygieneEffects"] = false,
       ["moodleEffects"] = false,
-      ["damageEffects"] = false,
       ["traitsEffects"] = false
     },
-    ["DamageEffects"] = {
-      ["InfectedWound"] = -0.001
+    ["InfectionEffects"] = {
+      ["regular"] = -0.05,
+      ["virus"] = -0.10
+    },
+    ["HygineEffects"] = {
+      ["bloodEffect"] = -0.50,
+      ["dirtEffect"] = -0.25,
+
+      ["modDeepWounded"] = 0.85,
+      ["modBleeding"] = 0.45,
+
+      ["modBitten"] = 0.40,
+      ["modCut"] = 0.20,
+      ["modScratched"] = 0.10,
+
+      ["modBurnt"] = 0.40,
+      ["modNeedBurnWash"] = 0.60,
+      ["modStiched"] = 0.05,
+
+      ["modHaveBullet"] = 0.60,
+      ["modHaveGlass"] = 0.40
     },
     ["MoodleEffects"] = {
       ["Bleeding"] = -0.1,
       ["Hypothermia"] = -0.1,
-      ["Injured"] = 0.0,
       
       ["Thirst"] = -0.04,
       ["Hungry"] = -0.03,
@@ -140,10 +163,11 @@ local function getDefaultOptions()
       ["Hyperthermia"] = 0.01,
       ["Drunk"] = 0.01,
       ["FoodEaten"] = 0.05,
-      
+
+      ["Injured"] = 0.0,      
       ["Dead"] = 0.0,
       ["Zombie"] = 0.0,
-      ["Angry"] = 0.0,
+      ["Angry"] = 0.0
     },
     ["TraitsEffects"] = {
       ["Asthmatic"] = -0.01,
@@ -261,7 +285,7 @@ local function mergeOptions(default, loaded)
   if type(loaded) ~= "table" then
     return default
   end
-  local groups = {"General", "MoodleEffects", "TraitsEffects", "DamageEffects", "Debug"}
+  local groups = {"General", "MoodleEffects", "TraitsEffects", "HygineEffects", "Debug"}
   for group_index, group_key in pairs(groups) do
     if type(loaded[group_key]) == "table" then
       for prop_key, prop_val in pairs(default[group_key]) do
@@ -295,6 +319,7 @@ AntibodiesShared.deepcopy = deepcopy
 AntibodiesShared.parse_value = parse_value
 AntibodiesShared.print_options = print_options
 AntibodiesShared.zeroMoodles = zeroMoodles
+AntibodiesShared.bodyPartTypes = bodyPartTypes
 
 AntibodiesShared.hasOptions = hasOptions
 AntibodiesShared.applyOptions = applyOptions

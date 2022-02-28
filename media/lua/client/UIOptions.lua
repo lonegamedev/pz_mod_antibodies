@@ -4,17 +4,6 @@ local FIELD_HEIGHT = 20
 local PANEL_MARGIN = 50
 local SPACING_Y = 10
 
-local baseAntibodyGrowthTip = "All effect values will be added to this base value\nand multiplied by the infection curve, which in turn \ncauses antibody growth to be maximized \nat the midpoint of infection"
-local damageEffectToolTip = "Applied per affected body part"
-local moodleEffectToolTip = "Multipled by moodle level (0 - 4)"
-local traitEffectToolTip = "Constant trait bonus"
-local debugTooltip = "Enable console.txt messages. You can find log file in your ProjectZomboid home directory"
-local debugTooltipDamage = "Breakdown damage effects in console.txt messages"
-local debugTooltipTraits = "Breakdown traits effects in console.txt messages"
-local debugTooltipMoodle = "Breakdown moodle effects in console.txt messages"
-local serverOverrideMessage1 = "Server overrides all local options. Once disconnected, your settings will be restored."
-local serverOverrideMessage2 = "You can edit server options by assuming admin role."
-
 local pageElement = nil
 local options = nil
 
@@ -93,7 +82,7 @@ local function addLabel(text, options)
     end
 end
 
-local function addNumberField(groupName, propName, tooltip, minValue, maxValue)
+local function addNumberField(groupName, propName, label, tooltip, minValue, maxValue)
     local function parseTxt(txt)
         local val = tonumber(txt) or 0
         return math.min(math.max(val, minValue), maxValue)
@@ -108,7 +97,7 @@ local function addNumberField(groupName, propName, tooltip, minValue, maxValue)
         end
         return true
     end
-    addLabel(propName, {
+    addLabel(label, {
         ["font"] = UIFont.Small,
         ["useAddY"] = false,
         ["offsetX"] = -16,
@@ -151,15 +140,61 @@ local function addNumberField(groupName, propName, tooltip, minValue, maxValue)
     addOffsetY(FIELD_HEIGHT)
 end
 
-local function addNumberGroup(groupName, minValue, maxValue, tooltip, blacklist)
+local function addNumberGroup(groupName, minValue, maxValue, labels, tooltips, blacklist, whitelist)
     if type(blacklist) ~= "table" then
         blacklist = {}
     end
-    for key, value in pairs(options[groupName]) do
-        if not AntibodiesShared.has_value(blacklist, key) then
+    if type(whitelist) ~= "table" then
+        whitelist = {}
+    end
+    if #whitelist > 0 then
+        for index, key in pairs(whitelist) do
+            local label = labels
+            local tooltip = tooltips
+            if label == nil then
+                label = key
+            end
+            if tooltip == nil then
+                tooltip = ""
+            end
+            if type(label) == "table" then
+                label = labels[key]
+            end
+            if type(tooltips) == "table" then
+                tooltip = tooltips[key]
+            end
             addNumberField(
                 groupName, 
                 key,
+                label,
+                tooltip,
+                minValue,
+                maxValue
+            )
+            addOffsetY(SPACING_Y * 2)
+        end
+        return
+    end
+    for key, value in pairs(options[groupName]) do
+        if not AntibodiesShared.has_value(blacklist, key) then
+            local label = labels
+            local tooltip = tooltips
+            if label == nil then
+                label = key
+            end
+            if tooltip == nil then
+                tooltip = ""
+            end
+            if type(label) == "table" then
+                label = labels[key]
+            end
+            if type(tooltips) == "table" then
+                tooltip = tooltips[key]
+            end
+            addNumberField(
+                groupName, 
+                key,
+                label,
                 tooltip,
                 minValue,
                 maxValue
@@ -169,8 +204,14 @@ local function addNumberGroup(groupName, minValue, maxValue, tooltip, blacklist)
     end
 end
 
-local function addTickbox(groupName, propName, tooltip)
-    addLabel(propName, {
+local function addTickbox(groupName, propName, label, tooltip)
+    if label == nil then
+        label = propName
+    end
+    if tooltip == nil then
+        tooltip = ""
+    end
+    addLabel(label, {
         ["font"] = UIFont.Small,
         ["useAddY"] = false,
         ["offsetX"] = -16,
@@ -220,52 +261,117 @@ local function showOptions()
         options = AntibodiesShared.getLocalOptions()
     end
 
-    addLabel("General", {
+    addLabel(getText("UI_Antibodies_General"), {
         ["font"] = UIFont.Large,
         ["offsetX"] = -16,
     })
     addOffsetY(SPACING_Y * 2)
-    addNumberGroup("General", 0.0, 2.0, baseAntibodyGrowthTip)
+    addNumberGroup("General", 0.0, 2.0, getText("UI_Antibodies_baseAntibodyGrowth"), getText("UI_Antibodies_baseAntibodyGrowthToolTip"))
     addOffsetY(SPACING_Y * 1)
 
-    addLabel("DamageEffects", {
+    addLabel(getText("UI_Antibodies_HygineEffects"), {
         ["font"] = UIFont.Large, 
         ["offsetX"] = -16,
     })
     addOffsetY(SPACING_Y * 2)
-    addNumberGroup("DamageEffects", -1.0, 1.0, damageEffectToolTip)
+    addNumberGroup("HygineEffects", -1.0, 0.0, 
+        { 
+            ["bloodEffect"] = getText("UI_Antibodies_HygineEffects_Blood"),
+            ["dirtEffect"] = getText("UI_Antibodies_HygineEffects_Dirt")
+        },
+        getText("UI_Antibodies_HygineEffects_BloodDirtTooltip"), 
+        {}, 
+        {"bloodEffect", "dirtEffect"})
+    addNumberGroup("HygineEffects", 0.0, 1.0, 
+        {
+            ["modDeepWounded"] = getText("UI_Antibodies_ModDeepWound"),
+            ["modBleeding"] = getText("UI_Antibodies_ModBleeding"),
+            ["modBitten"] = getText("UI_Antibodies_ModBitten"),
+            ["modCut"] = getText("UI_Antibodies_ModCut"),
+            ["modScratched"] = getText("UI_Antibodies_ModScratched"),
+            ["modBurnt"] = getText("UI_Antibodies_ModBurnt"),
+            ["modNeedBurnWash"] = getText("UI_Antibodies_ModBurnWash"),
+            ["modStiched"] = getText("UI_Antibodies_ModStiched"),
+            ["modHaveBullet"] = getText("UI_Antibodies_ModHaveBullet"),
+            ["modHaveGlass"] = getText("UI_Antibodies_ModHaveGlass")
+        }, getText("UI_Antibodies_HygineEffects_ModTooltip"), {"bloodEffect", "dirtEffect"})
     addOffsetY(SPACING_Y * 1)
 
-    addLabel("MoodleEffects", {
+    addLabel(getText("UI_Antibodies_MoodleEffects"), {
         ["font"] = UIFont.Large,
         ["offsetX"] = -16,
     })
     addOffsetY(SPACING_Y * 2)
-    addNumberGroup("MoodleEffects", -1.0, 1.0, moodleEffectToolTip,
+    addNumberGroup("MoodleEffects", -1.0, 1.0, 
+        {
+            ["Bleeding"] = getText("UI_Antibodies_MoodleBleeding"),
+            ["Hypothermia"] = getText("UI_Antibodies_MoodleHyperthermia"),
+            ["Hyperthermia"] = getText("UI_Antibodies_MoodleHypothermia"),
+            ["Thirst"] = getText("UI_Antibodies_MoodleThrist"),
+            ["Hungry"] = getText("UI_Antibodies_MoodleHungry"),
+            ["Sick"] = getText("UI_Antibodies_MoodleSick"),
+            ["HasACold"] = getText("UI_Antibodies_MoodleHasACold"),
+            ["Tired"] = getText("UI_Antibodies_MoodleTired"),
+            ["Endurance"] = getText("UI_Antibodies_MoodleEndurance"),
+            ["Pain"] = getText("UI_Antibodies_MoodlePain"),
+            ["Wet"] = getText("UI_Antibodies_MoodleWet"),
+            ["HeavyLoad"] = getText("UI_Antibodies_MoodleHeavyLoad"),
+            ["Windchill"] = getText("UI_Antibodies_MoodleWindchill"),
+            ["Panic"] = getText("UI_Antibodies_MoodlePanic"),
+            ["Stress"] = getText("UI_Antibodies_MoodleStress"),
+            ["Unhappy"] = getText("UI_Antibodies_MoodleUnhappy"),
+            ["Bored"] = getText("UI_Antibodies_MoodleBored"),
+            ["Drunk"] = getText("UI_Antibodies_MoodleDrunk"),
+            ["FoodEaten"] = getText("UI_Antibodies_MoodleFoodEaten")
+        }, getText("UI_Antibodies_MoodleEffectsToolTip"),
         AntibodiesShared.zeroMoodles
     )
     addOffsetY(SPACING_Y * 1)
 
-    addLabel("TraitsEffects", {
+    addLabel(getText("UI_Antibodies_TraitsEffects"), {
         ["font"] = UIFont.Large,
         ["offsetX"] = -16,
     })
     addOffsetY(SPACING_Y * 2)
-    addNumberGroup("TraitsEffects", -1.0, 1.0, traitEffectToolTip)
+    addNumberGroup("TraitsEffects", -1.0, 1.0, 
+        {
+            ["Asthmatic"] = getText("UI_trait_Asthmatic"),
+            ["Smoker"] = getText("UI_trait_Smoker"),
+            ["Unfit"] = getText("UI_trait_unfit"),
+            ["Out of Shape"] = getText("UI_trait_outofshape"),
+            ["Athletic"] = getText("UI_trait_athletic"),
+            ["SlowHealer"] = getText("UI_trait_SlowHealer"),
+            ["FastHealer"] = getText("UI_trait_FastHealer"),
+            ["ProneToIllness"] = getText("UI_trait_pronetoillness"),
+            ["Resilient"] = getText("UI_trait_resilient"),
+            ["Weak"] = getText("UI_trait_weak"),
+            ["Feeble"] = getText("UI_trait_feeble"),
+            ["Strong"] = getText("UI_trait_strong"),
+            ["Stout"] = getText("UI_trait_stout"),
+            ["Emaciated"] = getText("UI_trait_emaciated"),
+            ["Very Underweight"] = getText("UI_trait_veryunderweight"),
+            ["Underweight"] = getText("UI_trait_underweight"),
+            ["Overweight"] = getText("UI_trait_overweight"),
+            ["Obese"] = getText("UI_trait_obese"),
+            ["Lucky"] = getText("UI_trait_lucky"),
+            ["Unlucky"] = getText("UI_trait_unlucky")
+        }, getText("UI_TraitsEffectsToolTip"))
     addOffsetY(SPACING_Y * 1)
 
-    addLabel("Debug", {
+    addLabel(getText("UI_Antibodies_Debug"), {
         ["font"] = UIFont.Large,
         ["offsetX"] = -16,
     })
     addOffsetY(SPACING_Y * 2)
-    addTickbox("Debug", "enabled", debugTooltip)
+    addTickbox("Debug", "enabled", getText("UI_Antibodies_DebugEnabled"), getText("UI_Antibodies_DebugToolTip"))
     addOffsetY(SPACING_Y * 2)
-    addTickbox("Debug", "damageEffects", debugTooltipDamage)
+    addTickbox("Debug", "infectionEffects", getText("UI_Antibodies_DebugInfection"), getText("UI_Antibodies_DebugInfectionToolTip"))
     addOffsetY(SPACING_Y * 2)
-    addTickbox("Debug", "moodleEffects", debugTooltipMoodle)
+    addTickbox("Debug", "hygieneEffects", getText("UI_Antibodies_DebugHygiene"), getText("UI_Antibodies_DebugHygieneToolTip"))
     addOffsetY(SPACING_Y * 2)
-    addTickbox("Debug", "traitsEffects", debugTooltipTraits)
+    addTickbox("Debug", "moodleEffects", getText("UI_Antibodies_DebugMoodle"), getText("UI_Antibodies_DebugMoodleToolTip"))
+    addOffsetY(SPACING_Y * 2)
+    addTickbox("Debug", "traitsEffects", getText("UI_Antibodies_DebugTraits"), getText("UI_Antibodies_DebugTraitsToolTip"))
 end
 
 local function showNoAdminMessage()
