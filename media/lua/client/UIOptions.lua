@@ -7,6 +7,8 @@ local SPACING_Y = 10
 local pageElement = nil
 local options = nil
 
+local redrawUXRef = nil
+
 local function canEditOptions()
     if not isClient() then
         return true
@@ -250,6 +252,68 @@ local function addTickbox(groupName, propName, label, tooltip)
     input:addOption("", true, nil)
 end
 
+local function onClickToClipboard()
+    Clipboard.setClipboard(AntibodiesShared.optionsToString(options))
+end
+
+local function onClickFromClipboard()
+    local new_options = AntibodiesShared.stringToOptions(Clipboard.getClipboard())
+    if (type(new_options) ~= "table") then
+        return false
+    end
+    new_options = AntibodiesShared.mergeOptions(
+            AntibodiesShared.getDefaultOptions(), 
+            new_options
+        )
+    local old_options = options
+    options = new_options
+    pageElement.gameOptions:toUI()
+    pageElement.gameOptions:onChange()
+    options = old_options
+end
+
+local function onClickDefaults()
+    local new_options = AntibodiesShared.deepcopy(AntibodiesShared.getDefaultOptions())
+    local old_options = options
+    options = new_options
+    pageElement.gameOptions:toUI()
+    pageElement.gameOptions:onChange()
+    options = old_options
+end
+
+local function drawClipboardButtons()
+    local xSpacing = 10
+    addOffsetY(SPACING_Y * 3)
+    local toClipboardBtn = ISButton:new(pageElement.addX, pageElement.addY, 20, 20, "Copy to Clipboard", self, onClickToClipboard)
+    local fromClipboardBtn = ISButton:new(pageElement.addX + 100, pageElement.addY, 20, 20, "Copy from Clipboard", self, onClickFromClipboard)
+    local defaultsBtn = ISButton:new(pageElement.addX + 100, pageElement.addY, 20, 20, "Set Defaults", self, onClickDefaults)
+
+    local buttonsWidth = 0
+    toClipboardBtn:initialise()
+    toClipboardBtn:instantiate()
+    buttonsWidth = buttonsWidth + toClipboardBtn:getWidth() + xSpacing
+    
+    fromClipboardBtn:initialise()
+    fromClipboardBtn:instantiate()
+    buttonsWidth = buttonsWidth + fromClipboardBtn:getWidth() + xSpacing
+
+    defaultsBtn:initialise()
+    defaultsBtn:instantiate()
+    buttonsWidth = buttonsWidth + defaultsBtn:getWidth()
+
+    pageElement.addX = (pageElement:getWidth() / 2) - (buttonsWidth / 2)
+    toClipboardBtn:setX(pageElement.addX)
+    pageElement.mainPanel:addChild(toClipboardBtn)
+
+    pageElement.addX = pageElement.addX + toClipboardBtn:getWidth() + xSpacing
+    fromClipboardBtn:setX(pageElement.addX)
+    pageElement.mainPanel:addChild(fromClipboardBtn)
+
+    pageElement.addX = pageElement.addX + fromClipboardBtn:getWidth() + xSpacing
+    defaultsBtn:setX(pageElement.addX)
+    pageElement.mainPanel:addChild(defaultsBtn)
+end
+
 local function showOptions()
 
     if shouldSaveHostOptions() then
@@ -372,6 +436,8 @@ local function showOptions()
     addTickbox("Debug", "moodleEffects", getText("UI_Antibodies_DebugMoodle"), getText("UI_Antibodies_DebugMoodleToolTip"))
     addOffsetY(SPACING_Y * 2)
     addTickbox("Debug", "traitsEffects", getText("UI_Antibodies_DebugTraits"), getText("UI_Antibodies_DebugTraitsToolTip"))
+
+    drawClipboardButtons()
 end
 
 local function showNoAdminMessage()
@@ -423,6 +489,7 @@ function MainOptions:create()
     self.addY = PANEL_MARGIN
 
     pageElement = self
+    redrawUXRef = redrawUX
     redrawUX()
 
     --OnApply

@@ -82,7 +82,7 @@ local function parse_value(txt)
   return num
 end
 
-local function print_options(options)
+local function printOptions(options)
   for group_key, group in pairs(options) do
     for prop_key, prop_val in pairs(group) do
       print(group_key.."."..prop_key.." = "..tostring(prop_val))
@@ -207,39 +207,46 @@ local function applyOptions(options)
   AntibodiesShared.currentOptions = deepcopy(options)
 end
 
+local function parseLine(options, control, line)
+  if (type(line) ~= "string") then
+    return false
+  end
+  line = line:trim()
+  if line ~= "" then
+  local k,v = line:match("^([^=%[]+)=([^=]+)$")
+    if k then
+      if control.group then
+        k = k:trim()
+        if control.group == "Antibodies" then         
+          options[control.group][k] = v:trim()
+        else
+          options[control.group][k] = parse_value(v:trim())
+        end
+      end
+    else
+      local group = line:match("^%[([^%[%]%%]+)%]$")
+      if group then
+        control.group = group:trim()
+        options[control.group] = {}
+      end
+    end
+  end
+end
+
 local function loadOptions()
   local options = {}
+  local control = { ["group"] = nil }
   local reader = getFileReader("antibodies_options.ini", false)
   if not reader then
     return false
   end
-  local current_group = nil
   while true do
     local line = reader:readLine()
     if not line then
 		  reader:close()
 		  break
 		end
-    line = line:trim()
-    if line ~= "" then
-    local k,v = line:match("^([^=%[]+)=([^=]+)$")
-		  if k then
-        if current_group then
-          k = k:trim()
-          if current_group == "Antibodies" then         
-            options[current_group][k] = v:trim()
-          else
-            options[current_group][k] = parse_value(v:trim())
-          end
-        end
-      else
-        local group = line:match("^%[([^%[%]%%]+)%]$")
-        if group then
-          current_group = group:trim()
-          options[current_group] = {}
-        end
-      end
-    end
+    parseLine(options, control, line)
   end
   if(options["Antibodies"] == nil) then 
     return false
@@ -258,6 +265,33 @@ local function loadOptions()
   end
   return options
 end
+
+local function optionsToString(options)
+  if (type(options) ~= "table") then
+    return false
+  end
+  local str = ""
+  for id,group in pairs(options) do
+    str = str.."\r\n["..id.."]\r\n"
+    for k,v in pairs(group) do
+      str = str..k..' = '..tostring(v).."\r\n"
+    end
+  end
+  return str
+end
+
+local function stringToOptions(str)
+  if (type(str) ~= "string") then
+    return false
+  end
+  local options = {}
+  local control = { ["group"] = nil }
+  for line in str:gmatch("([^\n]*)\n?") do
+    parseLine(options, control, line)
+  end
+  return options
+end
+
 
 local function saveHostOptions(options)
   if isClient() then
@@ -317,9 +351,14 @@ AntibodiesShared.is_number = is_number
 AntibodiesShared.clamp = clamp
 AntibodiesShared.deepcopy = deepcopy
 AntibodiesShared.parse_value = parse_value
-AntibodiesShared.print_options = print_options
+
+AntibodiesShared.printOptions = printOptions
 AntibodiesShared.zeroMoodles = zeroMoodles
 AntibodiesShared.bodyPartTypes = bodyPartTypes
+
+AntibodiesShared.optionsToString = optionsToString
+AntibodiesShared.stringToOptions = stringToOptions
+AntibodiesShared.mergeOptions = mergeOptions
 
 AntibodiesShared.hasOptions = hasOptions
 AntibodiesShared.applyOptions = applyOptions
