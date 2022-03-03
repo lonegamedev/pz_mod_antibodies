@@ -333,11 +333,23 @@ local function showOptions()
     addNumberGroup("General", 0.0, 2.0, getText("UI_Antibodies_baseAntibodyGrowth"), getText("UI_Antibodies_baseAntibodyGrowthToolTip"))
     addOffsetY(SPACING_Y * 1)
 
+    addLabel(getText("UI_Antibodies_InfectionEffects"), {
+        ["font"] = UIFont.Large,
+        ["offsetX"] = -16,
+    })
+    addOffsetY(SPACING_Y * 2)
+    addNumberGroup("InfectionEffects", -1.0, 0.0, {
+            ["regular"] = getText("UI_Antibodies_InfectionEffects_regular"),
+            ["virus"] = getText("UI_Antibodies_InfectionEffects_virus")
+        }, getText("UI_Antibodies_InfectionEffects_tooltip"))
+    addOffsetY(SPACING_Y * 1)
+
     addLabel(getText("UI_Antibodies_HygineEffects"), {
         ["font"] = UIFont.Large, 
         ["offsetX"] = -16,
     })
     addOffsetY(SPACING_Y * 2)
+
     addNumberGroup("HygineEffects", -1.0, 0.0, 
         { 
             ["bloodEffect"] = getText("UI_Antibodies_HygineEffects_Blood"),
@@ -346,6 +358,17 @@ local function showOptions()
         getText("UI_Antibodies_HygineEffects_BloodDirtTooltip"), 
         {}, 
         {"bloodEffect", "dirtEffect"})
+
+    addNumberGroup("HygineEffects", -1.0, 0.0, 
+        { 
+            ["modCleanBandage"] = getText("UI_Antibodies_HygineEffects_CleanBandage"),
+            ["modSterilizedBandage"] = getText("UI_Antibodies_HygineEffects_SterilizedBandage"),
+            ["modSterilizedWound"] = getText("UI_Antibodies_HygineEffects_SterilizedWound")
+        },
+        getText("UI_Antibodies_HygineEffects_ModTooltip"), 
+        {}, 
+        {"modSterilizedWound", "modCleanBandage", "modSterilizedBandage"})
+
     addNumberGroup("HygineEffects", 0.0, 1.0, 
         {
             ["modDeepWounded"] = getText("UI_Antibodies_ModDeepWound"),
@@ -358,7 +381,13 @@ local function showOptions()
             ["modStiched"] = getText("UI_Antibodies_ModStiched"),
             ["modHaveBullet"] = getText("UI_Antibodies_ModHaveBullet"),
             ["modHaveGlass"] = getText("UI_Antibodies_ModHaveGlass")
-        }, getText("UI_Antibodies_HygineEffects_ModTooltip"), {"bloodEffect", "dirtEffect"})
+        }, getText("UI_Antibodies_HygineEffects_ModTooltip"), 
+            {
+                "bloodEffect", "dirtEffect", "modSterilizedWound", 
+                "modCleanBandage", "modSterilizedBandage"
+            }
+    )
+
     addOffsetY(SPACING_Y * 1)
 
     addLabel(getText("UI_Antibodies_MoodleEffects"), {

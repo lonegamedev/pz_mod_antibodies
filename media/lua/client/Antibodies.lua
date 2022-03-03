@@ -31,17 +31,29 @@ local function getInfectionsCount(player)
 end
 
 local function getInfectionsEffect(player)
-  local effect_sum = 0
   local infections = getInfectionsCount(player)
   return infections.virus * AntibodiesShared.currentOptions.InfectionEffects["virus"] +
          infections.regular * AntibodiesShared.currentOptions.InfectionEffects["regular"]
 end
 
+local function isAlcoholBandage(bandageType)
+  return string.match(bandageType, "Alcohol")
+end
+
 local function getBodyPartMod(bodyPart)
   local mod = 0.0
+
   if bodyPart:bandaged() and not bodyPart:isBandageDirty() then
-    return mod
+    mod = mod + AntibodiesShared.currentOptions.HygineEffects["modCleanBandage"]
+    if isAlcoholBandage(bodyPart:getBandageType()) then
+      mod = mod + AntibodiesShared.currentOptions.HygineEffects["modBandageSterilized"]
+    end
   end
+
+  if bodyPart:getAlcoholLevel() > 0 then
+    mod = mod + AntibodiesShared.currentOptions.HygineEffects["modWoundSterilized"]
+  end
+
   if bodyPart:getDeepWoundTime() > 0 then
     mod = mod + AntibodiesShared.currentOptions.HygineEffects["modDeepWounded"]
   end
@@ -72,14 +84,20 @@ local function getBodyPartMod(bodyPart)
   if bodyPart:getBleedingTime() > 0 then
     mod = mod + AntibodiesShared.currentOptions.HygineEffects["modBleeding"]
   end
-  return mod
+
+  return math.max(0, mod)
 end
 
 local function coversBodyPart(clothing, bloodBodyPartType)
+  if clothing == nil then
+    return false
+  end
   local parts = clothing:getCoveredParts()
-  for i=0, parts:size()-1 do
-    if parts:get(i)==bloodBodyPartType then
-      return true
+  if parts ~= nil then
+    for i=0, parts:size()-1 do
+      if parts:get(i)==bloodBodyPartType then
+        return true
+      end
     end
   end
   return false
@@ -92,7 +110,7 @@ local function getClothingHygiene(player, bloodBodyPartType)
     if wornItems:size() > 0 then
       for index=0, wornItems:size()-1 do
         local clothing = wornItems:getItemByIndex(index)
-        if clothing then
+        if clothing ~=nil and clothing:IsClothing() then
           if coversBodyPart(clothing, bloodBodyPartType) then
             result.blood = math.max(result.blood, clothing:getBloodlevel() / 100)
             result.dirt = math.max(result.dirt, clothing:getDirtyness() / 100)

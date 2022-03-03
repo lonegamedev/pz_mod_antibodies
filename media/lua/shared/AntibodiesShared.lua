@@ -125,6 +125,10 @@ local function getDefaultOptions()
       ["bloodEffect"] = -0.50,
       ["dirtEffect"] = -0.25,
 
+      ["modCleanBandage"] = -0.5,
+      ["modSterilizedBandage"] = -0.5,
+      ["modSterilizedWound"] = -0.5,
+
       ["modDeepWounded"] = 0.85,
       ["modBleeding"] = 0.45,
 
