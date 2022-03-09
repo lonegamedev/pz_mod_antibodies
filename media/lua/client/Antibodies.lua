@@ -46,12 +46,12 @@ local function getBodyPartMod(bodyPart)
   if bodyPart:bandaged() and not bodyPart:isBandageDirty() then
     mod = mod + AntibodiesShared.currentOptions.HygineEffects["modCleanBandage"]
     if isAlcoholBandage(bodyPart:getBandageType()) then
-      mod = mod + AntibodiesShared.currentOptions.HygineEffects["modBandageSterilized"]
+      mod = mod + AntibodiesShared.currentOptions.HygineEffects["modSterilizedBandage"]
     end
   end
 
   if bodyPart:getAlcoholLevel() > 0 then
-    mod = mod + AntibodiesShared.currentOptions.HygineEffects["modWoundSterilized"]
+    mod = mod + AntibodiesShared.currentOptions.HygineEffects["modSterilizedWound"]
   end
 
   if bodyPart:getDeepWoundTime() > 0 then
@@ -112,13 +112,18 @@ local function getClothingHygiene(player, bloodBodyPartType)
         local clothing = wornItems:getItemByIndex(index)
         if clothing ~=nil and clothing:IsClothing() then
           if coversBodyPart(clothing, bloodBodyPartType) then
-            result.blood = math.max(result.blood, clothing:getBloodlevel() / 100)
-            result.dirt = math.max(result.dirt, clothing:getDirtyness() / 100)
+            local visualItem = clothing:getVisual()
+            if visualItem ~=nil then
+              result.blood = result.blood + visualItem:getBlood(bloodBodyPartType)
+              result.dirt = result.dirt + visualItem:getDirt(bloodBodyPartType)
+            end
           end
         end
       end
     end
-  end  
+  end
+  result.blood = math.min(1.0, result.blood)
+  result.dirt = math.min(1.0, result.dirt)
   return result
 end
 
@@ -135,8 +140,8 @@ local function getHygieneEffect(player)
         if bodyPartMod > 0.0 then
           local bloodBodyPartType = BloodBodyPartType.FromString(part_key)
           local bloodDirt = getClothingHygiene(player, bloodBodyPartType)
-          bloodDirt.blood = math.max(bloodDirt.blood, humanVisual:getBlood(bloodBodyPartType))
-          bloodDirt.dirt = math.max(bloodDirt.dirt, humanVisual:getDirt(bloodBodyPartType))
+          bloodDirt.blood = math.min(1.0, bloodDirt.blood + humanVisual:getBlood(bloodBodyPartType))
+          bloodDirt.dirt = math.min(1.0, bloodDirt.dirt + humanVisual:getDirt(bloodBodyPartType))
           hygieneEffect = hygieneEffect + (bloodDirt.blood * bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["bloodEffect"])
           hygieneEffect = hygieneEffect + (bloodDirt.dirt * bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["dirtEffect"])
         end

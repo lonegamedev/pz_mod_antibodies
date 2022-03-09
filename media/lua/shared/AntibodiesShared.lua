@@ -118,12 +118,12 @@ local function getDefaultOptions()
       ["traitsEffects"] = false
     },
     ["InfectionEffects"] = {
-      ["regular"] = -0.05,
-      ["virus"] = -0.10
+      ["regular"] = -0.025,
+      ["virus"] = -0.05
     },
     ["HygineEffects"] = {
-      ["bloodEffect"] = -0.50,
-      ["dirtEffect"] = -0.25,
+      ["bloodEffect"] = -0.2,
+      ["dirtEffect"] = -0.1,
 
       ["modCleanBandage"] = -0.3,
       ["modSterilizedBandage"] = -0.3,
@@ -303,11 +303,15 @@ local function saveHostOptions(options)
   end
 end
 
-local function saveOptions(options)
+local function saveOptions(options, alt_filename)
   if (type(options) ~= "table") then
     return false
   end
-  local writer = getFileWriter("antibodies_options.ini", true, false)
+  local filename = "antibodies_options.ini"
+  if alt_filename ~= nil then
+    filename = alt_filename
+  end
+  local writer = getFileWriter(filename, true, false)
   for id,group in pairs(options) do
     writer:write("\r\n["..id.."]\r\n")
     for k,v in pairs(group) do
@@ -339,8 +343,26 @@ local function mergeOptions(default, loaded)
   return result
 end
 
+local function isOptionsVersionCurrent(options)
+  if type(options) ~= "table" then
+    return false
+  end
+  if options["Antibodies"] ~= nil then
+    if options["Antibodies"]["version"] == AntibodiesShared.version then
+      return true
+    end
+  end
+  return false
+end
+
 local function getLocalOptions()
-  return mergeOptions(getDefaultOptions(), loadOptions())
+  local options = loadOptions()
+  if isOptionsVersionCurrent(options) then
+    return mergeOptions(getDefaultOptions(), loadOptions())
+  else
+    saveOptions(options, "antibodies_options.bk.ini")
+    return getDefaultOptions()
+  end
 end
 
 -----------------------------------------------------

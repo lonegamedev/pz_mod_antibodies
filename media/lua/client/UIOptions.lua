@@ -471,7 +471,7 @@ end
 
 local function showNoAdminMessage()
     addLabel(
-        serverOverrideMessage1, 
+        getText("UI_Antibodies_ServerOverride_1"), 
         {
             ["font"] = UIFont.Medium, 
             ["useAddY"] = true,
@@ -480,7 +480,7 @@ local function showNoAdminMessage()
     )
     addOffsetY(SPACING_Y)
     addLabel(
-        serverOverrideMessage2,
+        getText("UI_Antibodies_ServerOverride_2"),
         {
             ["font"] = UIFont.Small, 
             ["useAddY"] = true,
