@@ -5,7 +5,7 @@ AntibodiesShared.__index = AntibodiesShared
 --CONST----------------------------------------------
 -----------------------------------------------------
 
-AntibodiesShared.version = "1.30"
+AntibodiesShared.version = "1.32"
 AntibodiesShared.author = "lonegamedev.com"
 AntibodiesShared.modName = "Antibodies"
 AntibodiesShared.modId = "lgd_antibodies"
@@ -15,6 +15,8 @@ local zeroMoodles = {"Angry", "Dead", "Zombie", "Injured"}
 local bodyPartTypes = {"Back", "Foot_L", "Foot_R", "ForeArm_L", "ForeArm_R", "Groin", 
 "Hand_L", "Hand_R", "Head", "LowerLeg_L", "LowerLeg_R", "Neck", "Torso_Lower", 
 "Torso_Upper", "UpperArm_L", "UpperArm_R", "UpperLeg_L", "UpperLeg_R"}
+
+local noMigrationVersions = {"1.30"}
 
 -----------------------------------------------------
 --STATE----------------------------------------------
@@ -145,26 +147,26 @@ local function getDefaultOptions()
     },
     ["MoodleEffects"] = {
       ["Bleeding"] = -0.1,
-      ["Hypothermia"] = -0.1,
       
       ["Thirst"] = -0.04,
       ["Hungry"] = -0.03,
       ["Sick"] = -0.02,
       ["HasACold"] = -0.02,
-
-      ["Tired"] = -0.01,
-      ["Endurance"] = -0.01,
       ["Pain"] = -0.01,
-      ["Wet"] = -0.01,
-      ["HeavyLoad"] = -0.01,
-      ["Windchill"] = -0.01,
-      
+      ["Tired"] = -0.01,
+      ["Endurance"] = -0.01,      
+
       ["Panic"] = -0.01,
       ["Stress"] = -0.01,
       ["Unhappy"] = -0.01,
       ["Bored"] = -0.01,
       
       ["Hyperthermia"] = 0.01,
+      ["Hypothermia"] = -0.1,
+      ["Windchill"] = -0.01,
+      ["Wet"] = -0.01,
+      ["HeavyLoad"] = -0.01,
+
       ["Drunk"] = 0.01,
       ["FoodEaten"] = 0.05,
 
@@ -178,7 +180,7 @@ local function getDefaultOptions()
       ["Smoker"] = -0.01,
       
       ["Unfit"] = -0.02,
-      ["Out of Shape"] = -0.01,
+      ["OutOfShape"] = -0.01,
       ["Athletic"] = 0.01,
     
       ["SlowHealer"] = -0.01,
@@ -193,7 +195,7 @@ local function getDefaultOptions()
       ["Stout"] = 0.02,
     
       ["Emaciated"] = -0.02,
-      ["Very Underweight"] = -0.01,
+      ["VeryUnderweight"] = -0.01,
       ["Underweight"] = -0.005,
       ["Overweight"] = -0.005,
       ["Obese"] = -0.02,
@@ -343,13 +345,33 @@ local function mergeOptions(default, loaded)
   return result
 end
 
+local function optionsCanBeMigrated(current_version)
+  local source = tonumber(current_version)
+  local target = tonumber(AntibodiesShared.version)
+  if source == target then
+    return true
+  end
+  if source > target then
+    return false
+  end
+  for index, version in pairs(AntibodiesShared.noMigrationVersions) do
+    local step = tonumber(version)
+    if step > source and step <= target then
+      return false
+    end
+  end
+  return true
+end
+
 local function isOptionsVersionCurrent(options)
   if type(options) ~= "table" then
     return false
   end
   if options["Antibodies"] ~= nil then
-    if options["Antibodies"]["version"] == AntibodiesShared.version then
-      return true
+    if options["Antibodies"]["version"] ~= nil then
+      if optionsCanBeMigrated(options["Antibodies"]["version"]) then
+        return true
+      end
     end
   end
   return false
@@ -381,6 +403,7 @@ AntibodiesShared.parse_value = parse_value
 AntibodiesShared.printOptions = printOptions
 AntibodiesShared.zeroMoodles = zeroMoodles
 AntibodiesShared.bodyPartTypes = bodyPartTypes
+AntibodiesShared.noMigrationVersions = noMigrationVersions
 
 AntibodiesShared.optionsToString = optionsToString
 AntibodiesShared.stringToOptions = stringToOptions
