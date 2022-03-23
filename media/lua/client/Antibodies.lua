@@ -173,8 +173,6 @@ local function getMoodleEffect(player)
     if(AntibodiesShared.has_key(AntibodiesShared.currentOptions.MoodleEffects, key)) then
       local effect = AntibodiesShared.currentOptions.MoodleEffects[key]
       effect_sum = effect_sum + (effect * level)
-    else
-      print("unknown key: "..key)
     end
   end
   return effect_sum
