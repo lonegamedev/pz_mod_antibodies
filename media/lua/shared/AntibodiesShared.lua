@@ -5,7 +5,7 @@ AntibodiesShared.__index = AntibodiesShared
 --CONST----------------------------------------------
 -----------------------------------------------------
 
-AntibodiesShared.version = "1.32"
+AntibodiesShared.version = "1.33"
 AntibodiesShared.author = "lonegamedev.com"
 AntibodiesShared.modName = "Antibodies"
 AntibodiesShared.modId = "lgd_antibodies"
@@ -16,7 +16,7 @@ local bodyPartTypes = {"Back", "Foot_L", "Foot_R", "ForeArm_L", "ForeArm_R", "Gr
 "Hand_L", "Hand_R", "Head", "LowerLeg_L", "LowerLeg_R", "Neck", "Torso_Lower", 
 "Torso_Upper", "UpperArm_L", "UpperArm_R", "UpperLeg_L", "UpperLeg_R"}
 
-local noMigrationVersions = {"1.30"}
+local noAutoMigrationVersions = {"1.30"}
 
 -----------------------------------------------------
 --STATE----------------------------------------------
@@ -39,6 +39,16 @@ end
 
 local function has_key(table, key)
     return table[key] ~= nil
+end
+
+local function get_keys(table)
+  local keys={}
+  local n=0
+  for k,v in pairs(table) do
+    n=n+1
+    keys[n]=k
+  end
+  return keys
 end
 
 local function lerp(v0, v1, t)
@@ -329,7 +339,7 @@ local function mergeOptions(default, loaded)
   if type(loaded) ~= "table" then
     return default
   end
-  local groups = {"General", "MoodleEffects", "TraitsEffects", "HygineEffects", "Debug"}
+  local groups = get_keys(getDefaultOptions())
   for group_index, group_key in pairs(groups) do
     if type(loaded[group_key]) == "table" then
       for prop_key, prop_val in pairs(default[group_key]) do
@@ -354,7 +364,7 @@ local function optionsCanBeMigrated(current_version)
   if source > target then
     return false
   end
-  for index, version in pairs(AntibodiesShared.noMigrationVersions) do
+  for index, version in pairs(AntibodiesShared.noAutoMigrationVersions) do
     local step = tonumber(version)
     if step > source and step <= target then
       return false
@@ -393,6 +403,7 @@ end
 
 AntibodiesShared.has_value = has_value
 AntibodiesShared.has_key = has_key
+AntibodiesShared.get_keys = get_keys
 AntibodiesShared.lerp = lerp
 AntibodiesShared.format_float = format_float
 AntibodiesShared.is_number = is_number
@@ -403,7 +414,7 @@ AntibodiesShared.parse_value = parse_value
 AntibodiesShared.printOptions = printOptions
 AntibodiesShared.zeroMoodles = zeroMoodles
 AntibodiesShared.bodyPartTypes = bodyPartTypes
-AntibodiesShared.noMigrationVersions = noMigrationVersions
+AntibodiesShared.noAutoMigrationVersions = noAutoMigrationVersions
 
 AntibodiesShared.optionsToString = optionsToString
 AntibodiesShared.stringToOptions = stringToOptions
