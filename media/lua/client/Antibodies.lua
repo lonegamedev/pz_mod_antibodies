@@ -16,7 +16,12 @@ local function cureVirus(player)
 end
 
 local function getInfectionsCount(player)
-  local result = { ["virus"] = 0, ["regular"] = 0 }
+  local result = { 
+    ["virusScratch"] = 0, 
+    ["virusCut"] = 0, 
+    ["virusBite"] = 0, 
+    ["regular"] = 0 
+  }
   local bodyDamage = player:getBodyDamage()
   for i = 0, bodyDamage:getBodyParts():size() - 1 do
     local bodyPart = bodyDamage:getBodyParts():get(i)
@@ -24,15 +29,91 @@ local function getInfectionsCount(player)
       result.regular = result.regular + 1
     end
     if bodyPart:IsInfected() then
-      result.virus = result.virus + 1
+      if bodyPart:getBiteTime() > 0 then
+        result.virusBite = result.virusBite + 1
+      end
+      if bodyPart:getCutTime() > 0 then
+        result.virusCut = result.virusCut + 1
+      end
+      if bodyPart:getScratchTime() > 0 then
+        result.virusScratch = result.virusScratch + 1
+      end
     end
   end
   return result
 end
 
+local function getWoundsCount(player)
+  local result = { 
+    ["deepWounded"] = 0,
+    ["bleeding"] = 0,
+    ["bitten"] = 0,
+    ["cut"] = 0,
+    ["scratched"] = 0,
+    ["burnt"] = 0,
+    ["needBurnWash"] = 0,
+    ["stiched"] = 0,
+    ["haveBullet"] = 0,
+    ["haveGlass"] = 0
+  }
+  local bodyDamage = player:getBodyDamage()
+  for part_index, part_key in pairs(AntibodiesShared.bodyPartTypes) do
+    local bodyPartType = BodyPartType.FromString(part_key)
+    if bodyPartType ~= BodyPartType.MAX then
+      local bodyPart = bodyDamage:getBodyPart(bodyPartType)
+      if bodyPart then
+        if bodyPart:getDeepWoundTime() > 0 then
+          result["deepWounded"] = result["deepWounded"] + 1
+        end
+        if bodyPart:getBiteTime() > 0 then
+          result["bitten"] = result["bitten"] + 1
+        end
+        if bodyPart:getCutTime() > 0 then
+          result["cut"] = result["cut"] + 1
+        end
+        if bodyPart:getScratchTime() > 0 then
+          result["scratched"] = result["scratched"] + 1
+        end
+        if bodyPart:getBurnTime() > 0 then
+          result["burnt"] = result["burnt"] + 1
+        end
+        if bodyPart:isNeedBurnWash() then
+          result["needBurnWash"] = result["needBurnWash"] + 1
+        end
+        if bodyPart:getStitchTime() > 0 then
+          result["stiched"] = result["stiched"] + 1
+        end
+        if bodyPart:haveBullet() then
+          result["haveBullet"] = result["haveBullet"] + 1
+        end
+        if bodyPart:haveGlass() then
+          result["haveGlass"] = result["haveGlass"] + 1
+        end
+        if bodyPart:getBleedingTime() > 0 then
+          result["bleeding"] = result["bleeding"] + 1
+        end
+      end
+    end
+  end
+  return result
+end
+
+local function getWoundsEffect(player)
+  local woundsEffect = 0.0
+  local wounds = getWoundsCount(player)
+  for part_key in pairs(wounds) do
+    if wounds[part_key] > 0 then
+      woundsEffect = woundsEffect + (wounds[part_key] * AntibodiesShared.currentOptions.WoundEffects[part_key])
+    end
+  end
+  return woundsEffect
+end
+
 local function getInfectionsEffect(player)
   local infections = getInfectionsCount(player)
-  return infections.virus * AntibodiesShared.currentOptions.InfectionEffects["virus"] +
+  return infections.virusScratch * AntibodiesShared.currentOptions.InfectionEffects["virusScratch"] +
+         infections.virusCut * AntibodiesShared.currentOptions.InfectionEffects["virusCut"] +
+         infections.virusBite * AntibodiesShared.currentOptions.InfectionEffects["virusBite"] +
          infections.regular * AntibodiesShared.currentOptions.InfectionEffects["regular"]
 end
 
@@ -40,7 +121,7 @@ local function isAlcoholBandage(bandageType)
   return string.match(bandageType, "Alcohol")
 end
 
-local function getBodyPartMod(bodyPart)
+local function getBodyPartHygineMod(bodyPart)
   local mod = 0.0
 
   if bodyPart:bandaged() and not bodyPart:isBandageDirty() then
@@ -85,7 +166,7 @@ local function getBodyPartMod(bodyPart)
     mod = mod + AntibodiesShared.currentOptions.HygineEffects["modBleeding"]
   end
 
-  return math.max(0, mod)
+  return math.min(mod, 0.0)
 end
 
 local function coversBodyPart(clothing, bloodBodyPartType)
@@ -136,14 +217,14 @@ local function getHygieneEffect(player)
     if bodyPartType ~= BodyPartType.MAX then
       local bodyPart = bodyDamage:getBodyPart(bodyPartType)
       if bodyPart then
-        local bodyPartMod = getBodyPartMod(bodyPart)
-        if bodyPartMod > 0.0 then
+        local bodyPartMod = getBodyPartHygineMod(bodyPart)
+        if bodyPartMod < 0.0 then
           local bloodBodyPartType = BloodBodyPartType.FromString(part_key)
           local bloodDirt = getClothingHygiene(player, bloodBodyPartType)
           bloodDirt.blood = math.min(1.0, bloodDirt.blood + humanVisual:getBlood(bloodBodyPartType))
           bloodDirt.dirt = math.min(1.0, bloodDirt.dirt + humanVisual:getDirt(bloodBodyPartType))
-          hygieneEffect = hygieneEffect + (bloodDirt.blood * bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["bloodEffect"])
-          hygieneEffect = hygieneEffect + (bloodDirt.dirt * bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["dirtEffect"])
+          hygieneEffect = hygieneEffect + (bloodDirt.blood * -bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["bloodEffect"])
+          hygieneEffect = hygieneEffect + (bloodDirt.dirt * -bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["dirtEffect"])
         end
       end
     end
@@ -203,7 +284,8 @@ local function getAntibodiesGrowth(player, infectionChange)
   local traitEffect = getTraitEffect(player)
   local hygineEffect = getHygieneEffect(player)
   local infectionEffect = getInfectionsEffect(player)
-  local growthSum = (AntibodiesShared.currentOptions.General.baseAntibodyGrowth + moodleEffect + traitEffect + hygineEffect + infectionEffect)
+  local woundsEffect = getWoundsEffect(player)
+  local growthSum = (AntibodiesShared.currentOptions.General.baseAntibodyGrowth + moodleEffect + traitEffect + hygineEffect + infectionEffect + woundsEffect)
   local infectionProgress = (bodyDamage:getInfectionLevel() / 100)
   local growthMax = math.max(0, math.abs(infectionChange) * growthSum)
   return AntibodiesShared.lerp(0.0, growthMax, AntibodiesShared.clamp(math.sin(infectionProgress * math.pi), 0.0, 1.0))
@@ -304,12 +386,28 @@ local function printMoodleEffect(player)
   end
 end
 
+local function printWoundsEffect(player)
+  local woundsEffects = getWoundsEffect(player)
+  print(indent(1).."WoundsEffects: "..AntibodiesShared.format_float(woundsEffects))
+  if AntibodiesShared.currentOptions.Debug["woundEffects"] then
+    local wounds = getWoundsCount(player)
+    for part_key in pairs(wounds) do
+      if wounds[part_key] > 0 then
+        print(indent(2)..part_key..": "..tostring(wounds[part_key] * AntibodiesShared.currentOptions.WoundEffects[part_key]))
+      end
+    end
+    print(indent(1).."---")
+  end
+end
+
 local function printInfectionsEffect(player)
   local infectionEffects = getInfectionsEffect(player)
   print(indent(1).."InfectionEffects: "..AntibodiesShared.format_float(infectionEffects))
   if AntibodiesShared.currentOptions.Debug["infectionEffects"] then
     local infections = getInfectionsCount(player)
-    print(indent(2).."virus infected body parts: "..tostring(infections.virus))
+    print(indent(2).."virusScratch infected body parts: "..tostring(infections.virusScratch))
+    print(indent(2).."virusCut infected body parts: "..tostring(infections.virusCut))
+    print(indent(2).."virusBite infected body parts: "..tostring(infections.virusBite))
     print(indent(2).."regular infected body parts: "..tostring(infections.regular))
     print(indent(1).."---")
   end
@@ -325,51 +423,53 @@ local function printHygieneEffect(player)
       local bodyPartType = BodyPartType.FromString(part_key)
       if bodyPartType ~= BodyPartType.MAX then
         local bodyPart = bodyDamage:getBodyPart(bodyPartType)
-        local bodyPartMod = getBodyPartMod(bodyPart)
-        print(indent(2)..tostring(bodyPartType)..":")
+        local bodyPartMod = getBodyPartHygineMod(bodyPart)
         local bloodBodyPartType = BloodBodyPartType.FromString(part_key)
         local bloodDirt = getClothingHygiene(player, bloodBodyPartType)
         bloodDirt.blood = math.max(bloodDirt.blood, humanVisual:getBlood(bloodBodyPartType))
         bloodDirt.dirt = math.max(bloodDirt.dirt, humanVisual:getDirt(bloodBodyPartType))
-        print(indent(3).."blood: "..tostring(AntibodiesShared.format_float(bloodDirt.blood)))
-        print(indent(3).."dirt: "..tostring(AntibodiesShared.format_float(bloodDirt.dirt)))
-        if bodyPart:bandaged() and not bodyPart:isBandageDirty() then
-          print(indent(3).."bandaged")
-        end
-        if bodyPart:getDeepWoundTime() > 0 then
-          print(indent(3).."deepwounded ("..tostring(AntibodiesShared.format_float(bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["modDeepWounded"]))..")")
-        end
-        if bodyPart:getBiteTime() > 0 then
-          print(indent(3).."bitten ("..tostring(AntibodiesShared.format_float(bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["modBitten"]))..")")
-        end
-        if bodyPart:getCutTime() > 0 then
-          print(indent(3).."cut ("..tostring(AntibodiesShared.format_float(bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["modCut"]))..")")
-        end
-        if bodyPart:getScratchTime() > 0 then
-          print(indent(3).."scratched ("..tostring(AntibodiesShared.format_float(bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["modScratched"]))..")")
-        end
-        if bodyPart:getBurnTime() > 0 then
-          print(indent(3).."burnt ("..tostring(AntibodiesShared.format_float(bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["modBurnt"]))..")")
-        end
-        if bodyPart:isNeedBurnWash() then
-          print(indent(3).."burnt need wash ("..tostring(AntibodiesShared.format_float(bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["modNeedBurnWash"]))..")")
-        end
-        if bodyPart:getStitchTime() > 0 then
-          print(indent(3).."stiched ("..tostring(AntibodiesShared.format_float(bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["modStiched"]))..")")
-        end
-        if bodyPart:haveBullet() then
-          print(indent(3).."lodged bullet ("..tostring(AntibodiesShared.format_float(bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["modHaveBullet"]))..")")
-        end
-        if bodyPart:haveGlass() then
-          print(indent(3).."lodged glass ("..tostring(AntibodiesShared.format_float(bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["modHaveGlass"]))..")")
-        end
-        if bodyPart:getBleedingTime() > 0 then
-          print(indent(3).."bleeding ("..tostring(AntibodiesShared.format_float(bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["modBleeding"]))..")")
+        if (bloodDirt.blood > 0 or bloodDirt.dirt > 0) and (bodyPartMod < 0) then
+          print(indent(2)..tostring(bodyPartType)..":")
+          print(indent(3).."bloodLevel: "..tostring(AntibodiesShared.format_float(bloodDirt.blood)))
+          print(indent(3).."dirtLevel: "..tostring(AntibodiesShared.format_float(bloodDirt.dirt)))
+          if bodyPart:bandaged() and not bodyPart:isBandageDirty() then
+            print(indent(3).."bandaged")
+          end
+          if bodyPart:getDeepWoundTime() > 0 then
+            print(indent(3).."deepwounded")
+          end
+          if bodyPart:getBiteTime() > 0 then
+            print(indent(3).."bitten")
+          end
+          if bodyPart:getCutTime() > 0 then
+            print(indent(3).."cut")
+          end
+          if bodyPart:getScratchTime() > 0 then
+            print(indent(3).."scratched")
+          end
+          if bodyPart:getBurnTime() > 0 then
+            print(indent(3).."burnt")
+          end
+          if bodyPart:isNeedBurnWash() then
+            print(indent(3).."burnt need wash")
+          end
+          if bodyPart:getStitchTime() > 0 then
+            print(indent(3).."stiched")
+          end
+          if bodyPart:haveBullet() then
+            print(indent(3).."lodged bullet")
+          end
+          if bodyPart:haveGlass() then
+            print(indent(3).."lodged glass")
+          end
+          if bodyPart:getBleedingTime() > 0 then
+            print(indent(3).."bleeding")
+          end
         end
       end
     end
+    print(indent(1).."---")
   end
-  print(indent(1).."---")
 end
 
 local function printPlayerDebug(player, last)
@@ -382,8 +482,9 @@ local function printPlayerDebug(player, last)
   local infectionProgress = (infectionLevel / 100)
 
   print(indent(1).."Player: "..player:getUsername())
-  print(indent(1).."IsInfected: "..tostring(isInfected).." ("..AntibodiesShared.format_float(infectionProgress)..")")
-  print(indent(1).."Virus/Antibodies: "..AntibodiesShared.format_float(infectionLevel).." ("..AntibodiesShared.format_float(infectionChange)..") / "..AntibodiesShared.format_float(save.virusAntibodiesLevel).." ("..AntibodiesShared.format_float(antibodiesChange)..")")
+  print(indent(1).."IsInfected: "..tostring(isInfected))
+  print(indent(1).."Virus/Antibodies: "..AntibodiesShared.format_float(infectionLevel).." (+"..AntibodiesShared.format_float(infectionChange)..") / "..AntibodiesShared.format_float(save.virusAntibodiesLevel).." (+"..AntibodiesShared.format_float(antibodiesChange)..")")
+  printWoundsEffect(player)
   printInfectionsEffect(player)
   printHygieneEffect(player)
   printMoodleEffect(player)
