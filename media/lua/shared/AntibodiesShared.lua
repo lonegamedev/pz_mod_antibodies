@@ -16,7 +16,7 @@ local bodyPartTypes = {"Back", "Foot_L", "Foot_R", "ForeArm_L", "ForeArm_R", "Gr
 "Hand_L", "Hand_R", "Head", "LowerLeg_L", "LowerLeg_R", "Neck", "Torso_Lower", 
 "Torso_Upper", "UpperArm_L", "UpperArm_R", "UpperLeg_L", "UpperLeg_R"}
 
-local noAutoMigrationVersions = {"1.30", "1.35"}
+local noAutoMigrationVersions = {"1.30", "1.40"}
 
 -----------------------------------------------------
 --STATE----------------------------------------------
