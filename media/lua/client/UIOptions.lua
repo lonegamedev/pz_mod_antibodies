@@ -333,6 +333,25 @@ local function showOptions()
     addNumberGroup("General", 0.0, 2.0, getText("UI_Antibodies_baseAntibodyGrowth"), getText("UI_Antibodies_baseAntibodyGrowthToolTip"))
     addOffsetY(SPACING_Y * 1)
 
+    addLabel(getText("UI_Antibodies_WoundEffects"), {
+        ["font"] = UIFont.Large,
+        ["offsetX"] = -16,
+    })
+    addOffsetY(SPACING_Y * 2)
+    addNumberGroup("WoundEffects", -1.0, 0.0, {
+            ["deepWounded"] = getText("UI_Antibodies_WoundEffects_deepWounded"),
+            ["bleeding"] = getText("UI_Antibodies_WoundEffects_bleeding"),
+            ["bitten"] = getText("UI_Antibodies_WoundEffects_bitten"),
+            ["cut"] = getText("UI_Antibodies_WoundEffects_cut"),
+            ["scratched"] = getText("UI_Antibodies_WoundEffects_scratched"),
+            ["burnt"] = getText("UI_Antibodies_WoundEffects_burnt"),
+            ["needBurnWash"] = getText("UI_Antibodies_WoundEffects_needBurnWash"),
+            ["stiched"] = getText("UI_Antibodies_WoundEffects_stiched"),
+            ["haveBullet"] = getText("UI_Antibodies_WoundEffects_haveBullet"),
+            ["haveGlass"] = getText("UI_Antibodies_WoundEffects_haveGlass")
+        }, getText("UI_Antibodies_WoundEffects_tooltip"))
+    addOffsetY(SPACING_Y * 1)
+
     addLabel(getText("UI_Antibodies_InfectionEffects"), {
         ["font"] = UIFont.Large,
         ["offsetX"] = -16,
@@ -340,7 +359,9 @@ local function showOptions()
     addOffsetY(SPACING_Y * 2)
     addNumberGroup("InfectionEffects", -1.0, 0.0, {
             ["regular"] = getText("UI_Antibodies_InfectionEffects_regular"),
-            ["virus"] = getText("UI_Antibodies_InfectionEffects_virus")
+            ["virusScratch"] = getText("UI_Antibodies_InfectionEffects_virusScratch"),
+            ["virusCut"] = getText("UI_Antibodies_InfectionEffects_virusCut"),
+            ["virusBite"] = getText("UI_Antibodies_InfectionEffects_virusBite")
         }, getText("UI_Antibodies_InfectionEffects_tooltip"))
     addOffsetY(SPACING_Y * 1)
 
@@ -359,7 +380,7 @@ local function showOptions()
         {}, 
         {"bloodEffect", "dirtEffect"})
 
-    addNumberGroup("HygineEffects", -1.0, 0.0, 
+    addNumberGroup("HygineEffects", 0.0, 1.0, 
         { 
             ["modCleanBandage"] = getText("UI_Antibodies_HygineEffects_CleanBandage"),
             ["modSterilizedBandage"] = getText("UI_Antibodies_HygineEffects_SterilizedBandage"),
@@ -369,7 +390,7 @@ local function showOptions()
         {}, 
         {"modSterilizedWound", "modCleanBandage", "modSterilizedBandage"})
 
-    addNumberGroup("HygineEffects", 0.0, 1.0, 
+    addNumberGroup("HygineEffects", -1.0, 0.0, 
         {
             ["modDeepWounded"] = getText("UI_Antibodies_ModDeepWound"),
             ["modBleeding"] = getText("UI_Antibodies_ModBleeding"),
@@ -457,6 +478,8 @@ local function showOptions()
     })
     addOffsetY(SPACING_Y * 2)
     addTickbox("Debug", "enabled", getText("UI_Antibodies_DebugEnabled"), getText("UI_Antibodies_DebugToolTip"))
+    addOffsetY(SPACING_Y * 2)
+    addTickbox("Debug", "woundEffects", getText("UI_Antibodies_DebugWounds"), getText("UI_Antibodies_DebugWoundsToolTip"))
     addOffsetY(SPACING_Y * 2)
     addTickbox("Debug", "infectionEffects", getText("UI_Antibodies_DebugInfection"), getText("UI_Antibodies_DebugInfectionToolTip"))
     addOffsetY(SPACING_Y * 2)

@@ -5,7 +5,7 @@ AntibodiesShared.__index = AntibodiesShared
 --CONST----------------------------------------------
 -----------------------------------------------------
 
-AntibodiesShared.version = "1.33"
+AntibodiesShared.version = "1.40"
 AntibodiesShared.author = "lonegamedev.com"
 AntibodiesShared.modName = "Antibodies"
 AntibodiesShared.modId = "lgd_antibodies"
@@ -16,7 +16,7 @@ local bodyPartTypes = {"Back", "Foot_L", "Foot_R", "ForeArm_L", "ForeArm_R", "Gr
 "Hand_L", "Hand_R", "Head", "LowerLeg_L", "LowerLeg_R", "Neck", "Torso_Lower", 
 "Torso_Upper", "UpperArm_L", "UpperArm_R", "UpperLeg_L", "UpperLeg_R"}
 
-local noAutoMigrationVersions = {"1.30"}
+local noAutoMigrationVersions = {"1.30", "1.40"}
 
 -----------------------------------------------------
 --STATE----------------------------------------------
@@ -124,36 +124,54 @@ local function getDefaultOptions()
     },
     ["Debug"] = {
       ["enabled"] = false,
+      ["woundEffects"] = false,
       ["infectionEffects"] = false,
       ["hygieneEffects"] = false,
       ["moodleEffects"] = false,
       ["traitsEffects"] = false
     },
+    ["WoundEffects"] = {
+      ["deepWounded"] = -0.01,
+      ["bleeding"] = -0.02,
+
+      ["bitten"] = -0.01,
+      ["cut"] = -0.008,
+      ["scratched"] = -0.003,
+
+      ["burnt"] = -0.005,
+      ["needBurnWash"] = -0.01,
+      ["stiched"] = -0.001,
+
+      ["haveBullet"] = -0.02,
+      ["haveGlass"] = -0.01
+    },
     ["InfectionEffects"] = {
-      ["regular"] = -0.025,
-      ["virus"] = -0.05
+      ["regular"] = -0.01,
+      ["virusScratch"] = -0.01,
+      ["virusCut"] = -0.025,
+      ["virusBite"] = -0.05,
     },
     ["HygineEffects"] = {
       ["bloodEffect"] = -0.2,
       ["dirtEffect"] = -0.1,
 
-      ["modCleanBandage"] = -0.3,
-      ["modSterilizedBandage"] = -0.3,
-      ["modSterilizedWound"] = -0.3,
+      ["modCleanBandage"] = 0.3,
+      ["modSterilizedBandage"] = 0.3,
+      ["modSterilizedWound"] = 0.3,
 
-      ["modDeepWounded"] = 0.85,
-      ["modBleeding"] = 0.45,
+      ["modDeepWounded"] = -0.85,
+      ["modBleeding"] = -0.45,
 
-      ["modBitten"] = 0.40,
-      ["modCut"] = 0.20,
-      ["modScratched"] = 0.10,
+      ["modBitten"] = -0.40,
+      ["modCut"] = -0.20,
+      ["modScratched"] = -0.10,
 
-      ["modBurnt"] = 0.40,
-      ["modNeedBurnWash"] = 0.60,
-      ["modStiched"] = 0.05,
+      ["modBurnt"] = -0.40,
+      ["modNeedBurnWash"] = -0.60,
+      ["modStiched"] = -0.05,
 
-      ["modHaveBullet"] = 0.60,
-      ["modHaveGlass"] = 0.40
+      ["modHaveBullet"] = -0.60,
+      ["modHaveGlass"] = -0.40
     },
     ["MoodleEffects"] = {
       ["Bleeding"] = -0.1,
