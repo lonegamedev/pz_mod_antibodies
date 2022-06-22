@@ -5,7 +5,7 @@ AntibodiesShared.__index = AntibodiesShared
 --CONST----------------------------------------------
 -----------------------------------------------------
 
-AntibodiesShared.version = "1.4"
+AntibodiesShared.version = "1.40"
 AntibodiesShared.author = "lonegamedev.com"
 AntibodiesShared.modName = "Antibodies"
 AntibodiesShared.modId = "lgd_antibodies"
