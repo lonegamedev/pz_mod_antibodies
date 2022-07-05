@@ -507,6 +507,12 @@ end
 -----------------------------------------------------
 
 local function onEveryTenMinutes()
+
+  if isClient() then
+    local sm = getServerSettingsManager()
+    print(sm:getSettingsFolder().."/"..getServerName().."_antibodies.ini")
+  end
+
   local players = getLocalPlayers()
   for key, player in ipairs(players) do
     ensureInitialization(player)
