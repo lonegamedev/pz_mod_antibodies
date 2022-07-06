@@ -103,7 +103,7 @@ local function getWoundsEffect(player)
   local wounds = getWoundsCount(player)
   for part_key in pairs(wounds) do
     if wounds[part_key] > 0 then
-      woundsEffect = woundsEffect + (wounds[part_key] * AntibodiesShared.currentOptions.WoundEffects[part_key])
+      woundsEffect = woundsEffect + (wounds[part_key] * AntibodiesShared.currentOptions.wound[part_key])
     end
   end
   return woundsEffect
@@ -111,10 +111,10 @@ end
 
 local function getInfectionsEffect(player)
   local infections = getInfectionsCount(player)
-  return infections.virusScratch * AntibodiesShared.currentOptions.InfectionEffects["virusScratch"] +
-         infections.virusCut * AntibodiesShared.currentOptions.InfectionEffects["virusCut"] +
-         infections.virusBite * AntibodiesShared.currentOptions.InfectionEffects["virusBite"] +
-         infections.regular * AntibodiesShared.currentOptions.InfectionEffects["regular"]
+  return infections.virusScratch * AntibodiesShared.currentOptions.infection.virusScratch +
+         infections.virusCut * AntibodiesShared.currentOptions.infection.virusCut +
+         infections.virusBite * AntibodiesShared.currentOptions.infection.virusBite +
+         infections.regular * AntibodiesShared.currentOptions.infection.regular
 end
 
 local function isAlcoholBandage(bandageType)
@@ -125,45 +125,45 @@ local function getBodyPartHygineMod(bodyPart)
   local mod = 0.0
 
   if bodyPart:bandaged() and not bodyPart:isBandageDirty() then
-    mod = mod + AntibodiesShared.currentOptions.HygineEffects["modCleanBandage"]
+    mod = mod + AntibodiesShared.currentOptions.hygiene.modCleanBandage
     if isAlcoholBandage(bodyPart:getBandageType()) then
-      mod = mod + AntibodiesShared.currentOptions.HygineEffects["modSterilizedBandage"]
+      mod = mod + AntibodiesShared.currentOptions.hygiene.modSterilizedBandage
     end
   end
 
   if bodyPart:getAlcoholLevel() > 0 then
-    mod = mod + AntibodiesShared.currentOptions.HygineEffects["modSterilizedWound"]
+    mod = mod + AntibodiesShared.currentOptions.hygiene.modSterilizedWound
   end
 
   if bodyPart:getDeepWoundTime() > 0 then
-    mod = mod + AntibodiesShared.currentOptions.HygineEffects["modDeepWounded"]
+    mod = mod + AntibodiesShared.currentOptions.hygiene.modDeepWounded
   end
   if bodyPart:getBiteTime() > 0 then
-    mod = mod + AntibodiesShared.currentOptions.HygineEffects["modBitten"]
+    mod = mod + AntibodiesShared.currentOptions.hygiene.modBitten
   end
   if bodyPart:getCutTime() > 0 then
-    mod = mod + AntibodiesShared.currentOptions.HygineEffects["modCut"]
+    mod = mod + AntibodiesShared.currentOptions.hygiene.modCut
   end
   if bodyPart:getScratchTime() > 0 then
-    mod = mod + AntibodiesShared.currentOptions.HygineEffects["modScratched"]
+    mod = mod + AntibodiesShared.currentOptions.hygiene.modScratched
   end
   if bodyPart:getBurnTime() > 0 then
-    mod = mod + AntibodiesShared.currentOptions.HygineEffects["modBurnt"]
+    mod = mod + AntibodiesShared.currentOptions.hygiene.modBurnt
   end
   if bodyPart:isNeedBurnWash() then
-    mod = mod + AntibodiesShared.currentOptions.HygineEffects["modNeedBurnWash"]
+    mod = mod + AntibodiesShared.currentOptions.hygiene.modNeedBurnWash
   end
   if bodyPart:getStitchTime() > 0 then
-    mod = mod + AntibodiesShared.currentOptions.HygineEffects["modStiched"]        
+    mod = mod + AntibodiesShared.currentOptions.hygiene.modStiched        
   end
   if bodyPart:haveBullet() then
-    mod = mod + AntibodiesShared.currentOptions.HygineEffects["modHaveBullet"]
+    mod = mod + AntibodiesShared.currentOptions.hygiene.modHaveBullet
   end
   if bodyPart:haveGlass() then
-    mod = mod + AntibodiesShared.currentOptions.HygineEffects["modHaveGlass"]
+    mod = mod + AntibodiesShared.currentOptions.hygiene.modHaveGlass
   end
   if bodyPart:getBleedingTime() > 0 then
-    mod = mod + AntibodiesShared.currentOptions.HygineEffects["modBleeding"]
+    mod = mod + AntibodiesShared.currentOptions.hygiene.modBleeding
   end
 
   return math.min(mod, 0.0)
@@ -223,8 +223,8 @@ local function getHygieneEffect(player)
           local bloodDirt = getClothingHygiene(player, bloodBodyPartType)
           bloodDirt.blood = math.min(1.0, bloodDirt.blood + humanVisual:getBlood(bloodBodyPartType))
           bloodDirt.dirt = math.min(1.0, bloodDirt.dirt + humanVisual:getDirt(bloodBodyPartType))
-          hygieneEffect = hygieneEffect + (bloodDirt.blood * -bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["bloodEffect"])
-          hygieneEffect = hygieneEffect + (bloodDirt.dirt * -bodyPartMod * AntibodiesShared.currentOptions.HygineEffects["dirtEffect"])
+          hygieneEffect = hygieneEffect + (bloodDirt.blood * -bodyPartMod * AntibodiesShared.currentOptions.hygiene.bloodEffect)
+          hygieneEffect = hygieneEffect + (bloodDirt.dirt * -bodyPartMod * AntibodiesShared.currentOptions.hygiene.dirtEffect)
         end
       end
     end
@@ -236,9 +236,9 @@ local function getTraitEffect(player)
   local effect_sum = 0
   local traits = player:getTraits()
   for i=0,(traits:size()-1) do 
-    local key = traits:get(i)
-    if AntibodiesShared.has_key(AntibodiesShared.currentOptions.TraitsEffects, key) then
-      effect_sum = effect_sum + AntibodiesShared.currentOptions.TraitsEffects[key]
+    local key = AntibodiesShared.to_camel_case(traits:get(i))
+    if AntibodiesShared.has_key(AntibodiesShared.currentOptions.trait, key) then
+      effect_sum = effect_sum + AntibodiesShared.currentOptions.trait[key]
     end
   end
   return effect_sum
@@ -250,9 +250,9 @@ local function getMoodleEffect(player)
   local count = moodles:getNumMoodles()
   for i = 0, count - 1 do
     local level = moodles:getMoodleLevel(i) 
-    local key = tostring(moodles:getMoodleType(i))
-    if(AntibodiesShared.has_key(AntibodiesShared.currentOptions.MoodleEffects, key)) then
-      local effect = AntibodiesShared.currentOptions.MoodleEffects[key]
+    local key = AntibodiesShared.to_camel_case(tostring(moodles:getMoodleType(i)))
+    if(AntibodiesShared.has_key(AntibodiesShared.currentOptions.moodle, key)) then
+      local effect = AntibodiesShared.currentOptions.moodle[key]
       effect_sum = effect_sum + (effect * level)
     end
   end
@@ -265,7 +265,7 @@ local function ensureInitialization(player)
     save.virusAntibodiesLevel = 0.0
   end
   if not AntibodiesShared.hasOptions() then
-    AntibodiesShared.applyOptions(AntibodiesShared.getLocalOptions())
+    AntibodiesShared.applyOptions(AntibodiesShared.getOptions())
   end
 end
 
@@ -282,10 +282,10 @@ local function getAntibodiesGrowth(player, infectionChange)
   local bodyDamage = player:getBodyDamage()
   local moodleEffect = getMoodleEffect(player)
   local traitEffect = getTraitEffect(player)
-  local hygineEffect = getHygieneEffect(player)
+  local hygieneEffect = getHygieneEffect(player)
   local infectionEffect = getInfectionsEffect(player)
   local woundsEffect = getWoundsEffect(player)
-  local growthSum = (AntibodiesShared.currentOptions.General.baseAntibodyGrowth + moodleEffect + traitEffect + hygineEffect + infectionEffect + woundsEffect)
+  local growthSum = (AntibodiesShared.currentOptions.general.baseAntibodyGrowth + moodleEffect + traitEffect + hygieneEffect + infectionEffect + woundsEffect)
   local infectionProgress = (bodyDamage:getInfectionLevel() / 100)
   local growthMax = math.max(0, math.abs(infectionChange) * growthSum)
   return AntibodiesShared.lerp(0.0, growthMax, AntibodiesShared.clamp(math.sin(infectionProgress * math.pi), 0.0, 1.0))
@@ -353,13 +353,13 @@ end
 
 local function printTraitEffect(player)
   local traitEffect = getTraitEffect(player)
-  print(indent(1).."TraitEffect: "..AntibodiesShared.format_float(traitEffect))
-  if AntibodiesShared.currentOptions.Debug["traitsEffects"] then
+  print(indent(1).."Traits: "..AntibodiesShared.format_float(traitEffect))
+  if AntibodiesShared.currentOptions.debug["trait"] then
     local traits = player:getTraits()
     for i=0,(traits:size()-1) do 
-      local key = traits:get(i)
-      if AntibodiesShared.has_key(AntibodiesShared.currentOptions.TraitsEffects, key) then
-        print(indent(2)..key.." : "..AntibodiesShared.format_float(AntibodiesShared.currentOptions.TraitsEffects[key]))
+      local key = AntibodiesShared.to_camel_case(traits:get(i))
+      if AntibodiesShared.has_key(AntibodiesShared.currentOptions.trait, key) then
+        print(indent(2)..key.." : "..AntibodiesShared.format_float(AntibodiesShared.currentOptions.trait[key]))
       end
     end
     print(indent(1).."---")
@@ -368,16 +368,16 @@ end
 
 local function printMoodleEffect(player)
   local moodleEffect = getMoodleEffect(player)
-  print(indent(1).."MoodleEffect: "..AntibodiesShared.format_float(moodleEffect))
-  if AntibodiesShared.currentOptions.Debug["moodleEffects"] then
+  print(indent(1).."Moodles: "..AntibodiesShared.format_float(moodleEffect))
+  if AntibodiesShared.currentOptions.debug["moodle"] then
     local moodles = player:getMoodles()
     local c = moodles:getNumMoodles()
     for i=0,(c-1) do 
       if not(moodles:getMoodleLevel(i) == 0) then
         local level = moodles:getMoodleLevel(i) 
-        local key = tostring(moodles:getMoodleType(i))
-        if(AntibodiesShared.has_key(AntibodiesShared.currentOptions.MoodleEffects, key)) then
-          local effect = (AntibodiesShared.currentOptions.MoodleEffects[key] * level)
+        local key = AntibodiesShared.to_camel_case(tostring(moodles:getMoodleType(i)))
+        if(AntibodiesShared.has_key(AntibodiesShared.currentOptions.moodle, key)) then
+          local effect = (AntibodiesShared.currentOptions.moodle[key] * level)
           print(indent(2)..key.." : Level "..level.." ("..moodles:getMoodleDisplayString(i)..") : "..AntibodiesShared.format_float(effect))
         end         
       end
@@ -388,12 +388,12 @@ end
 
 local function printWoundsEffect(player)
   local woundsEffects = getWoundsEffect(player)
-  print(indent(1).."WoundsEffects: "..AntibodiesShared.format_float(woundsEffects))
-  if AntibodiesShared.currentOptions.Debug["woundEffects"] then
+  print(indent(1).."Wounds: "..AntibodiesShared.format_float(woundsEffects))
+  if AntibodiesShared.currentOptions.debug["wound"] then
     local wounds = getWoundsCount(player)
     for part_key in pairs(wounds) do
       if wounds[part_key] > 0 then
-        print(indent(2)..part_key..": "..tostring(wounds[part_key] * AntibodiesShared.currentOptions.WoundEffects[part_key]))
+        print(indent(2)..part_key..": "..tostring(wounds[part_key] * AntibodiesShared.currentOptions.wound[part_key]))
       end
     end
     print(indent(1).."---")
@@ -402,8 +402,8 @@ end
 
 local function printInfectionsEffect(player)
   local infectionEffects = getInfectionsEffect(player)
-  print(indent(1).."InfectionEffects: "..AntibodiesShared.format_float(infectionEffects))
-  if AntibodiesShared.currentOptions.Debug["infectionEffects"] then
+  print(indent(1).."Infections: "..AntibodiesShared.format_float(infectionEffects))
+  if AntibodiesShared.currentOptions.debug["infection"] then
     local infections = getInfectionsCount(player)
     print(indent(2).."virusScratch infected body parts: "..tostring(infections.virusScratch))
     print(indent(2).."virusCut infected body parts: "..tostring(infections.virusCut))
@@ -414,9 +414,9 @@ local function printInfectionsEffect(player)
 end
 
 local function printHygieneEffect(player)
-  local hygineEffect = getHygieneEffect(player)
-  print(indent(1).."HygieneEffect: "..AntibodiesShared.format_float(hygineEffect))
-  if AntibodiesShared.currentOptions.Debug["hygieneEffects"] then
+  local hygieneEffect = getHygieneEffect(player)
+  print(indent(1).."Hygiene: "..AntibodiesShared.format_float(hygieneEffect))
+  if AntibodiesShared.currentOptions.debug["hygiene"] then
     local bodyDamage = player:getBodyDamage()
     local humanVisual = player:getHumanVisual()
     for part_index, part_key in pairs(AntibodiesShared.bodyPartTypes) do
@@ -472,17 +472,46 @@ local function printHygieneEffect(player)
   end
 end
 
+local function getPlayerInfectionStage(player)
+  local bodyDamage = player:getBodyDamage()
+  local isInfected = bodyDamage:IsInfected()
+  if isInfected then
+    local save = player:getModData()
+    local infectionLevel = bodyDamage:getInfectionLevel()
+    if save.virusAntibodiesLevel > infectionLevel then
+      if infectionLevel > 50 then
+        return "Decline"
+      end
+      if infectionLevel < 50 then
+        return "Convalescence"
+      end
+    end
+    if infectionLevel < 25 then
+      return "Incubation"
+    end
+    if infectionLevel > 25 and infectionLevel < 50 then
+      return "Prodromal"
+    end
+    if infectionLevel > 25 and infectionLevel < 75 then
+      return "Illness"
+    end
+    if infectionLevel > 75 then
+      return "Terminal"
+    end
+  end
+  return "None"
+end
+
 local function printPlayerDebug(player, last)
   local save = player:getModData()
   local bodyDamage = player:getBodyDamage()
-  local isInfected = bodyDamage:IsInfected()
   local infectionLevel = bodyDamage:getInfectionLevel()
   local infectionChange = getInfectionChangeEveryTenMinutes(player)
   local antibodiesChange = getAntibodiesGrowth(player, infectionChange)
   local infectionProgress = (infectionLevel / 100)
 
   print(indent(1).."Player: "..player:getUsername())
-  print(indent(1).."IsInfected: "..tostring(isInfected))
+  print(indent(1).."Infection Stage: "..getPlayerInfectionStage(player))
   print(indent(1).."Virus/Antibodies: "..AntibodiesShared.format_float(infectionLevel).." (+"..AntibodiesShared.format_float(infectionChange)..") / "..AntibodiesShared.format_float(save.virusAntibodiesLevel).." (+"..AntibodiesShared.format_float(antibodiesChange)..")")
   printWoundsEffect(player)
   printInfectionsEffect(player)
@@ -492,14 +521,14 @@ local function printPlayerDebug(player, last)
 end
 
 local function printDebug(players)
-  print("( "..AntibodiesShared.modName..":"..AntibodiesShared.version.." )========================>")
+  print("( "..AntibodiesShared.modName..": "..AntibodiesShared.version.." )========================>")
   for key, player in ipairs(players) do
     printPlayerDebug(player)
     if key ~= #players then
       print("------------------------")
     end
   end
-  print("<========================( Antibodies )")
+  print("<========================( "..AntibodiesShared.modName.." )")
 end
 
 -----------------------------------------------------
@@ -507,18 +536,9 @@ end
 -----------------------------------------------------
 
 local function onEveryTenMinutes()
-
-  if isClient() then
-    local sm = getServerSettingsManager()
-    print(sm:getSettingsFolder().."/"..getServerName().."_antibodies.ini")
-  end
-
   local players = getLocalPlayers()
   for key, player in ipairs(players) do
     ensureInitialization(player)
-    if isClient() then
-      sendClientCommand(player, AntibodiesShared.modId, "getOptions", {})
-    end
     if player:getBodyDamage():IsInfected() then
       local infectionChange = getInfectionChangeEveryTenMinutes(player)
       local infectionDelta = getInfectionDelta(player)
@@ -533,36 +553,18 @@ local function onEveryTenMinutes()
       setAntibodiesLevel(player, 0)
     end 
   end
-  if AntibodiesShared.currentOptions.Debug["enabled"] then
+  if AntibodiesShared.currentOptions.debug["enabled"] then
     printDebug(players)
   end
 end
 Events.EveryTenMinutes.Add(onEveryTenMinutes)
 
+local function onGameStart()
+  AntibodiesShared.applyOptions(AntibodiesShared.getOptions())
+end
+Events.OnGameStart.Add(onGameStart)
+
 local function onMainMenuEnter()
-  AntibodiesShared.applyOptions(AntibodiesShared.getLocalOptions())
+  AntibodiesShared.applyOptions(AntibodiesShared.getOptions())
 end
 Events.OnMainMenuEnter.Add(onMainMenuEnter)
-
-local function onServerCommand(module, command, args)
-  if isClient() then
-    if module == AntibodiesShared.modId then
-      if command == "postOptions" then
-        AntibodiesShared.applyOptions(args)
-      end
-    end
-  end
-end
-Events.OnServerCommand.Add(onServerCommand)
-
-local function onConnected()
-  for key, player in ipairs(getLocalPlayers()) do
-    sendClientCommand(player, AntibodiesShared.modId, "getOptions", {})
-  end
-end
-Events.OnConnected.Add(onConnected)
-
-local function onDisconnect()
-  AntibodiesShared.applyOptions(AntibodiesShared.getLocalOptions())
-end
-Events.OnDisconnect.Add(onDisconnect)

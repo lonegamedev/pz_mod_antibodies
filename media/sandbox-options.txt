@@ -1,475 +1,469 @@
 VERSION = 1,
 
-option lgd_antibodies.general_baseAntibodyGrowth
+option lgd_antibodies.150.general.baseAntibodyGrowth
 {
 	type = double, min = 1.0, max = 3.0, default = 1.6,
-	page = lgd_antibodies, translation = general_baseAntibodyGrowth,
+	page = lgd_antibodies_general, translation = general_baseAntibodyGrowth,
 }
 
-option lgd_antibodies.wounds_deepWounded
+option lgd_antibodies.150.wound.deepWounded
 {
 	type = double, min = -1.0, max = 0.0, default = -0.01,
-	page = lgd_antibodies, translation = wounds_deepWounded,
+	page = lgd_antibodies_wound, translation = wound_deepWounded,
 }
 
-option lgd_antibodies.wounds_bleeding
+option lgd_antibodies.150.wound.bleeding
 {
 	type = double, min = -1.0, max = 0.0, default = -0.02,
-	page = lgd_antibodies, translation = wounds_bleeding,
+	page = lgd_antibodies_wound, translation = wound_bleeding,
 }
 
-option lgd_antibodies.wounds_bitten
+option lgd_antibodies.150.wound.bitten
 {
 	type = double, min = -1.0, max = 0.0, default = -0.01,
-	page = lgd_antibodies, translation = wounds_bitten,
+	page = lgd_antibodies_wound, translation = wound_bitten,
 }
 
-option lgd_antibodies.wounds_cut
+option lgd_antibodies.150.wound.cut
 {
 	type = double, min = -1.0, max = 0.0, default = -0.008,
-	page = lgd_antibodies, translation = wounds_cut,
+	page = lgd_antibodies_wound, translation = wound_cut,
 }
 
-option lgd_antibodies.wounds_scratched
+option lgd_antibodies.150.wound.scratched
 {
 	type = double, min = -1.0, max = 0.0, default = -0.003,
-	page = lgd_antibodies, translation = wounds_scratched,
+	page = lgd_antibodies_wound, translation = wound_scratched,
 }
 
-option lgd_antibodies.wounds_burnt
+option lgd_antibodies.150.wound.burnt
 {
 	type = double, min = -1.0, max = 0.0, default = -0.005,
-	page = lgd_antibodies, translation = wounds_burnt,
+	page = lgd_antibodies_wound, translation = wound_burnt,
 }
 
-option lgd_antibodies.wounds_needBurnWash
+option lgd_antibodies.150.wound.needBurnWash
 {
 	type = double, min = -1.0, max = 0.0, default = -0.01,
-	page = lgd_antibodies, translation = wounds_needBurnWash,
+	page = lgd_antibodies_wound, translation = wound_needBurnWash,
 }
 
-option lgd_antibodies.wounds_stiched
+option lgd_antibodies.150.wound.stiched
 {
 	type = double, min = -1.0, max = 0.0, default = -0.001,
-	page = lgd_antibodies, translation = wounds_stiched,
+	page = lgd_antibodies_wound, translation = wound_stiched,
 }
 
-option lgd_antibodies.wounds_haveBullet
+option lgd_antibodies.150.wound.haveBullet
 {
 	type = double, min = -1.0, max = 0.0, default = -0.02,
-	page = lgd_antibodies, translation = wounds_haveBullet,
+	page = lgd_antibodies_wound, translation = wound_haveBullet,
 }
 
-option lgd_antibodies.wounds_haveGlass
+option lgd_antibodies.150.wound.haveGlass
 {
 	type = double, min = -1.0, max = 0.0, default = -0.01,
-	page = lgd_antibodies, translation = wounds_haveGlass,
+	page = lgd_antibodies_wound, translation = wound_haveGlass,
 }
 
-option lgd_antibodies.infection_regular
+option lgd_antibodies.150.infection.regular
 {
 	type = double, min = -1.0, max = 0.0, default = -0.01,
-	page = lgd_antibodies, translation = infection_regular,
+	page = lgd_antibodies_infection, translation = infection_regular,
 }
 
-option lgd_antibodies.infection_virusScratch
+option lgd_antibodies.150.infection.virusScratch
 {
 	type = double, min = -1.0, max = 0.0, default = -0.01,
-	page = lgd_antibodies, translation = infection_virusScratch,
+	page = lgd_antibodies_infection, translation = infection_virusScratch,
 }
 
-option lgd_antibodies.infection_virusCut
+option lgd_antibodies.150.infection.virusCut
 {
 	type = double, min = -1.0, max = 0.0, default = -0.02,
-	page = lgd_antibodies, translation = infection_virusCut,
+	page = lgd_antibodies_infection, translation = infection_virusCut,
 }
 
-option lgd_antibodies.infection_virusBite
+option lgd_antibodies.150.infection.virusBite
 {
 	type = double, min = -1.0, max = 0.0, default = -0.03,
-	page = lgd_antibodies, translation = infection_virusBite,
+	page = lgd_antibodies_infection, translation = infection_virusBite,
 }
 
-option lgd_antibodies.hygine_bloodEffect
+option lgd_antibodies.150.hygiene.bloodEffect
 {
 	type = double, min = -1.0, max = 0.0, default = -0.2,
-	page = lgd_antibodies, translation = hygine_bloodEffect,
+	page = lgd_antibodies_hygiene, translation = hygiene_bloodEffect,
 }
 
-option lgd_antibodies.hygine_dirtEffect
+option lgd_antibodies.150.hygiene.dirtEffect
 {
 	type = double, min = -1.0, max = 0.0, default = -0.1,
-	page = lgd_antibodies, translation = hygine_dirtEffect,
+	page = lgd_antibodies_hygiene, translation = hygiene_dirtEffect,
 }
 
-option lgd_antibodies.hygine_modCleanBandage
+option lgd_antibodies.150.hygiene.modCleanBandage
 {
 	type = double, min = 0.0, max = 1.0, default = 0.3,
-	page = lgd_antibodies, translation = hygine_modCleanBandage,
+	page = lgd_antibodies_hygiene, translation = hygiene_modCleanBandage,
 }
 
-option lgd_antibodies.hygine_modSterilizedBandage
+option lgd_antibodies.150.hygiene.modSterilizedBandage
 {
 	type = double, min = 0.0, max = 1.0, default = 0.3,
-	page = lgd_antibodies, translation = hygine_modSterilizedBandage,
+	page = lgd_antibodies_hygiene, translation = hygiene_modSterilizedBandage,
 }
 
-option lgd_antibodies.hygine_modSterilizedWound
+option lgd_antibodies.150.hygiene.modSterilizedWound
 {
 	type = double, min = 0.0, max = 1.0, default = 0.3,
-	page = lgd_antibodies, translation = hygine_modSterilizedWound,
+	page = lgd_antibodies_hygiene, translation = hygiene_modSterilizedWound,
 }
 
-option lgd_antibodies.hygine_modDeepWounded
+option lgd_antibodies.150.hygiene.modDeepWounded
 {
 	type = double, min = -1.0, max = 0.0, default = -0.85,
-	page = lgd_antibodies, translation = hygine_modDeepWounded,
+	page = lgd_antibodies_hygiene, translation = hygiene_modDeepWounded,
 }
 
-option lgd_antibodies.hygine_modBleeding
+option lgd_antibodies.150.hygiene.modBleeding
 {
 	type = double, min = -1.0, max = 0.0, default = -0.45,
-	page = lgd_antibodies, translation = hygine_modBleeding,
+	page = lgd_antibodies_hygiene, translation = hygiene_modBleeding,
 }
 
-option lgd_antibodies.hygine_modBitten
+option lgd_antibodies.150.hygiene.modBitten
 {
 	type = double, min = -1.0, max = 0.0, default = -0.40,
-	page = lgd_antibodies, translation = hygine_modBitten,
+	page = lgd_antibodies_hygiene, translation = hygiene_modBitten,
 }
 
-option lgd_antibodies.hygine_modCut
+option lgd_antibodies.150.hygiene.modCut
 {
 	type = double, min = -1.0, max = 0.0, default = -0.20,
-	page = lgd_antibodies, translation = hygine_modCut,
+	page = lgd_antibodies_hygiene, translation = hygiene_modCut,
 }
 
-option lgd_antibodies.hygine_modScratched
+option lgd_antibodies.150.hygiene.modScratched
 {
 	type = double, min = -1.0, max = 0.0, default = -0.10,
-	page = lgd_antibodies, translation = hygine_modScratched,
+	page = lgd_antibodies_hygiene, translation = hygiene_modScratched,
 }
 
-option lgd_antibodies.hygine_modBurnt
+option lgd_antibodies.150.hygiene.modBurnt
 {
 	type = double, min = -1.0, max = 0.0, default = -0.40,
-	page = lgd_antibodies, translation = hygine_modBurnt,
+	page = lgd_antibodies_hygiene, translation = hygiene_modBurnt,
 }
 
-option lgd_antibodies.hygine_modNeedBurnWash
+option lgd_antibodies.150.hygiene.modNeedBurnWash
 {
 	type = double, min = -1.0, max = 0.0, default = -0.60,
-	page = lgd_antibodies, translation = hygine_modNeedBurnWash,
+	page = lgd_antibodies_hygiene, translation = hygiene_modNeedBurnWash,
 }
 
-option lgd_antibodies.hygine_modStiched
+option lgd_antibodies.150.hygiene.modStiched
 {
 	type = double, min = -1.0, max = 0.0, default = -0.05,
-	page = lgd_antibodies, translation = hygine_modNeedBurnWash,
+	page = lgd_antibodies_hygiene, translation = hygiene_modNeedBurnWash,
 }
 
-option lgd_antibodies.hygine_modHaveBullet
+option lgd_antibodies.150.hygiene.modHaveBullet
 {
 	type = double, min = -1.0, max = 0.0, default = -0.60,
-	page = lgd_antibodies, translation = hygine_modHaveBullet,
+	page = lgd_antibodies_hygiene, translation = hygiene_modHaveBullet,
 }
 
-option lgd_antibodies.hygine_modHaveGlass
+option lgd_antibodies.150.hygiene.modHaveGlass
 {
 	type = double, min = -1.0, max = 0.0, default = -0.40,
-	page = lgd_antibodies, translation = hygine_modHaveGlass,
+	page = lgd_antibodies_hygiene, translation = hygiene_modHaveGlass,
 }
 
-option lgd_antibodies.moodle_Bleeding
+option lgd_antibodies.150.moodle.bleeding
 {
 	type = double, min = -1.0, max = 1.0, default = -0.1,
-	page = lgd_antibodies, translation = moodle_Bleeding,
+	page = lgd_antibodies_moodle, translation = moodle_bleeding,
 }
 
-option lgd_antibodies.moodle_Bleeding
-{
-	type = double, min = -1.0, max = 1.0, default = -0.1,
-	page = lgd_antibodies, translation = moodle_Bleeding,
-}
-
-option lgd_antibodies.moodle_Thirst
+option lgd_antibodies.150.moodle.thirst
 {
 	type = double, min = -1.0, max = 1.0, default = -0.04,
-	page = lgd_antibodies, translation = moodle_Thirst,
+	page = lgd_antibodies_moodle, translation = moodle_thirst,
 }
 
-option lgd_antibodies.moodle_Hungry
+option lgd_antibodies.150.moodle.hungry
 {
 	type = double, min = -1.0, max = 1.0, default = -0.03,
-	page = lgd_antibodies, translation = moodle_Hungry,
+	page = lgd_antibodies_moodle, translation = moodle_hungry,
 }
 
-option lgd_antibodies.moodle_Sick
+option lgd_antibodies.150.moodle.sick
 {
 	type = double, min = -1.0, max = 1.0, default = -0.02,
-	page = lgd_antibodies, translation = moodle_Sick,
+	page = lgd_antibodies_moodle, translation = moodle_sick,
 }
 
-option lgd_antibodies.moodle_HasACold
+option lgd_antibodies.150.moodle.hasACold
 {
 	type = double, min = -1.0, max = 1.0, default = -0.02,
-	page = lgd_antibodies, translation = moodle_Sick,
+	page = lgd_antibodies_moodle, translation = moodle_hasACold,
 }
 
-option lgd_antibodies.moodle_Pain
+option lgd_antibodies.150.moodle.pain
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = moodle_Pain,
+	page = lgd_antibodies_moodle, translation = moodle_pain,
 }
 
-option lgd_antibodies.moodle_Tired
+option lgd_antibodies.150.moodle.tired
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = moodle_Pain,
+	page = lgd_antibodies_moodle, translation = moodle_tired,
 }
 
-option lgd_antibodies.moodle_Endurance
+option lgd_antibodies.150.moodle.endurance
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = moodle_Pain,
+	page = lgd_antibodies_moodle, translation = moodle_endurance,
 }
 
-option lgd_antibodies.moodle_Panic
+option lgd_antibodies.150.moodle.panic
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = moodle_Panic,
+	page = lgd_antibodies_moodle, translation = moodle_panic,
 }
 
-option lgd_antibodies.moodle_Stress
+option lgd_antibodies.150.moodle.stress
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = moodle_Stress,
+	page = lgd_antibodies_moodle, translation = moodle_stress,
 }
 
-option lgd_antibodies.moodle_Unhappy
+option lgd_antibodies.150.moodle.unhappy
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = moodle_Stress,
+	page = lgd_antibodies_moodle, translation = moodle_unhappy,
 }
 
-option lgd_antibodies.moodle_Bored
+option lgd_antibodies.150.moodle.bored
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = moodle_Bored,
+	page = lgd_antibodies_moodle, translation = moodle_bored,
 }
 
-option lgd_antibodies.moodle_Stress
+option lgd_antibodies.150.moodle.stress
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = moodle_Stress,
+	page = lgd_antibodies_moodle, translation = moodle_stress,
 }
 
-option lgd_antibodies.moodle_Unhappy
+option lgd_antibodies.150.moodle.unhappy
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = moodle_Unhappy,
+	page = lgd_antibodies_moodle, translation = moodle_unhappy,
 }
 
-option lgd_antibodies.moodle_Bored
+option lgd_antibodies.150.moodle.bored
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = moodle_Bored,
+	page = lgd_antibodies_moodle, translation = moodle_bored,
 }
  
-option lgd_antibodies.moodle_Hyperthermia
+option lgd_antibodies.150.moodle.hyperthermia
 {
 	type = double, min = -1.0, max = 1.0, default = 0.01,
-	page = lgd_antibodies, translation = moodle_Hyperthermia,
+	page = lgd_antibodies_moodle, translation = moodle_hyperthermia,
 }
 
-option lgd_antibodies.moodle_Hypothermia
+option lgd_antibodies.150.moodle.hypothermia
 {
 	type = double, min = -1.0, max = 1.0, default = -0.1,
-	page = lgd_antibodies, translation = moodle_Hypothermia,
+	page = lgd_antibodies_moodle, translation = moodle_hypothermia,
 }
 
-option lgd_antibodies.moodle_Windchill
+option lgd_antibodies.150.moodle.windchill
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = moodle_Windchill,
+	page = lgd_antibodies_moodle, translation = moodle_windchill,
 }
 
-option lgd_antibodies.moodle_Wet
+option lgd_antibodies.150.moodle.wet
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = moodle_Wet,
+	page = lgd_antibodies_moodle, translation = moodle_wet,
 }
 
-option lgd_antibodies.moodle_HeavyLoad
+option lgd_antibodies.150.moodle.heavyLoad
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = moodle_HeavyLoad,
+	page = lgd_antibodies_moodle, translation = moodle_heavyLoad,
 }
 
-option lgd_antibodies.moodle_Drunk
+option lgd_antibodies.150.moodle.drunk
 {
 	type = double, min = -1.0, max = 1.0, default = 0.01,
-	page = lgd_antibodies, translation = moodle_Drunk,
+	page = lgd_antibodies_moodle, translation = moodle_drunk,
 }
 
-option lgd_antibodies.moodle_FoodEaten
+option lgd_antibodies.150.moodle.foodEaten
 {
 	type = double, min = -1.0, max = 1.0, default = 0.05,
-	page = lgd_antibodies, translation = moodle_FoodEaten,
+	page = lgd_antibodies_moodle, translation = moodle_foodEaten,
 }
 
-option lgd_antibodies.trait_Asthmatic
+option lgd_antibodies.150.trait.asthmatic
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = trait_Asthmatic,
+	page = lgd_antibodies_trait, translation = trait_asthmatic,
 }
 
-option lgd_antibodies.trait_Smoker
+option lgd_antibodies.150.trait.smoker
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = trait_Smoker,
+	page = lgd_antibodies_trait, translation = trait_smoker,
 }
 
-option lgd_antibodies.trait_Unfit
+option lgd_antibodies.150.trait.unfit
 {
 	type = double, min = -1.0, max = 1.0, default = -0.02,
-	page = lgd_antibodies, translation = trait_Unfit,
+	page = lgd_antibodies_trait, translation = trait_unfit,
 }
 
-option lgd_antibodies.trait_OutOfShape
+option lgd_antibodies.150.trait.outOfShape
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = trait_OutOfShape,
+	page = lgd_antibodies_trait, translation = trait_outOfShape,
 }
 
-option lgd_antibodies.trait_Athletic
+option lgd_antibodies.150.trait.athletic
 {
 	type = double, min = -1.0, max = 1.0, default = 0.01,
-	page = lgd_antibodies, translation = trait_Athletic,
+	page = lgd_antibodies_trait, translation = trait_athletic,
 }
 
-option lgd_antibodies.trait_SlowHealer
+option lgd_antibodies.150.trait.slowHealer
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = trait_SlowHealer,
+	page = lgd_antibodies_trait, translation = trait_slowHealer,
 }
 
-option lgd_antibodies.trait_FastHealer
+option lgd_antibodies.150.trait.fastHealer
 {
 	type = double, min = -1.0, max = 1.0, default = 0.01,
-	page = lgd_antibodies, translation = trait_FastHealer,
+	page = lgd_antibodies_trait, translation = trait_fastHealer,
 }
 
-option lgd_antibodies.trait_ProneToIllness
+option lgd_antibodies.150.trait.proneToIllness
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = trait_ProneToIllness,
+	page = lgd_antibodies_trait, translation = trait_proneToIllness,
 }
 
-option lgd_antibodies.trait_Resilient
+option lgd_antibodies.150.trait.resilient
 {
 	type = double, min = -1.0, max = 1.0, default = 0.01,
-	page = lgd_antibodies, translation = trait_Resilient,
+	page = lgd_antibodies_trait, translation = trait_resilient,
 }
 
-option lgd_antibodies.trait_Weak
+option lgd_antibodies.150.trait.weak
 {
 	type = double, min = -1.0, max = 1.0, default = -0.02,
-	page = lgd_antibodies, translation = trait_Weak,
+	page = lgd_antibodies_trait, translation = trait_weak,
 }     
 
-option lgd_antibodies.trait_Feeble
+option lgd_antibodies.150.trait.feeble
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = trait_Feeble,
+	page = lgd_antibodies_trait, translation = trait_feeble,
 }     
 
-option lgd_antibodies.trait_Strong
+option lgd_antibodies.150.trait.strong
 {
 	type = double, min = -1.0, max = 1.0, default = 0.01,
-	page = lgd_antibodies, translation = trait_Strong,
+	page = lgd_antibodies_trait, translation = trait_strong,
 }     
 
-option lgd_antibodies.trait_Stout
+option lgd_antibodies.150.trait.stout
 {
 	type = double, min = -1.0, max = 1.0, default = 0.02,
-	page = lgd_antibodies, translation = trait_Stout,
+	page = lgd_antibodies_trait, translation = trait_stout,
 }     
 
-option lgd_antibodies.trait_Emaciated
+option lgd_antibodies.150.trait.emaciated
 {
 	type = double, min = -1.0, max = 1.0, default = -0.02,
-	page = lgd_antibodies, translation = trait_Emaciated,
+	page = lgd_antibodies_trait, translation = trait_emaciated,
 }
 
-option lgd_antibodies.trait_VeryUnderweight
+option lgd_antibodies.150.trait.veryUnderweight
 {
 	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies, translation = trait_VeryUnderweight,
+	page = lgd_antibodies_trait, translation = trait_veryUnderweight,
 }
 
-option lgd_antibodies.trait_Underweight
+option lgd_antibodies.150.trait.underweight
 {
 	type = double, min = -1.0, max = 1.0, default = -0.005,
-	page = lgd_antibodies, translation = trait_Underweight,
+	page = lgd_antibodies_trait, translation = trait_underweight,
 }
 
-option lgd_antibodies.trait_Overweight
+option lgd_antibodies.150.trait.overweight
 {
 	type = double, min = -1.0, max = 1.0, default = -0.005,
-	page = lgd_antibodies, translation = trait_Overweight,
+	page = lgd_antibodies_trait, translation = trait_overweight,
 }
 
-option lgd_antibodies.trait_Obese
+option lgd_antibodies.150.trait.obese
 {
 	type = double, min = -1.0, max = 1.0, default = -0.02,
-	page = lgd_antibodies, translation = trait_Obese,
+	page = lgd_antibodies_trait, translation = trait_obese,
 }
     
-option lgd_antibodies.trait_Lucky
+option lgd_antibodies.150.trait.lucky
 {
 	type = double, min = -1.0, max = 1.0, default = 0.0,
-	page = lgd_antibodies, translation = trait_Lucky,
+	page = lgd_antibodies_trait, translation = trait_lucky,
 }
 
-option lgd_antibodies.trait_Unlucky
+option lgd_antibodies.150.trait.unlucky
 {
 	type = double, min = -1.0, max = 1.0, default = 0.0,
-	page = lgd_antibodies, translation = trait_Unlucky,
+	page = lgd_antibodies_trait, translation = trait_unlucky,
 }
 
-option lgd_antibodies.debug_enabled
+option lgd_antibodies.150.debug.enabled
 {
 	type = boolean, default = false,
-	page = lgd_antibodies, translation = debug_enabled,
+	page = lgd_antibodies_debug, translation = debug_enabled,
 }
 
-option lgd_antibodies.debug_woundsEffects
+option lgd_antibodies.150.debug.wound
 {
 	type = boolean, default = false,
-	page = lgd_antibodies, translation = debug_woundsEffects,
+	page = lgd_antibodies_debug, translation = debug_wound,
 }
 
-option lgd_antibodies.debug_infectionEffects
+option lgd_antibodies.150.debug.infection
 {
 	type = boolean, default = false,
-	page = lgd_antibodies, translation = debug_infectionEffects,
+	page = lgd_antibodies_debug, translation = debug_infection,
 }
 
-option lgd_antibodies.debug_hygineEffects
+option lgd_antibodies.150.debug.hygiene
 {
 	type = boolean, default = false,
-	page = lgd_antibodies, translation = debug_hygieneEffects,
+	page = lgd_antibodies_debug, translation = debug_hygiene,
 }
 
-option lgd_antibodies.debug_moodleEffects
+option lgd_antibodies.150.debug.moodle
 {
 	type = boolean, default = false,
-	page = lgd_antibodies, translation = debug_moodleEffects,
+	page = lgd_antibodies_debug, translation = debug_moodle,
 }
 
-option lgd_antibodies.debug_traitsEffects
+option lgd_antibodies.150.debug.trait
 {
 	type = boolean, default = false,
-	page = lgd_antibodies, translation = debug_traitsEffects,
+	page = lgd_antibodies_debug, translation = debug_trait,
 }
