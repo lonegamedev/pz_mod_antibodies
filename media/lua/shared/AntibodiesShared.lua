@@ -246,13 +246,17 @@ local function versionToString(version)
   return tostring(version * 100)
 end
 
+local function getSandboxPath(group, prop)
+  return ""..AntibodiesShared.modId.."_"..versionToString(AntibodiesShared.version).."_"..group.."."..prop
+end
+
 local function getSandboxOptions()
   local result = {}
   local defaults = getDefaultOptions()
   for group_index, group_key in pairs(get_keys(defaults)) do
     result[group_key] = {}
     for prop_index, prop_key in pairs(get_keys(defaults[group_key])) do
-      local path = ""..AntibodiesShared.modId.."."..versionToString(AntibodiesShared.version).."."..group_key.."."..prop_key
+      local path = getSandboxPath(group_key, prop_key)
       if has_key(SandboxVars, path) then
         result[group_key][prop_key] = SandboxVars[path]
       end
@@ -351,6 +355,9 @@ AntibodiesShared.bodyPartTypes = bodyPartTypes
 AntibodiesShared.optionsToString = optionsToString
 AntibodiesShared.stringToOptions = stringToOptions
 AntibodiesShared.mergeOptions = mergeOptions
+
+AntibodiesShared.versionToString = versionToString
+AntibodiesShared.getSandboxPath = getSandboxPath
 
 AntibodiesShared.hasOptions = hasOptions
 AntibodiesShared.applyOptions = applyOptions
