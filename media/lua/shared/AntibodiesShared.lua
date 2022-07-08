@@ -10,8 +10,6 @@ AntibodiesShared.author = "lonegamedev.com"
 AntibodiesShared.modName = "Antibodies"
 AntibodiesShared.modId = "lgd_antibodies"
 
-local zeroMoodles = {"angry", "dead", "zombie", "injured"}
-
 local bodyPartTypes = {"Back", "Foot_L", "Foot_R", "ForeArm_L", "ForeArm_R", "Groin", 
 "Hand_L", "Hand_R", "Head", "LowerLeg_L", "LowerLeg_R", "Neck", "Torso_Lower", 
 "Torso_Upper", "UpperArm_L", "UpperArm_R", "UpperLeg_L", "UpperLeg_R"}
@@ -111,6 +109,14 @@ local function to_camel_case(str)
   return a..b
 end
 
+local function indent(num)
+  local s = ""
+  for i = 0, num - 1 do
+    s = s.."    "
+  end
+  return s
+end
+
 -----------------------------------------------------
 --OPTIONS--------------------------------------------
 -----------------------------------------------------
@@ -124,7 +130,7 @@ local function getDefaultOptions()
     ["general"] = {
       ["baseAntibodyGrowth"] = 1.6
     },
-    ["wound"] = {
+    ["wounds"] = {
       ["deepWounded"] = -0.01,
       ["bleeding"] = -0.02,
 
@@ -139,7 +145,7 @@ local function getDefaultOptions()
       ["haveBullet"] = -0.02,
       ["haveGlass"] = -0.01
     },
-    ["infection"] = {
+    ["infections"] = {
       ["regular"] = -0.01,
       ["virusScratch"] = -0.01,
       ["virusCut"] = -0.025,
@@ -167,7 +173,7 @@ local function getDefaultOptions()
       ["modHaveBullet"] = -0.60,
       ["modHaveGlass"] = -0.40
     },
-    ["moodle"] = {
+    ["moodles"] = {
       ["bleeding"] = -0.1,
       
       ["thirst"] = -0.04,
@@ -197,7 +203,7 @@ local function getDefaultOptions()
       ["zombie"] = 0.0,
       ["angry"] = 0.0
     },
-    ["trait"] = {
+    ["traits"] = {
       ["asthmatic"] = -0.01,
       ["smoker"] = -0.01,
       
@@ -236,7 +242,7 @@ local function getDefaultOptions()
   }
 end
 
-local function versionToInteger(version)
+local function versionToString(version)
   return tostring(version * 100)
 end
 
@@ -246,7 +252,7 @@ local function getSandboxOptions()
   for group_index, group_key in pairs(get_keys(defaults)) do
     result[group_key] = {}
     for prop_index, prop_key in pairs(get_keys(defaults[group_key])) do
-      local path = ""..AntibodiesShared.modId.."."..versionToInteger(AntibodiesShared.version).."."..group_key.."."..prop_key
+      local path = ""..AntibodiesShared.modId.."."..versionToString(AntibodiesShared.version).."."..group_key.."."..prop_key
       if has_key(SandboxVars, path) then
         result[group_key][prop_key] = SandboxVars[path]
       end
@@ -310,6 +316,19 @@ local function getOptions()
   return mergeOptions(getDefaultOptions(), getSandboxOptions())
 end
 
+local function getLocalPlayers()
+  local result = {}
+  for playerIndex = 0, getNumActivePlayers()-1 do
+    local player = getSpecificPlayer(playerIndex)
+    if player ~= nil then
+      if player:isLocalPlayer() then
+        table.insert(result, player)
+      end
+    end
+  end
+  return result
+end
+
 -----------------------------------------------------
 --EXPORTS--------------------------------------------
 -----------------------------------------------------
@@ -324,9 +343,9 @@ AntibodiesShared.clamp = clamp
 AntibodiesShared.deep_copy = deep_copy
 AntibodiesShared.parse_value = parse_value
 AntibodiesShared.to_camel_case = to_camel_case
+AntibodiesShared.indent = indent
 
 AntibodiesShared.printOptions = printOptions
-AntibodiesShared.zeroMoodles = zeroMoodles
 AntibodiesShared.bodyPartTypes = bodyPartTypes
 
 AntibodiesShared.optionsToString = optionsToString
@@ -338,5 +357,6 @@ AntibodiesShared.applyOptions = applyOptions
 AntibodiesShared.getOptions = getOptions
 AntibodiesShared.getDefaultOptions = getDefaultOptions
 AntibodiesShared.getSandboxOptions = getSandboxOptions
+AntibodiesShared.getLocalPlayers = getLocalPlayers
 
 return AntibodiesShared
