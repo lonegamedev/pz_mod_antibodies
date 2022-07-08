@@ -247,7 +247,7 @@ local function versionToString(version)
 end
 
 local function getSandboxPath(group, prop)
-  return ""..AntibodiesShared.modId.."_"..versionToString(AntibodiesShared.version).."_"..group.."."..prop
+  return ""..AntibodiesShared.modId.."_"..versionToString(AntibodiesShared.version).."_"..group.."_"..prop
 end
 
 local function getSandboxOptions()
@@ -317,6 +317,7 @@ local function mergeOptions(default, loaded)
 end
 
 local function getOptions()
+  printOptions(getSandboxOptions())
   return mergeOptions(getDefaultOptions(), getSandboxOptions())
 end
 

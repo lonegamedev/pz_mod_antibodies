@@ -333,7 +333,7 @@ end
 --DEBUG-UTILS----------------------------------------
 -----------------------------------------------------
 
-local function printTraitEffect(player)
+local function printTraitsEffect(player)
   local traitEffect = getTraitEffect(player)
   print(AntibodiesShared.indent(1).."Traits: "..AntibodiesShared.format_float(traitEffect))
   if AntibodiesShared.currentOptions.debug["traits"] then
@@ -347,7 +347,7 @@ local function printTraitEffect(player)
   end
 end
 
-local function printMoodleEffect(player)
+local function printMoodlesEffect(player)
   local moodleEffect = getMoodleEffect(player)
   print(AntibodiesShared.indent(1).."Moodles: "..AntibodiesShared.format_float(moodleEffect))
   if AntibodiesShared.currentOptions.debug["moodles"] then
@@ -494,8 +494,8 @@ local function printPlayerDebug(player, last)
   printWoundsEffect(player)
   printInfectionsEffect(player)
   printHygieneEffect(player)
-  printMoodleEffect(player)
-  printTraitEffect(player)
+  printMoodlesEffect(player)
+  printTraitsEffect(player)
 end
 
 local function printDebug(players)
@@ -514,8 +514,8 @@ end
 -----------------------------------------------------
 
 local function onEveryTenMinutes()
-  local players = AntibodiesShared.getLocalPlayers()
   ensureOptionsInitialization()
+  local players = AntibodiesShared.getLocalPlayers()
   for key, player in ipairs(players) do
     ensurePlayerInitialization(player)
     if player:getBodyDamage():IsInfected() then
