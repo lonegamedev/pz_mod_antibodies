@@ -8,8 +8,7 @@ Sandbox_EN = {
     Sandbox_lgd_antibodies_debug = "Antibodies - Debug",
 
     Sandbox_general_baseAntibodyGrowth = "Base Antibodies Growth",
-    Sandbox_general_baseAntibodyGrowth_tooltip = "The character recovery depends on many factors.<br>After summing up all the effects, the value will be<br>multiplied by viral delta and immune system activation value.<br><br>The result is your antibodies delta.<br><br>Once antibodies overtake virus infection it will bring<br>it back to zero and cure the character.<br><br>Please keep in mind that all parameters you set here reach<br>their designed value at infection mid-point as immune system<br>gets fully activated.<br><br>The base growth value, can be used to adjust difficulty,<br>without going to deep into other parameters.",
-
+    Sandbox_general_baseAntibodyGrowth_tooltip = "This value represents default antibodies growth (in relation to infection progression),<br>which is increased and decreased by other effects. Most of them decrease this value,<br> however if you discard everything else - 1.38 is minimal value necessary to survive the infection.",
     Sandbox_wounds_deepWounded = "Deep Wound",
     Sandbox_wounds_deepWounded_tooltip = "Applied per affected body part independently (18 in total)",
     Sandbox_wounds_bleeding = "Bleeding",
@@ -152,7 +151,7 @@ Sandbox_EN = {
     Sandbox_traits_unlucky_tooltip = "Constant trait bonus.",
 
     Sandbox_debug_enabled = "Enabled",
-    Sandbox_debug_enabled_tooltip = "Enable debug messages. You can find 'console.txt' file in your<br>ProjectZomboid home directory.",
+    Sandbox_debug_enabled_tooltip = "Enable debug messages printed to in-game debug console,<br>and to 'console.txt' file located in your PZ home directory.",
     Sandbox_debug_wounds = "Wounds breakdown",
     Sandbox_debug_wounds_tooltip = "More details.",
     Sandbox_debug_infections = "Infections breakdown",

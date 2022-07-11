@@ -121,7 +121,7 @@ local function isAlcoholBandage(bandageType)
   return string.match(bandageType, "Alcohol")
 end
 
-local function getBodyPartHygineMod(bodyPart)
+local function getBodyPartHygieneMod(bodyPart)
   local mod = 0.0
 
   if bodyPart:bandaged() and not bodyPart:isBandageDirty() then
@@ -217,7 +217,7 @@ local function getHygieneEffect(player)
     if bodyPartType ~= BodyPartType.MAX then
       local bodyPart = bodyDamage:getBodyPart(bodyPartType)
       if bodyPart then
-        local bodyPartMod = getBodyPartHygineMod(bodyPart)
+        local bodyPartMod = getBodyPartHygieneMod(bodyPart)
         if bodyPartMod < 0.0 then
           local bloodBodyPartType = BloodBodyPartType.FromString(part_key)
           local bloodDirt = getClothingHygiene(player, bloodBodyPartType)
@@ -373,7 +373,7 @@ local function printWoundsEffect(player)
     local wounds = getWoundsCount(player)
     for part_key in pairs(wounds) do
       if wounds[part_key] > 0 then
-        print(AntibodiesShared.indent(2)..part_key..": "..tostring(wounds[part_key]).." ("..tostring(wounds[part_key] * AntibodiesShared.currentOptions.wounds[part_key]..")"))
+        print(AntibodiesShared.indent(2)..part_key..": "..tostring(wounds[part_key]).." ("..AntibodiesShared.format_float(wounds[part_key] * AntibodiesShared.currentOptions.wounds[part_key])..")")
       end
     end
   end
@@ -386,7 +386,7 @@ local function printInfectionsEffect(player)
     local infections = getInfectionsCount(player)
     for infection_key in pairs(infections) do
       if infections[infection_key] > 0 then
-        print(AntibodiesShared.indent(2)..infection_key..": "..tostring(infections[infection_key]).." ("..tostring(infections[infection_key] * AntibodiesShared.currentOptions.infections[infection_key])..")")
+        print(AntibodiesShared.indent(2)..infection_key..": "..tostring(infections[infection_key]).." ("..AntibodiesShared.format_float(infections[infection_key] * AntibodiesShared.currentOptions.infections[infection_key])..")")
       end
     end
   end
@@ -402,7 +402,7 @@ local function printHygieneEffect(player)
       local bodyPartType = BodyPartType.FromString(part_key)
       if bodyPartType ~= BodyPartType.MAX then
         local bodyPart = bodyDamage:getBodyPart(bodyPartType)
-        local bodyPartMod = getBodyPartHygineMod(bodyPart)
+        local bodyPartMod = getBodyPartHygieneMod(bodyPart)
         local bloodBodyPartType = BloodBodyPartType.FromString(part_key)
         local bloodDirt = getClothingHygiene(player, bloodBodyPartType)
         bloodDirt.blood = math.max(bloodDirt.blood, humanVisual:getBlood(bloodBodyPartType))
@@ -412,37 +412,43 @@ local function printHygieneEffect(player)
           print(AntibodiesShared.indent(3).."bloodLevel: "..tostring(AntibodiesShared.format_float(bloodDirt.blood)))
           print(AntibodiesShared.indent(3).."dirtLevel: "..tostring(AntibodiesShared.format_float(bloodDirt.dirt)))
           if bodyPart:bandaged() and not bodyPart:isBandageDirty() then
-            print(AntibodiesShared.indent(3).."bandaged")
+            print(AntibodiesShared.indent(3).."modCleanBandage ("..AntibodiesShared.format_float(AntibodiesShared.currentOptions.hygiene.modCleanBandage)..")")
+          end          
+          if isAlcoholBandage(bodyPart:getBandageType()) then
+            print(AntibodiesShared.indent(3).."modSterilizedBandage ("..AntibodiesShared.format_float(AntibodiesShared.currentOptions.hygiene.modSterilizedBandage)..")")
+          end
+          if bodyPart:getAlcoholLevel() > 0 then
+            print(AntibodiesShared.indent(3).."modSterilizedWound ("..AntibodiesShared.format_float(AntibodiesShared.currentOptions.hygiene.modSterilizedWound)..")")
           end
           if bodyPart:getDeepWoundTime() > 0 then
-            print(AntibodiesShared.indent(3).."deepwounded")
-          end
-          if bodyPart:getBiteTime() > 0 then
-            print(AntibodiesShared.indent(3).."bitten")
-          end
-          if bodyPart:getCutTime() > 0 then
-            print(AntibodiesShared.indent(3).."cut")
-          end
-          if bodyPart:getScratchTime() > 0 then
-            print(AntibodiesShared.indent(3).."scratched")
-          end
-          if bodyPart:getBurnTime() > 0 then
-            print(AntibodiesShared.indent(3).."burnt")
-          end
-          if bodyPart:isNeedBurnWash() then
-            print(AntibodiesShared.indent(3).."burnt need wash")
-          end
-          if bodyPart:getStitchTime() > 0 then
-            print(AntibodiesShared.indent(3).."stiched")
-          end
-          if bodyPart:haveBullet() then
-            print(AntibodiesShared.indent(3).."lodged bullet")
-          end
-          if bodyPart:haveGlass() then
-            print(AntibodiesShared.indent(3).."lodged glass")
+            print(AntibodiesShared.indent(3).."modDeepWounded ("..AntibodiesShared.format_float(AntibodiesShared.currentOptions.hygiene.modDeepWounded)..")")
           end
           if bodyPart:getBleedingTime() > 0 then
-            print(AntibodiesShared.indent(3).."bleeding")
+            print(AntibodiesShared.indent(3).."modBleeding ("..AntibodiesShared.format_float(AntibodiesShared.currentOptions.hygiene.modBleeding)..")")
+          end
+          if bodyPart:getBiteTime() > 0 then
+            print(AntibodiesShared.indent(3).."modBitten ("..AntibodiesShared.format_float(AntibodiesShared.currentOptions.hygiene.modBitten)..")")
+          end
+          if bodyPart:getCutTime() > 0 then
+            print(AntibodiesShared.indent(3).."modCut ("..AntibodiesShared.format_float(AntibodiesShared.currentOptions.hygiene.modCut)..")")
+          end
+          if bodyPart:getScratchTime() > 0 then
+            print(AntibodiesShared.indent(3).."modScratched ("..AntibodiesShared.format_float(AntibodiesShared.currentOptions.hygiene.modScratched)..")")
+          end
+          if bodyPart:getBurnTime() > 0 then
+            print(AntibodiesShared.indent(3).."modBurnt ("..AntibodiesShared.format_float(AntibodiesShared.currentOptions.hygiene.modBurnt)..")")
+          end
+          if bodyPart:isNeedBurnWash() then
+            print(AntibodiesShared.indent(3).."modNeedBurnWash ("..AntibodiesShared.format_float(AntibodiesShared.currentOptions.hygiene.modNeedBurnWash)..")")
+          end
+          if bodyPart:getStitchTime() > 0 then
+            print(AntibodiesShared.indent(3).."modStiched ("..AntibodiesShared.format_float(AntibodiesShared.currentOptions.hygiene.modStiched)..")")
+          end
+          if bodyPart:haveBullet() then
+            print(AntibodiesShared.indent(3).."modHaveBullet ("..AntibodiesShared.format_float(AntibodiesShared.currentOptions.hygiene.modHaveBullet)..")")
+          end
+          if bodyPart:haveGlass() then
+            print(AntibodiesShared.indent(3).."modHaveGlass ("..AntibodiesShared.format_float(AntibodiesShared.currentOptions.hygiene.modHaveGlass)..")")
           end
         end
       end

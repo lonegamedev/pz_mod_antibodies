@@ -2,7 +2,7 @@ VERSION = 1,
 
 option lgd_antibodies_150_general_baseAntibodyGrowth
 {
-	type = double, min = 1.0, max = 3.0, default = 1.6,
+	type = double, min = 1.0, max = 4.0, default = 1.8,
 	page = lgd_antibodies_general, translation = general_baseAntibodyGrowth,
 }
 
