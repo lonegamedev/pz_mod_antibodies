@@ -6,6 +6,7 @@ AntibodiesShared.__index = AntibodiesShared
 -----------------------------------------------------
 
 AntibodiesShared.version = "1.50"
+AntibodiesShared.optionsVersion = "1.50"
 AntibodiesShared.author = "lonegamedev.com"
 AntibodiesShared.modName = "Antibodies"
 AntibodiesShared.modId = "lgd_antibodies"
@@ -13,6 +14,16 @@ AntibodiesShared.modId = "lgd_antibodies"
 local bodyPartTypes = {"Back", "Foot_L", "Foot_R", "ForeArm_L", "ForeArm_R", "Groin", 
 "Hand_L", "Hand_R", "Head", "LowerLeg_L", "LowerLeg_R", "Neck", "Torso_Lower", 
 "Torso_Upper", "UpperArm_L", "UpperArm_R", "UpperLeg_L", "UpperLeg_R"}
+
+local modOptionsTweaks = {
+  ["Susceptible"] = {
+    ["infections"] = {
+      ["virusScratch"] = 0.0,
+      ["virusCut"] = 0.0,
+      ["virusBite"] = 0.0
+    }
+  }
+}
 
 -----------------------------------------------------
 --STATE----------------------------------------------
@@ -242,12 +253,12 @@ local function getDefaultOptions()
   }
 end
 
-local function versionToString(version)
-  return tostring(version * 100)
+local function flattenVersion(version)
+  return tostring(tonumber(version) * 100)
 end
 
-local function getSandboxPath(group, prop)
-  return ""..AntibodiesShared.modId.."_"..versionToString(AntibodiesShared.version).."_"..group.."_"..prop
+local function getSandboxOptionPath(group, prop)
+  return ""..AntibodiesShared.modId.."_"..flattenVersion(AntibodiesShared.optionsVersion).."_"..group.."_"..prop
 end
 
 local function getSandboxOptions()
@@ -256,7 +267,7 @@ local function getSandboxOptions()
   for group_index, group_key in pairs(get_keys(defaults)) do
     result[group_key] = {}
     for prop_index, prop_key in pairs(get_keys(defaults[group_key])) do
-      local path = getSandboxPath(group_key, prop_key)
+      local path = getSandboxOptionPath(group_key, prop_key)
       if has_key(SandboxVars, path) then
         result[group_key][prop_key] = SandboxVars[path]
       end
@@ -316,9 +327,19 @@ local function mergeOptions(default, loaded)
   return result
 end
 
+local function tweakForMods(options)
+  local mods = getActivatedMods()
+  for i=1, mods:size() do
+    local id = mods:get(i - 1)
+    if AntibodiesShared.has_key(AntibodiesShared.modOptionsTweaks, id) then
+      options = mergeOptions(options, AntibodiesShared.modOptionsTweaks[id])
+    end
+  end
+  return options
+end
+
 local function getOptions()
-  printOptions(getSandboxOptions())
-  return mergeOptions(getDefaultOptions(), getSandboxOptions())
+  return tweakForMods(mergeOptions(getDefaultOptions(), getSandboxOptions()))
 end
 
 local function getLocalPlayers()
@@ -352,13 +373,14 @@ AntibodiesShared.indent = indent
 
 AntibodiesShared.printOptions = printOptions
 AntibodiesShared.bodyPartTypes = bodyPartTypes
+AntibodiesShared.modOptionsTweaks = modOptionsTweaks
 
 AntibodiesShared.optionsToString = optionsToString
 AntibodiesShared.stringToOptions = stringToOptions
 AntibodiesShared.mergeOptions = mergeOptions
 
-AntibodiesShared.versionToString = versionToString
-AntibodiesShared.getSandboxPath = getSandboxPath
+AntibodiesShared.flattenVersion = flattenVersion
+AntibodiesShared.getSandboxOptionPath = getSandboxOptionPath
 
 AntibodiesShared.hasOptions = hasOptions
 AntibodiesShared.applyOptions = applyOptions

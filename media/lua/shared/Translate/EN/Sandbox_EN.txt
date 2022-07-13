@@ -8,7 +8,7 @@ Sandbox_EN = {
     Sandbox_lgd_antibodies_debug = "Antibodies - Debug",
 
     Sandbox_general_baseAntibodyGrowth = "Base Antibodies Growth",
-    Sandbox_general_baseAntibodyGrowth_tooltip = "This value represents default antibodies growth (in relation to infection progression),<br>which is increased and decreased by other effects. Most of them decrease this value,<br> however if you discard everything else - 1.38 is minimal value necessary to survive the infection.",
+    Sandbox_general_baseAntibodyGrowth_tooltip = "This value represents default antibodies growth (in relation to infection progression),<br>which is increased and decreased by other factors. Most of them decrease this value,<br> however if you omit everything else - 1.38 is minimal value necessary to survive the infection.",
     Sandbox_wounds_deepWounded = "Deep Wound",
     Sandbox_wounds_deepWounded_tooltip = "Applied per affected body part independently (18 in total)",
     Sandbox_wounds_bleeding = "Bleeding",
@@ -152,14 +152,9 @@ Sandbox_EN = {
 
     Sandbox_debug_enabled = "Enabled",
     Sandbox_debug_enabled_tooltip = "Enable debug messages printed to in-game debug console,<br>and to 'console.txt' file located in your PZ home directory.",
-    Sandbox_debug_wounds = "Wounds breakdown",
-    Sandbox_debug_wounds_tooltip = "More details.",
-    Sandbox_debug_infections = "Infections breakdown",
-    Sandbox_debug_infections_tooltip = "More details.",
-    Sandbox_debug_hygiene = "Hygiene breakdown",
-    Sandbox_debug_hygiene_tooltip = "More details.",
-    Sandbox_debug_moodles = "Moodles breakdown",
-    Sandbox_debug_moodles_tooltip = "More details.",
-    Sandbox_debug_traits = "Traits breakdown",
-    Sandbox_debug_traits_tooltip = "More details.",
+    Sandbox_debug_wounds = "Wounds details",
+    Sandbox_debug_infections = "Infections details",
+    Sandbox_debug_hygiene = "Hygiene details",
+    Sandbox_debug_moodles = "Moodles details",
+    Sandbox_debug_traits = "Traits details",
 }
