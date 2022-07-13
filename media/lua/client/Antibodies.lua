@@ -399,6 +399,20 @@ local function printWoundsEffect(player)
   end
 end
 
+local function printWoundsEffect(player)
+  local woundsEffects = getWoundsEffect(player)
+  print(indent(1).."WoundsEffects: "..AntibodiesShared.format_float(woundsEffects))
+  if AntibodiesShared.currentOptions.Debug["woundEffects"] then
+    local wounds = getWoundsCount(player)
+    for part_key in pairs(wounds) do
+      if wounds[part_key] > 0 then
+        print(indent(2)..part_key..": "..tostring(wounds[part_key] * AntibodiesShared.currentOptions.WoundEffects[part_key]))
+      end
+    end
+    print(indent(1).."---")
+  end
+end
+
 local function printInfectionsEffect(player)
   local infectionEffects = getInfectionsEffect(player)
   print(AntibodiesShared.indent(1).."Infections: "..AntibodiesShared.format_float(infectionEffects))
@@ -435,6 +449,7 @@ local function printHygieneEffect(player)
         end
       end
     end
+    print(indent(1).."---")
   end
 end
 
