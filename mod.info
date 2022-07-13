@@ -1,4 +1,6 @@
-name=Antibodies (v1.40)
-poster=poster.png
+name=Antibodies (v1.50)
 id=lgd_antibodies
-description=Provides a fighting chance against the zombification. Stay well-fed, avoid any negative moodles etc. Like IRL, you won't get any notifications of what is going on (beyond what a vanilla game tells you).
+poster=poster.png
+icon=mini-poster.png
+description=It is said, the difference between poison and the medicine is the dose. Similarly, a difference between zombified human and survivor, is exposure amount, natural resistances, and general condition of the victim. Susceptible humans got turned by airborne virus early, but the rest have a degree of natural resistance. However - nobody is truly immune, and there is no cure. This mod expands Knox virus infection mechanics, by intricate system of antibodies production, so the outcome depends more on your actions rather than on blind luck.
+url=https://github.com/lonegamedev/pz_mod_antibodies

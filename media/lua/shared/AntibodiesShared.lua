@@ -5,18 +5,25 @@ AntibodiesShared.__index = AntibodiesShared
 --CONST----------------------------------------------
 -----------------------------------------------------
 
-AntibodiesShared.version = "1.40"
+AntibodiesShared.version = "1.50"
+AntibodiesShared.optionsVersion = "1.50"
 AntibodiesShared.author = "lonegamedev.com"
 AntibodiesShared.modName = "Antibodies"
 AntibodiesShared.modId = "lgd_antibodies"
-
-local zeroMoodles = {"Angry", "Dead", "Zombie", "Injured"}
 
 local bodyPartTypes = {"Back", "Foot_L", "Foot_R", "ForeArm_L", "ForeArm_R", "Groin", 
 "Hand_L", "Hand_R", "Head", "LowerLeg_L", "LowerLeg_R", "Neck", "Torso_Lower", 
 "Torso_Upper", "UpperArm_L", "UpperArm_R", "UpperLeg_L", "UpperLeg_R"}
 
-local noAutoMigrationVersions = {"1.30", "1.40"}
+local modOptionsTweaks = {
+  ["Susceptible"] = {
+    ["infections"] = {
+      ["virusScratch"] = 0.0,
+      ["virusCut"] = 0.0,
+      ["virusBite"] = 0.0
+    }
+  }
+}
 
 -----------------------------------------------------
 --STATE----------------------------------------------
@@ -71,12 +78,12 @@ local function clamp(num, min, max)
   return math.max(min, math.min(num, max))
 end
 
-local function deepcopy(val)
+local function deep_copy(val)
   local val_copy
   if type(val) == 'table' then
       val_copy = {}
       for k,v in pairs(val) do
-        val_copy[k] = deepcopy(v)
+        val_copy[k] = deep_copy(v)
       end
   else
       val_copy = val
@@ -102,35 +109,39 @@ local function printOptions(options)
   end
 end
 
+local function to_camel_case(str)
+  local len = string.len(str)
+  if len < 1 then
+    return str
+  end
+  local a = string.sub(str, 1, 1)
+  local b = string.sub(str, 2, len)
+  a = string.lower(a)
+  return a..b
+end
+
+local function indent(num)
+  local s = ""
+  for i = 0, num - 1 do
+    s = s.."    "
+  end
+  return s
+end
+
 -----------------------------------------------------
 --OPTIONS--------------------------------------------
 -----------------------------------------------------
 
 local function hasOptions()
-  --validate
   return AntibodiesShared.currentOptions ~= nil
 end
 
 local function getDefaultOptions()
   return {
-    ["Antibodies"] = {
-      ["version"] = AntibodiesShared.version,
-      ["author"] = AntibodiesShared.author,
-      ["modName"] = AntibodiesShared.modName,
-      ["modId"] = AntibodiesShared.modId
-    },
-    ["General"] = {
+    ["general"] = {
       ["baseAntibodyGrowth"] = 1.6
     },
-    ["Debug"] = {
-      ["enabled"] = false,
-      ["woundEffects"] = false,
-      ["infectionEffects"] = false,
-      ["hygieneEffects"] = false,
-      ["moodleEffects"] = false,
-      ["traitsEffects"] = false
-    },
-    ["WoundEffects"] = {
+    ["wounds"] = {
       ["deepWounded"] = -0.01,
       ["bleeding"] = -0.02,
 
@@ -145,13 +156,13 @@ local function getDefaultOptions()
       ["haveBullet"] = -0.02,
       ["haveGlass"] = -0.01
     },
-    ["InfectionEffects"] = {
+    ["infections"] = {
       ["regular"] = -0.01,
       ["virusScratch"] = -0.01,
       ["virusCut"] = -0.025,
       ["virusBite"] = -0.05,
     },
-    ["HygineEffects"] = {
+    ["hygiene"] = {
       ["bloodEffect"] = -0.2,
       ["dirtEffect"] = -0.1,
 
@@ -173,131 +184,103 @@ local function getDefaultOptions()
       ["modHaveBullet"] = -0.60,
       ["modHaveGlass"] = -0.40
     },
-    ["MoodleEffects"] = {
-      ["Bleeding"] = -0.1,
+    ["moodles"] = {
+      ["bleeding"] = -0.1,
       
-      ["Thirst"] = -0.04,
-      ["Hungry"] = -0.03,
-      ["Sick"] = -0.02,
-      ["HasACold"] = -0.02,
-      ["Pain"] = -0.01,
-      ["Tired"] = -0.01,
-      ["Endurance"] = -0.01,      
+      ["thirst"] = -0.04,
+      ["hungry"] = -0.03,
+      ["sick"] = -0.02,
+      ["hasACold"] = -0.02,
+      ["pain"] = -0.01,
+      ["tired"] = -0.01,
+      ["endurance"] = -0.01,      
 
-      ["Panic"] = -0.01,
-      ["Stress"] = -0.01,
-      ["Unhappy"] = -0.01,
-      ["Bored"] = -0.01,
+      ["panic"] = -0.01,
+      ["stress"] = -0.01,
+      ["unhappy"] = -0.01,
+      ["bored"] = -0.01,
       
-      ["Hyperthermia"] = 0.01,
-      ["Hypothermia"] = -0.1,
-      ["Windchill"] = -0.01,
-      ["Wet"] = -0.01,
-      ["HeavyLoad"] = -0.01,
+      ["hyperthermia"] = 0.01,
+      ["hypothermia"] = -0.1,
+      ["windchill"] = -0.01,
+      ["wet"] = -0.01,
+      ["heavyLoad"] = -0.01,
 
-      ["Drunk"] = 0.01,
-      ["FoodEaten"] = 0.05,
+      ["drunk"] = 0.01,
+      ["foodEaten"] = 0.05,
 
-      ["Injured"] = 0.0,      
-      ["Dead"] = 0.0,
-      ["Zombie"] = 0.0,
-      ["Angry"] = 0.0
+      ["injured"] = 0.0,      
+      ["dead"] = 0.0,
+      ["zombie"] = 0.0,
+      ["angry"] = 0.0
     },
-    ["TraitsEffects"] = {
-      ["Asthmatic"] = -0.01,
-      ["Smoker"] = -0.01,
+    ["traits"] = {
+      ["asthmatic"] = -0.01,
+      ["smoker"] = -0.01,
       
-      ["Unfit"] = -0.02,
-      ["OutOfShape"] = -0.01,
-      ["Athletic"] = 0.01,
+      ["unfit"] = -0.02,
+      ["outOfShape"] = -0.01,
+      ["athletic"] = 0.01,
     
-      ["SlowHealer"] = -0.01,
-      ["FastHealer"] = 0.01,
+      ["slowHealer"] = -0.01,
+      ["fastHealer"] = 0.01,
       
-      ["ProneToIllness"] = -0.01,
-      ["Resilient"] = 0.01,
+      ["proneToIllness"] = -0.01,
+      ["resilient"] = 0.01,
     
-      ["Weak"] = -0.02,
-      ["Feeble"] = -0.01,
-      ["Strong"] = 0.01,
-      ["Stout"] = 0.02,
+      ["weak"] = -0.02,
+      ["feeble"] = -0.01,
+      ["strong"] = 0.01,
+      ["stout"] = 0.02,
     
-      ["Emaciated"] = -0.02,
-      ["VeryUnderweight"] = -0.01,
-      ["Underweight"] = -0.005,
-      ["Overweight"] = -0.005,
-      ["Obese"] = -0.02,
+      ["emaciated"] = -0.02,
+      ["veryUnderweight"] = -0.01,
+      ["underweight"] = -0.005,
+      ["overweight"] = -0.005,
+      ["obese"] = -0.02,
 
-      ["Lucky"] = 0.0,
-      ["Unlucky"] = 0.0
+      ["lucky"] = 0.0,
+      ["unlucky"] = 0.0
+    },
+    ["debug"] = {
+      ["enabled"] = false,
+      ["wounds"] = false,
+      ["infections"] = false,
+      ["hygiene"] = false,
+      ["moodles"] = false,
+      ["traits"] = false
     }
   }
+end
+
+local function flattenVersion(version)
+  return tostring(tonumber(version) * 100)
+end
+
+local function getSandboxOptionPath(group, prop)
+  return ""..AntibodiesShared.modId.."_"..flattenVersion(AntibodiesShared.optionsVersion).."_"..group.."_"..prop
+end
+
+local function getSandboxOptions()
+  local result = {}
+  local defaults = getDefaultOptions()
+  for group_index, group_key in pairs(get_keys(defaults)) do
+    result[group_key] = {}
+    for prop_index, prop_key in pairs(get_keys(defaults[group_key])) do
+      local path = getSandboxOptionPath(group_key, prop_key)
+      if has_key(SandboxVars, path) then
+        result[group_key][prop_key] = SandboxVars[path]
+      end
+    end
+  end
+  return result
 end
 
 local function applyOptions(options)
   if (type(options) ~= "table") then
     return false
   end
-  AntibodiesShared.currentOptions = deepcopy(options)
-end
-
-local function parseLine(options, control, line)
-  if (type(line) ~= "string") then
-    return false
-  end
-  line = line:trim()
-  if line ~= "" then
-  local k,v = line:match("^([^=%[]+)=([^=]+)$")
-    if k then
-      if control.group then
-        k = k:trim()
-        if control.group == "Antibodies" then         
-          options[control.group][k] = v:trim()
-        else
-          options[control.group][k] = parse_value(v:trim())
-        end
-      end
-    else
-      local group = line:match("^%[([^%[%]%%]+)%]$")
-      if group then
-        control.group = group:trim()
-        options[control.group] = {}
-      end
-    end
-  end
-end
-
-local function loadOptions()
-  local options = {}
-  local control = { ["group"] = nil }
-  local reader = getFileReader("antibodies_options.ini", false)
-  if not reader then
-    return false
-  end
-  while true do
-    local line = reader:readLine()
-    if not line then
-		  reader:close()
-		  break
-		end
-    parseLine(options, control, line)
-  end
-  if(options["Antibodies"] == nil) then 
-    return false
-  end
-  if options["Antibodies"]["author"] ~= AntibodiesShared.author then
-    return false
-  end
-  if options["Antibodies"]["modName"] ~= AntibodiesShared.modName then
-    return false
-  end
-  if options["Antibodies"]["modId"] ~= AntibodiesShared.modId then
-    return false
-  end
-  if(options["Antibodies"]["version"] == nil) then 
-    return false
-  end
-  return options
+  AntibodiesShared.currentOptions = deep_copy(options)
 end
 
 local function optionsToString(options)
@@ -326,34 +309,8 @@ local function stringToOptions(str)
   return options
 end
 
-
-local function saveHostOptions(options)
-  if isClient() then
-    sendClientCommand(getPlayer(), AntibodiesShared.modId, "saveOptions", options)
-  end
-end
-
-local function saveOptions(options, alt_filename)
-  if (type(options) ~= "table") then
-    return false
-  end
-  local filename = "antibodies_options.ini"
-  if alt_filename ~= nil then
-    filename = alt_filename
-  end
-  local writer = getFileWriter(filename, true, false)
-  for id,group in pairs(options) do
-    writer:write("\r\n["..id.."]\r\n")
-    for k,v in pairs(group) do
-      writer:write(k..' = '..tostring(v).."\r\n")
-    end
-	end
-  writer:close()
-  return true
-end
-
 local function mergeOptions(default, loaded)
-  local result = deepcopy(default)
+  local result = deep_copy(default)
   if type(loaded) ~= "table" then
     return default
   end
@@ -367,52 +324,35 @@ local function mergeOptions(default, loaded)
       end
     end
   end
-  for moodle_index, moodle_key in pairs(zeroMoodles) do
-    result["MoodleEffects"][moodle_key] = 0
-  end
   return result
 end
 
-local function optionsCanBeMigrated(current_version)
-  local source = tonumber(current_version)
-  local target = tonumber(AntibodiesShared.version)
-  if source == target then
-    return true
-  end
-  if source > target then
-    return false
-  end
-  for index, version in pairs(AntibodiesShared.noAutoMigrationVersions) do
-    local step = tonumber(version)
-    if step > source and step <= target then
-      return false
+local function tweakForMods(options)
+  local mods = getActivatedMods()
+  for i=1, mods:size() do
+    local id = mods:get(i - 1)
+    if AntibodiesShared.has_key(AntibodiesShared.modOptionsTweaks, id) then
+      options = mergeOptions(options, AntibodiesShared.modOptionsTweaks[id])
     end
   end
-  return true
+  return options
 end
 
-local function isOptionsVersionCurrent(options)
-  if type(options) ~= "table" then
-    return false
-  end
-  if options["Antibodies"] ~= nil then
-    if options["Antibodies"]["version"] ~= nil then
-      if optionsCanBeMigrated(options["Antibodies"]["version"]) then
-        return true
+local function getOptions()
+  return tweakForMods(mergeOptions(getDefaultOptions(), getSandboxOptions()))
+end
+
+local function getLocalPlayers()
+  local result = {}
+  for playerIndex = 0, getNumActivePlayers()-1 do
+    local player = getSpecificPlayer(playerIndex)
+    if player ~= nil then
+      if player:isLocalPlayer() then
+        table.insert(result, player)
       end
     end
   end
-  return false
-end
-
-local function getLocalOptions()
-  local options = loadOptions()
-  if isOptionsVersionCurrent(options) then
-    return mergeOptions(getDefaultOptions(), loadOptions())
-  else
-    saveOptions(options, "antibodies_options.bk.ini")
-    return getDefaultOptions()
-  end
+  return result
 end
 
 -----------------------------------------------------
@@ -426,24 +366,27 @@ AntibodiesShared.lerp = lerp
 AntibodiesShared.format_float = format_float
 AntibodiesShared.is_number = is_number
 AntibodiesShared.clamp = clamp
-AntibodiesShared.deepcopy = deepcopy
+AntibodiesShared.deep_copy = deep_copy
 AntibodiesShared.parse_value = parse_value
+AntibodiesShared.to_camel_case = to_camel_case
+AntibodiesShared.indent = indent
 
 AntibodiesShared.printOptions = printOptions
-AntibodiesShared.zeroMoodles = zeroMoodles
 AntibodiesShared.bodyPartTypes = bodyPartTypes
-AntibodiesShared.noAutoMigrationVersions = noAutoMigrationVersions
+AntibodiesShared.modOptionsTweaks = modOptionsTweaks
 
 AntibodiesShared.optionsToString = optionsToString
 AntibodiesShared.stringToOptions = stringToOptions
 AntibodiesShared.mergeOptions = mergeOptions
 
+AntibodiesShared.flattenVersion = flattenVersion
+AntibodiesShared.getSandboxOptionPath = getSandboxOptionPath
+
 AntibodiesShared.hasOptions = hasOptions
 AntibodiesShared.applyOptions = applyOptions
-AntibodiesShared.getLocalOptions = getLocalOptions
-AntibodiesShared.loadOptions = loadOptions
-AntibodiesShared.saveOptions = saveOptions
-AntibodiesShared.saveHostOptions = saveHostOptions
+AntibodiesShared.getOptions = getOptions
 AntibodiesShared.getDefaultOptions = getDefaultOptions
+AntibodiesShared.getSandboxOptions = getSandboxOptions
+AntibodiesShared.getLocalPlayers = getLocalPlayers
 
 return AntibodiesShared
