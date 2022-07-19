@@ -5,7 +5,7 @@ AntibodiesShared.__index = AntibodiesShared
 --CONST----------------------------------------------
 -----------------------------------------------------
 
-AntibodiesShared.version = "1.50"
+AntibodiesShared.version = "1.51"
 AntibodiesShared.optionsVersion = "1.50"
 AntibodiesShared.author = "lonegamedev.com"
 AntibodiesShared.modName = "Antibodies"
@@ -139,7 +139,9 @@ end
 local function getDefaultOptions()
   return {
     ["general"] = {
-      ["baseAntibodyGrowth"] = 1.6
+      ["baseAntibodyGrowth"] = 1.6,
+      ["virusInfectionRecoveryEffect"] = 0.0,
+      ["virusMutationEffect"] = 0.0
     },
     ["wounds"] = {
       ["deepWounded"] = -0.01,
