@@ -6,6 +6,18 @@ option lgd_antibodies_150_general_baseAntibodyGrowth
 	page = lgd_antibodies_general, translation = general_baseAntibodyGrowth,
 }
 
+option lgd_antibodies_150_general_virusInfectionRecoveryEffect
+{
+	type = double, min = -1.0, max = 1.0, default = 0.0,
+	page = lgd_antibodies_general, translation = general_virusInfectionRecoveryEffect,
+}
+
+option lgd_antibodies_150_general_virusMutationEffect
+{
+	type = double, min = -1.0, max = 1.0, default = 0.0,
+	page = lgd_antibodies_general, translation = general_virusMutationEffect,
+}
+
 option lgd_antibodies_150_wounds_deepWounded
 {
 	type = double, min = -1.0, max = 0.0, default = -0.01,
@@ -252,24 +264,6 @@ option lgd_antibodies_150_moodles_bored
 	page = lgd_antibodies_moodles, translation = moodles_bored,
 }
 
-option lgd_antibodies_150_moodles_stress
-{
-	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies_moodles, translation = moodles_stress,
-}
-
-option lgd_antibodies_150_moodles_unhappy
-{
-	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies_moodles, translation = moodles_unhappy,
-}
-
-option lgd_antibodies_150_moodles_bored
-{
-	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies_moodles, translation = moodles_bored,
-}
- 
 option lgd_antibodies_150_moodles_hyperthermia
 {
 	type = double, min = -1.0, max = 1.0, default = 0.01,

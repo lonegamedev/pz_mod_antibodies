@@ -13,6 +13,7 @@ local function cureVirus(player)
   bodyDamage:setInfectionTime(-1.0)
   bodyDamage:setInfectionMortalityDuration(-1.0)
   player:getModData().virusAntibodiesLevel = 0.0
+  player:getModData().virusInfectionsSurvived = player:getModData().virusInfectionsSurvived + 1
 end
 
 local function getInfectionsCount(player)
@@ -290,6 +291,9 @@ local function ensurePlayerInitialization(player)
   if not AntibodiesShared.is_number(save.virusAntibodiesLevel) then 
     save.virusAntibodiesLevel = 0.0
   end
+  if not AntibodiesShared.is_number(save.virusInfectionsSurvived) then 
+    save.virusInfectionsSurvived = 0
+  end
 end
 
 local function getInfectionChangeEveryTenMinutes(player)
@@ -301,14 +305,34 @@ local function getInfectionChangeEveryTenMinutes(player)
   return 0
 end
 
+local function getVirusInfectionRecoveryEffect(player)
+  local save = player:getModData()
+  return AntibodiesShared.clamp(save.virusInfectionsSurvived * AntibodiesShared.currentOptions.general.virusInfectionRecoveryEffect, -1.0, 1.0)
+end
+
+local function getVirusMutationEffect()
+  return AntibodiesShared.clamp(getGameTime():getDaysSurvived() * AntibodiesShared.currentOptions.general.virusMutationEffect, -1.0, 1.0)
+end
+
 local function getAntibodiesGrowth(player, infectionChange)
-  local bodyDamage = player:getBodyDamage()
   local moodleEffect = getMoodleEffect(player)
   local traitEffect = getTraitEffect(player)
   local hygieneEffect = getHygieneEffect(player)
   local infectionEffect = getInfectionsEffect(player)
   local woundsEffect = getWoundsEffect(player)
-  local growthSum = (AntibodiesShared.currentOptions.general.baseAntibodyGrowth + moodleEffect + traitEffect + hygieneEffect + infectionEffect + woundsEffect)
+  local recoveryEffect = getVirusInfectionRecoveryEffect(player)
+  local mutationEffect = getVirusMutationEffect()
+  local growthSum = (
+      AntibodiesShared.currentOptions.general.baseAntibodyGrowth
+    + moodleEffect
+    + traitEffect
+    + hygieneEffect
+    + infectionEffect
+    + woundsEffect
+    + recoveryEffect
+    + mutationEffect
+  )
+  local bodyDamage = player:getBodyDamage()
   local infectionProgress = (bodyDamage:getInfectionLevel() / 100)
   local growthMax = math.max(0, math.abs(infectionChange) * growthSum)
   return AntibodiesShared.lerp(0.0, growthMax, AntibodiesShared.clamp(math.sin(infectionProgress * math.pi), 0.0, 1.0))
@@ -399,20 +423,6 @@ local function printWoundsEffect(player)
   end
 end
 
-local function printWoundsEffect(player)
-  local woundsEffects = getWoundsEffect(player)
-  print(indent(1).."WoundsEffects: "..AntibodiesShared.format_float(woundsEffects))
-  if AntibodiesShared.currentOptions.Debug["woundEffects"] then
-    local wounds = getWoundsCount(player)
-    for part_key in pairs(wounds) do
-      if wounds[part_key] > 0 then
-        print(indent(2)..part_key..": "..tostring(wounds[part_key] * AntibodiesShared.currentOptions.WoundEffects[part_key]))
-      end
-    end
-    print(indent(1).."---")
-  end
-end
-
 local function printInfectionsEffect(player)
   local infectionEffects = getInfectionsEffect(player)
   print(AntibodiesShared.indent(1).."Infections: "..AntibodiesShared.format_float(infectionEffects))
@@ -449,7 +459,6 @@ local function printHygieneEffect(player)
         end
       end
     end
-    print(indent(1).."---")
   end
 end
 
@@ -483,17 +492,28 @@ local function getPlayerInfectionStage(player)
   return "None"
 end
 
-local function printPlayerDebug(player, last)
+local function printSummary(player)
   local save = player:getModData()
   local bodyDamage = player:getBodyDamage()
   local infectionLevel = bodyDamage:getInfectionLevel()
   local infectionChange = getInfectionChangeEveryTenMinutes(player)
   local antibodiesChange = getAntibodiesGrowth(player, infectionChange)
   local infectionProgress = (infectionLevel / 100)
-
+  local recoveryEffect = getVirusInfectionRecoveryEffect(player)
+  local mutationEffect = getVirusMutationEffect()
   print(AntibodiesShared.indent(1).."Player: "..player:getUsername())
   print(AntibodiesShared.indent(1).."Infection Stage: "..getPlayerInfectionStage(player))
   print(AntibodiesShared.indent(1).."Virus/Antibodies: "..AntibodiesShared.format_float(infectionLevel).." (+"..AntibodiesShared.format_float(infectionChange)..") / "..AntibodiesShared.format_float(save.virusAntibodiesLevel).." (+"..AntibodiesShared.format_float(antibodiesChange)..")")
+  if recoveryEffect ~= 0 then
+    print(AntibodiesShared.indent(1).."Virus Infection Recovery Effect: "..recoveryEffect.." ("..tostring(save.virusInfectionsSurvived).." infections)")
+  end
+  if mutationEffect ~= 0 then
+    print(AntibodiesShared.indent(1).."Virus Mutation Effect: "..mutationEffect.." ("..tostring(getGameTime():getDaysSurvived()).." days)")
+  end
+end
+
+local function printPlayerDebug(player)
+  printSummary(player)
   printWoundsEffect(player)
   printInfectionsEffect(player)
   printHygieneEffect(player)

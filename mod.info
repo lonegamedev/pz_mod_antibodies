@@ -1,6 +1,6 @@
-name=Antibodies (v1.50)
+name=Antibodies (v1.52)
 id=lgd_antibodies
 poster=poster.png
 icon=mini-poster.png
-description=It is said, the difference between poison and the medicine is the dose. Similarly, a difference between zombified human and survivor, is exposure amount, natural resistances, and general condition of the victim. Susceptible humans got turned by airborne virus early, but the rest have a degree of natural resistance. However - nobody is truly immune, and there is no cure. This mod expands Knox virus infection mechanics, by intricate system of antibodies production, so the outcome depends more on your actions rather than on blind luck.
+description=It is said, the difference between poison and the medicine is the dose. Similarly, a difference between zombified human and survivor, is virus exposure amount and condition of the infected. However - nobody is truly immune, and there is no cure. This mod expands Knox virus infection mechanics, by intricate system of antibodies production, to make the infection outcome dependent on your actions.
 url=https://github.com/lonegamedev/pz_mod_antibodies
