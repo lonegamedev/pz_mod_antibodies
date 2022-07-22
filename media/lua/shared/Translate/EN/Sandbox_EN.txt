@@ -9,9 +9,9 @@ Sandbox_EN = {
 
     Sandbox_general_baseAntibodyGrowth = "Base Antibodies Growth",
     Sandbox_general_baseAntibodyGrowth_tooltip = "This value represents default antibodies growth (in relation to infection progression),<br>which is increased and decreased by other factors. Most of them decrease this value,<br> however if you omit everything else - 1.38 is minimal value necessary to survive the infection.",
-    Sandbox_general_virusInfectionRecoveryEffect = "Virus Infection Recovery Mod",
-    Sandbox_general_virusInfectionRecoveryEffect_tooltip = "Each Knox virus infection you have managed to survive, leaves a lasting effect. The effect is property value,<br>multiplied by number of survived infections clamped to (-1, 1) range."
-    Sandbox_general_virusMutationEffect = "Virus Mutation Mod",
+    Sandbox_general_virusInfectionRecoveryEffect = "Virus Infection Recovery Effect",
+    Sandbox_general_virusInfectionRecoveryEffect_tooltip = "Each Knox virus infection you have managed to survive, leaves a lasting effect.<br>The effect is property value, multiplied by number of survived infections clamped to (-1, 1) range."
+    Sandbox_general_virusMutationEffect = "Virus Mutation Effect",
     Sandbox_general_virusMutationEffect_tooltip = "With each passing day, Knox virus mutates. The effect is property value, multiplied by<br>number of days passed from the game start (not character lifetime) clamped to (-1, 1) range.",
     Sandbox_wounds_deepWounded = "Deep Wound",
     Sandbox_wounds_deepWounded_tooltip = "Applied per affected body part independently (18 in total)",

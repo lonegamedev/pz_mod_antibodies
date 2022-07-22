@@ -264,24 +264,6 @@ option lgd_antibodies_150_moodles_bored
 	page = lgd_antibodies_moodles, translation = moodles_bored,
 }
 
-option lgd_antibodies_150_moodles_stress
-{
-	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies_moodles, translation = moodles_stress,
-}
-
-option lgd_antibodies_150_moodles_unhappy
-{
-	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies_moodles, translation = moodles_unhappy,
-}
-
-option lgd_antibodies_150_moodles_bored
-{
-	type = double, min = -1.0, max = 1.0, default = -0.01,
-	page = lgd_antibodies_moodles, translation = moodles_bored,
-}
- 
 option lgd_antibodies_150_moodles_hyperthermia
 {
 	type = double, min = -1.0, max = 1.0, default = 0.01,

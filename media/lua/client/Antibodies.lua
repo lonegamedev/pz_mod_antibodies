@@ -459,7 +459,6 @@ local function printHygieneEffect(player)
         end
       end
     end
-    print(indent(1).."---")
   end
 end
 
@@ -506,7 +505,7 @@ local function printSummary(player)
   print(AntibodiesShared.indent(1).."Infection Stage: "..getPlayerInfectionStage(player))
   print(AntibodiesShared.indent(1).."Virus/Antibodies: "..AntibodiesShared.format_float(infectionLevel).." (+"..AntibodiesShared.format_float(infectionChange)..") / "..AntibodiesShared.format_float(save.virusAntibodiesLevel).." (+"..AntibodiesShared.format_float(antibodiesChange)..")")
   if recoveryEffect ~= 0 then
-    print(AntibodiesShared.indent(1).."Virus Recovery Effect: "..recoveryEffect.." ("..tostring(save.virusInfectionsSurvived).." infections)")
+    print(AntibodiesShared.indent(1).."Virus Infection Recovery Effect: "..recoveryEffect.." ("..tostring(save.virusInfectionsSurvived).." infections)")
   end
   if mutationEffect ~= 0 then
     print(AntibodiesShared.indent(1).."Virus Mutation Effect: "..mutationEffect.." ("..tostring(getGameTime():getDaysSurvived()).." days)")
