@@ -8,12 +8,26 @@ local function cureVirus(player)
     local bodyPart = bodyDamage:getBodyParts():get(i)
     bodyPart:SetInfected(false)
   end
-  bodyDamage:setInf(false)
+  bodyDamage:setInfected(false)
   bodyDamage:setInfectionLevel(0)
   bodyDamage:setInfectionTime(-1.0)
   bodyDamage:setInfectionMortalityDuration(-1.0)
   player:getModData().virusAntibodiesLevel = 0.0
   player:getModData().virusInfectionsSurvived = player:getModData().virusInfectionsSurvived + 1
+end
+
+local function ensureCured(player)
+  local bodyDamage = player:getBodyDamage()
+  if not bodyDamage:isInfected() then
+    for i = 0, bodyDamage:getBodyParts():size() - 1 do
+      local bodyPart = bodyDamage:getBodyParts():get(i)
+      bodyPart:SetInfected(false)
+    end
+    bodyDamage:setInfected(false)
+    bodyDamage:setInfectionLevel(0)
+    bodyDamage:setInfectionTime(-1.0)
+    bodyDamage:setInfectionMortalityDuration(-1.0)
+  end
 end
 
 local function getInfectionsCount(player)
@@ -553,6 +567,7 @@ local function onEveryTenMinutes()
       end
     else
       setAntibodiesLevel(player, 0)
+      ensureCured(player)
     end 
   end
   if AntibodiesShared.currentOptions.debug["enabled"] then
