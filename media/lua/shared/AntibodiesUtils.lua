@@ -235,48 +235,6 @@ local function lagrange(points, x)
   return 0
 end
 
-local computeStage = function(val, minVal, maxVal, stageCount)
-  if val <= minVal then
-    return 0
-  end
-  if val >= maxVal then
-    return stageCount
-  end
-  local len = math.abs(maxVal - minVal)
-  local phaseLen = len / stageCount
-  for phaseIndex=1, stageCount, 1 do
-    local phaseMin = (phaseIndex - 1) * phaseLen
-    local phaseMax = phaseMin + phaseLen
-    if val > phaseMin and val <= phaseMax then
-      return phaseIndex
-    end
-  end
-  return 0
-end
-
-local computeStageZero = function(val, minVal, maxVal, stageCount)
-  if val >= 0 then
-    return computeStage(val, 0, maxVal, stageCount)
-  else
-    return computeStage(val, 0, math.abs(minVal), stageCount)
-  end
-end
-
-function round(num, dp)
-    --[[
-    round a number to so-many decimal of places, which can be negative, 
-    e.g. -1 places rounds to 10's,  
-    
-    examples
-        173.2562 rounded to 0 dps is 173.0
-        173.2562 rounded to 2 dps is 173.26
-        173.2562 rounded to -1 dps is 170.0
-    ]]--
-    local mult = 10^(dp or 0)
-    return math.floor(num * mult + 0.5)/mult
-end
-
-
 -----------------------------------------------------
 --EXPORTS--------------------------------------------
 -----------------------------------------------------
@@ -300,9 +258,6 @@ AntibodiesUtils.tab_filter = tab_filter
 AntibodiesUtils.tab_sum = tab_sum
 AntibodiesUtils.tab_product = tab_product
 AntibodiesUtils.lagrange = lagrange
---AntibodiesUtils.computeStage = computeStage
---AntibodiesUtils.computeStageZero = computeStageZero
-AntibodiesUtils.round = round
 
 AntibodiesUtils.table_to_string = table_to_string
 AntibodiesUtils.print_table = print_table

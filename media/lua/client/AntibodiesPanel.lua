@@ -45,7 +45,7 @@ function AntibodiesPanel:createChildren()
     local walker_y = 0
     for i in pairs(AntibodiesIcon.list) do
         local key_name = AntibodiesIcon.list[i]
-        local icon = AntibodiesIcon:new(key_name)
+        local icon = AntibodiesIcon:new(key_name, self.player)
         icon:initialise()
         self.icons[key_name] = icon
         self:addChild(icon)
@@ -120,7 +120,7 @@ function AntibodiesPanel:updatePlacement(healthPanel)
         local icon = self.icons[key_name]
         if icon then
             icon:setSide(self.side)
-            icon:updateTooltipPlacement()
+            icon:updateTooltipPlacement(self.player)
         end
     end
 end

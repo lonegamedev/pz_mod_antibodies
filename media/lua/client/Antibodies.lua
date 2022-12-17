@@ -179,7 +179,8 @@ local function getClothingHygiene(player, bodyPart)
   local bloodBodyPart = BloodBodyPartType.FromString(tostring(bodyPart:getType()))
   local result = {
     ["blood"] = 0,
-    ["dirt"] = 0
+    ["dirt"] = 0,
+    ["pieces"] = 0
   }
   local wornItems = player:getWornItems()
   if wornItems then
@@ -192,6 +193,7 @@ local function getClothingHygiene(player, bodyPart)
             if visualItem ~=nil then
               result.blood = result.blood + visualItem:getBlood(bloodBodyPart)
               result.dirt = result.dirt + visualItem:getDirt(bloodBodyPart)
+              result.pieces = result.pieces + 1
             end
           end
         end
@@ -208,13 +210,29 @@ local function getHygienePart(player, bodyPart, wounds)
     ["blood"] = 0,
     ["dirt"] = 0,
     ["mod"] = 0,
+    ["clothingPieces"] = 0,
+    ["clothingBlood"] = 0,
+    ["clothingDirt"] = 0,
+    ["clothing"] = 0,
+    ["bodyBlood"] = 0,
+    ["bodyDirt"] = 0,
+    ["body"] = 0
   }
   local bloodBodyPartType = BloodBodyPartType.FromString(bodyPart:getType():toString())
   local humanVisual = player:getHumanVisual()
   local clothing = getClothingHygiene(player, bodyPart)
   
-  result.blood = math.min(1.0, clothing.blood + humanVisual:getBlood(bloodBodyPartType))
-  result.dirt = math.min(1.0, clothing.dirt + humanVisual:getDirt(bloodBodyPartType))
+  result.clothingPieces = clothing.pieces
+  result.clothingBlood = clothing.blood
+  result.clothingDirt = clothing.dirt
+  result.bodyBlood = humanVisual:getBlood(bloodBodyPartType)
+  result.bodyDirt = humanVisual:getDirt(bloodBodyPartType)
+
+  result.clothing = math.min(1.0, result.clothingBlood + result.clothingDirt)
+  result.body = math.min(1.0, result.bodyBlood + result.bodyDirt)
+
+  result.blood = math.min(1.0, result.clothingBlood + result.bodyBlood)
+  result.dirt = math.min(1.0, result.clothingDirt + result.clothingDirt)
 
   for wound_key in pairs(wounds) do
     if wounds[wound_key] then
@@ -366,21 +384,30 @@ end
 
 local function getHygiene(parts)
   local result = {
-    ["blood"] = 0,
-    ["dirt"] = 0,
+    ["clothing"] = 0,
+    ["body"] = 0,
+    ["hasClothes"] = false
   }
-
+  local totalClothing = 0
+  local totalBody = 0
   for part_key, part in pairs(parts) do
-    result.blood = result.blood + part.hygiene.blood
-    result.dirt = result.dirt + part.hygiene.dirt
+    local hygiene = part.hygiene
+    if hygiene.clothingPieces > 0 and hygiene.clothing > 0 then
+      totalClothing = totalClothing + 1
+      result.clothing = result.clothing + hygiene.clothing
+    end
+    if hygiene.body > 0 then
+      totalBody = totalBody + 1
+      result.body = result.body + hygiene.body
+    end
   end
-
-  local total = #(parts)
-  if total > 0 then
-    result.blood = result.blood / total
-    result.dirt = result.dirt / total
+  if totalClothing > 1 then
+    result.clothing = result.clothing / totalClothing
   end
-  
+  if totalBody > 1 then
+    result.body = result.body / totalBody
+  end
+  result.hasClothes = totalClothing > 0
   return result
 end
 
@@ -443,7 +470,7 @@ local function getKnoxInfectionDelta(player)
   local bodyDamage = player:getBodyDamage()
   local infectionDuration = bodyDamage:getInfectionMortalityDuration()
   if (infectionDuration > 0) then
-    return (100 / infectionDuration) / 6 --per 10 in-game minutes
+    return (100 / infectionDuration) / 60 --every in-game minute
   end
   return 0
 end
@@ -506,7 +533,7 @@ end
 local function getWoundsEffect(medicalFile)
   local result = 0.0
   for part_key in pairs(medicalFile.status.wounds) do
-    result = result + medicalFile.status.wounds[part_key] * Antibodies.currentOptions.wounds[part_key]    
+    result = result + medicalFile.status.wounds[part_key] * Antibodies.currentOptions.wounds[part_key]
   end
   return result
 end
@@ -514,7 +541,7 @@ end
 local function getInfectionsEffect(medicalFile)
   local result = 0.0
   for part_key in pairs(medicalFile.status.infections) do
-    result = result + medicalFile.status.infections[part_key] * Antibodies.currentOptions.infections[part_key]    
+    result = result + medicalFile.status.infections[part_key] * Antibodies.currentOptions.infections[part_key]
   end
   return result
 end
@@ -683,17 +710,16 @@ local function onEveryOneMinute()
   local players = AntibodiesUtils.getLocalPlayers()
   for key, player in ipairs(players) do
     local save = player:getModData()
-    save.medicalFile = createMedicalFile(player)
+    updateKnoxAntibodies(player)
   end
 end
 Events.EveryOneMinute.Add(onEveryOneMinute)
 
 local function onEveryTenMinutes()
   ensureOptionsInitialization()
-  local players = AntibodiesUtils.getLocalPlayers()
-  for key, player in ipairs(players) do
-    updateKnoxAntibodies(player)
+  if Antibodies.currentOptions.debug.enabled then
+    local players = AntibodiesUtils.getLocalPlayers()
+    print(AntibodiesDebug.getDebug(players))
   end
-  print(AntibodiesDebug.getDebug(players))
 end
 Events.EveryTenMinutes.Add(onEveryTenMinutes)

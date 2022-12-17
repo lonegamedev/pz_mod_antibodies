@@ -13,7 +13,7 @@ function ISCharacterInfoWindow:createChildren()
     self.antibodiesPanel = AntibodiesPanel.createPanel(player)
 end
 
-local ISCharacterInfoWindow_onTick = function()
+local ISCharacterInfoWindow_onPreUIDraw = function()
     local players = AntibodiesUtils.getLocalPlayers()
     for key, player in ipairs(players) do
         local infoPanel = getPlayerInfoPanel(player:getPlayerNum())
@@ -30,4 +30,4 @@ local ISCharacterInfoWindow_onTick = function()
         end
     end
 end
-Events.OnTick.Add(ISCharacterInfoWindow_onTick)
+Events.OnPreUIDraw.Add(ISCharacterInfoWindow_onPreUIDraw)

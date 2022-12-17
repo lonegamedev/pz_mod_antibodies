@@ -40,11 +40,12 @@ AntibodiesIcon.getPrevIcon = function(str)
     return AntibodiesIcon.list[prev_index]
 end
 
-function AntibodiesIcon:new(name)
+function AntibodiesIcon:new(name, player)
  	local o = ISPanel.new(self, 0, 0, AntibodiesIcon.size, AntibodiesIcon.size)
     o.name = name
     o.isSelected = false
     o.side = 1
+    o.player = player
     return o
 end
 
@@ -119,15 +120,39 @@ function AntibodiesIcon:setSelected(toggle, force)
 end
 
 function AntibodiesIcon:updateTooltipPlacement()
+    if self.tooltipUI then
+        if self.side == 1 then
+            local panelX = self:getAbsoluteX() + self:getRight() + AntibodiesIcon.offset
+            local panelRight = panelX + AntibodiesIcon.TooltipWidth
+            local screenRight = getPlayerScreenLeft(self.player:getPlayerNum()) + getPlayerScreenWidth(self.player:getPlayerNum())
+            if panelRight > screenRight then
+                self.tooltipUI:setDesiredPosition(
+                    (self:getAbsoluteX() + AntibodiesIcon.offset) - AntibodiesIcon.TooltipWidth,
+                    self:getAbsoluteY()
+                )
+            else
+                self.tooltipUI:setDesiredPosition(
+                    self:getAbsoluteX() + AntibodiesIcon.size + AntibodiesIcon.offset,
+                    self:getAbsoluteY()
+                )
+            end
+        else
+            self.tooltipUI:setDesiredPosition(
+                self:getAbsoluteX() - (AntibodiesIcon.TooltipWidth - AntibodiesIcon.offset),
+                self:getAbsoluteY()
+            )
+        end
+    end
+
+
+    --[[
     if self.tooltipUI and self.tooltipUI:isVisible() then
         if self.side < 0 then
-            
             local width = self.tooltipUI:getWidth()
             if width == 0 then
-		        local panelWidth = 220 + 20 + self.tooltipUI.descriptionPanel.marginLeft + self.tooltipUI.descriptionPanel.marginRight
+		        local panelWidth = AntibodiesIcon.TooltipWidth + 20 + self.tooltipUI.descriptionPanel.marginLeft + self.tooltipUI.descriptionPanel.marginRight
                 width = panelWidth
             end
-
             self.tooltipUI:setDesiredPosition(
                 self:getAbsoluteX() - (8 + width),
                 self:getAbsoluteY()
@@ -139,6 +164,7 @@ function AntibodiesIcon:updateTooltipPlacement()
             )
         end
     end
+    ]]
 end
 
 function AntibodiesIcon:isSelected()

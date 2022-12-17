@@ -7,6 +7,48 @@ UI_Antibodies_EN = {
     UI_Antibodies_Hygiene = "Hygiene",
     UI_Antibodies_Infections = "Infections",
 
+    UI_Antibodies_Stable_Condition = "Stable condition",
+    UI_Antibodies_Wounds_None = "There are no injuries",
+
+    UI_Antibodies_Hygiene_Body = "Body status: %1"
+    UI_Antibodies_Hygiene_Clothes = "Clothes status: %1"
+    UI_Antibodies_Hygiene_Stage_0 = "Clean",
+    UI_Antibodies_Hygiene_Stage_1 = "Stained",
+    UI_Antibodies_Hygiene_Stage_2 = "Tainted",
+    UI_Antibodies_Hygiene_Stage_3 = "Dirty",
+    UI_Antibodies_Hygiene_Stage_4 = "Filthy",
+    UI_Antibodies_Hygiene_WoundsUnaffected = "None of the injuries are affected",
+    UI_Antibodies_Hygiene_WoundsAffected = "Some of the injuries are affected (%1)",
+
+    UI_Antibodies_Infections_NoSigns = "No indications of infection"
+    UI_Antibodies_Infections_CommonInfections = "Common infections confirmed"
+    UI_Antibodies_Infections_KnoxInfections = "Knox infections confirmed"
+
+    UI_Antibodies_Infections_KnoxBiteWounds = "Fresh bite wounds. Knox virus infection confirmed.",
+    UI_Antibodies_Infections_KnoxInfectedWounds = "Some wounds show symptoms. Knox virus infection confirmed.",
+    UI_Antibodies_Infections_KnoxSymptoms = "Organism shows symptoms. Knox virus infection confirmed.",
+    UI_Antibodies_Infections_KnoxInfectionPossible = "Some wounds might be Knox infected.",
+
+    UI_Antibodies_Infections_KnoxStage = "Knox stage: %1",
+    UI_Antibodies_Infections_KnoxUncertainStage = "Uncertain stage of infection.",
+
+    UI_Antibodies_Infections_KnoxInfection = "Knox infection: %1 (%2)",
+    UI_Antibodies_Infections_KnoxAntibodies = "Knox antibodies: %1 (%2)",
+    UI_Antibodies_Infections_SurvivedInfections = "Knox antibodies: %1",
+    UI_Antibodies_Infections_SurvivedInfectionsDetails = "Knox antibodies: %1 (%2)",
+    UI_Antibodies_Infections_SurvivedDays = "Knox antibodies: %1",
+    UI_Antibodies_Infections_SurvivedDaysDetails = "Knox antibodies: %1 (%2)",
+    UI_Antibodies_Infections_DaysSinceApocalypse = "Knox antibodies: %1",
+    UI_Antibodies_Infections_DaysSinceApocalypseDetails = "Knox antibodies: %1 (%2)",
+
+    UI_Antibodies_Stage_0 = "None",
+    UI_Antibodies_Stage_1 = "Incubation",
+    UI_Antibodies_Stage_2 = "Prodromal",
+    UI_Antibodies_Stage_3 = "Illness",
+    UI_Antibodies_Stage_4 = "Terminal",
+    UI_Antibodies_Stage_5 = "Decline",
+    UI_Antibodies_Stage_6 = "Convalescence",
+
     UI_Antibodies_pain = "Pain", 
     UI_Antibodies_stress = "Stress", 
     UI_Antibodies_unhappiness = "Unhappiness", 
@@ -27,110 +69,5 @@ UI_Antibodies_EN = {
     UI_Antibodies_sickness = "Sickness", 
     UI_Antibodies_foodSickness = "Food sickness", 
     UI_Antibodies_temperature = "Temperature", 
-    UI_Antibodies_drunkness = "Drunkness",
-    UI_Antibodies_Stable_Condition = "In stable condition.",
-    
-    UI_Antibodies_Wounds_None = "There are no injuries.",
-
-    UI_Antibodies_Hygiene_WoundsUnaffected = "None of the injuries are affected.",
-    UI_Antibodies_Hygiene_WoundsAffected = "Some of the injuries are affected (%1).",
-
-    UI_Antibodies_Infections_NoSigns = "No indications of infection."
-    UI_Antibodies_Infections_CommonInfections = "Common infections confirmed."
-    UI_Antibodies_Infections_KnoxInfections = "Knox infections confirmed."
-    UI_Antibodies_Infections_KnoxStage = "Knox stage: %1.",
-    UI_Antibodies_Infections_KnoxProgress = "Knox VA: %1/%2."
-
-    UI_Antibodies_Stage_0 = "None",
-    UI_Antibodies_Stage_1 = "Incubation",
-    UI_Antibodies_Stage_2 = "Prodromal",
-    UI_Antibodies_Stage_3 = "Illness",
-    UI_Antibodies_Stage_4 = "Terminal",
-    UI_Antibodies_Stage_5 = "Decline",
-    UI_Antibodies_Stage_6 = "Convalescence",    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    UI_Antibodies_Zombification = "Zombification",
-    UI_Antibodies_Wounds = "Wounds",
-    UI_Antibodies_Infections = "Infections",
-    UI_Antibodies_Hygiene = "Hygiene",
-    UI_Antibodies_Moodles = "Moodles",
-    UI_Antibodies_Traits = "Traits",
-
-    UI_Antibodies_NoMoodles = "No relevant moodles detected."
-    UI_Antibodies_NoWounds = "No wounds detected."
-    UI_Antibodies_NoInfections = "No infections."
-    UI_Antibodies_NoTraits = "No relevant traits detected."
-
-    UI_Antibodies_regular = "Regular infection (%1)",
-    UI_Antibodies_virusScratch = "Knox infected scratch (%1)",
-    UI_Antibodies_virusCut = "Knox infected laceration (%1)",
-    UI_Antibodies_virusBite = "Knox infected bite (%1)",
-
-    UI_Antibodies_HygieneBloodHigh = "Lots of blood on:",
-    UI_Antibodies_HygieneBloodMedium = "Some of blood on:",
-    UI_Antibodies_HygieneBloodLow = "Little of blood on:",
-    UI_Antibodies_HygieneBloodNone = "No visible signs of blood.",
-
-    UI_Antibodies_HygieneDirtHigh = "Lots of dirt on:",
-    UI_Antibodies_HygieneDirtMedium = "Some of dirt on:",
-    UI_Antibodies_HygieneDirtLow = "Little of dirt on:",
-    UI_Antibodies_HygieneDirtNone = "No visible signs of dirt.",
-
-    UI_Antibodies_HygieneBloodCovered = "Blood covered: (%1)",
-    UI_Antibodies_HygieneBloodStained = "Blood stained: (%1)",
-    UI_Antibodies_HygieneBloodMarks = "Blood marks: (%1)",
-
-
-    UI_Antibodies_ImageText = "<IMAGE:media/ui/lgd_antibodies_plus.png,14,14>"
-    UI_Antibodies_HygieneBloodHigh = "Some parts of the body are covered with blood."
-    UI_Antibodies_HygieneBloodMedium = "Some parts of the body are blood-stained."
-    UI_Antibodies_HygieneBloodLow = "Some parts of the body are slightly bloody."
-    UI_Antibodies_HygieneBloodNone = "No blood detected."
-
-    UI_Antibodies_HygieneDirtCovered = "Some parts of the body are covered with dirt."
-    UI_Antibodies_HygieneDirtMedium = "Some parts of the body are dirt-stained."
-    UI_Antibodies_HygieneDirtLow = "Some parts of the body are slightly dirty."
-    UI_Antibodies_HygieneDirtNone = "No dirt detected."
-
-    UI_Antibodies_KnoxNoSigns = "No signs of Knox virus infection.",
-    UI_Antibodies_KnoxBiteWounds = "Fresh bite wounds. Knox virus infection confirmed.",
-    UI_Antibodies_KnoxInfectedWounds = "Some wounds show symptoms. Knox virus infection confirmed.",
-    UI_Antibodies_KnoxSymptoms = "Body shows symptoms. Knox virus infection confirmed.",
-    UI_Antibodies_KnoxInfectionPossible = "Some wounds might be Knox infected.",
-    UI_Antibodies_KnoxUncertainStage = "Uncertain stage of infection.",
-    UI_Antibodies_KnoxInfectionStage = "Knox infection stage: %1",
-    UI_Antibodies_KnoxLevels = "Knox Infection/Antibodies levels: %1",
-    
-    UI_Antibodies_VeryLow = "Very Low",
-    UI_Antibodies_Low = "Low",
-    UI_Antibodies_Medium = "Medium",
-    UI_Antibodies_High = "High",
-    UI_Antibodies_VeryHigh = "Very High",
-
+    UI_Antibodies_drunkness = "Drunkness"
 }

@@ -22,6 +22,7 @@ AntibodiesDiagnosis.HygieneThreshold = 0.2
 
 AntibodiesDiagnosis.Translation = {
     ["Wounds"] = {
+        ["bandaged"] = "IGUI_health_Bandaged",
         ["deepWounded"] = "IGUI_health_DeepWound",
         ["bleeding"] = "IGUI_health_Bleeding",
         ["bitten"] = "IGUI_health_Bitten",
@@ -48,6 +49,25 @@ AntibodiesDiagnosis.Condition = {
 -----------------------------------------------------
 --DIAGNOSIS------------------------------------------
 -----------------------------------------------------
+
+local computeStage = function(val, minVal, maxVal, stageCount)
+  if val <= minVal then
+    return 0
+  end
+  if val >= maxVal then
+    return stageCount
+  end
+  local len = math.abs(maxVal - minVal)
+  local phaseLen = len / stageCount
+  for phaseIndex=1, stageCount, 1 do
+    local phaseMin = (phaseIndex - 1) * phaseLen
+    local phaseMax = phaseMin + phaseLen
+    if val > phaseMin and val <= phaseMax then
+      return phaseIndex
+    end
+  end
+  return 0
+end
 
 local formatChange = function(f)
     if f > 0 then
@@ -153,6 +173,9 @@ local formatWound = function(skill, key, counts, effects)
         return false
     end
     local name = getText(AntibodiesDiagnosis.Translation.Wounds[key])
+    if not name then 
+        name = key
+    end
     return AntibodiesDiagnosis.RED1..name.." ("..effect..")"
 end
 
@@ -189,30 +212,94 @@ local createHygieneDiagnosis = function(medicalFile, skill)
     local result = getTitleFormatted(getText("UI_Antibodies_Hygiene"))
     local sentences = {}
 
-    --local amount = math.max(medicalFile.status.hygiene.blood, medicalFile.status.hygiene.dirt)
-    --local level = AntibodiesUtils.computeStage(amount, 0, BodyPartType.MAX:index(), 4)
-    --table.insert(sentences, getText("UI_Antibodies_Hygiene_Level_"..tostring(level)))
-
-    local affected = 0
-    for _, bodyPart in pairs(medicalFile.status.parts) do
-        local amount = math.max(bodyPart.hygiene.blood, bodyPart.hygiene.dirt)
-        if amount > AntibodiesDiagnosis.HygieneThreshold and bodyPart.hygiene.mod < 0 then
-            affected = affected + 1
-        end
-    end
-    if affected > 0 then
+    local bodyStage = computeStage(medicalFile.status.hygiene.body, 0, 1, 4)
+    table.insert(
+        sentences,
+        getText("UI_Antibodies_Hygiene_Body", 
+            getText("UI_Antibodies_Hygiene_Stage_"..tostring(bodyStage))
+        )
+    )
+    
+    if medicalFile.status.hygiene.hasClothes then
+        local clothesStage = computeStage(medicalFile.status.hygiene.clothing, 0, 1, 4)
         table.insert(
             sentences, 
-            AntibodiesDiagnosis.RED1..getText(
-                "UI_Antibodies_Hygiene_WoundsAffected", 
-                AntibodiesUtils.format_float(medicalFile.effects.hygiene)
+            getText("UI_Antibodies_Hygiene_Clothes", 
+                getText("UI_Antibodies_Hygiene_Stage_"..tostring(clothesStage))
             )
         )
-    else
-        table.insert(sentences, getText("UI_Antibodies_Hygiene_WoundsUnaffected"))
+    end
+
+    local totalWounds = 0
+    for key in pairs(medicalFile.status.wounds) do
+        if medicalFile.status.wounds[key] > 0 then
+            totalWounds = totalWounds + 1
+        end
+    end
+
+    if totalWounds > 0 then
+        local affected = 0
+        for _, bodyPart in pairs(medicalFile.status.parts) do
+            local amount = math.max(bodyPart.hygiene.blood, bodyPart.hygiene.dirt)
+            if amount > AntibodiesDiagnosis.HygieneThreshold and bodyPart.hygiene.mod < 0 then
+                affected = affected + 1
+            end
+        end
+        if affected > 0 then
+            table.insert(
+                sentences, 
+                AntibodiesDiagnosis.RED1..getText(
+                    "UI_Antibodies_Hygiene_WoundsAffected", 
+                    AntibodiesUtils.format_float(medicalFile.effects.hygiene)
+                )
+            )
+        else
+            table.insert(sentences, getText("UI_Antibodies_Hygiene_WoundsUnaffected"))
+        end
     end
 
     return result..table.concat(sentences, "\n")
+end
+
+--[[
+function getKnoxStage(medicalFile, medicalSkill, knowsDetection)
+    if knowsDetection then
+        if isOverStageThreshold(medicalSkill, medicalFile.knoxInfectionStage, 1) then
+            local color = AntibodiesDiagnosis.GREY1
+            if medicalFile.knoxInfectionStage > Antibodies.InfectionStage.None then
+                color = AntibodiesDiagnosis.RED1
+            end
+            if medicalFile.knoxInfectionStage > Antibodies.InfectionStage.Terminal then
+                color = AntibodiesDiagnosis.GREEN1
+            end
+            return {
+                ["text"] = AntibodiesDiagnosis.GREY1..getText(
+                    "UI_Antibodies_KnoxInfectionStage", 
+                    color.."<SPACE>"..getText("UI_Antibodies_Stage_"..tostring(medicalFile.knoxInfectionStage))
+                ),
+                ["result"] = true
+            }
+        end
+        if hasWounds(medicalFile.status.wounds) then
+            return {
+                ["text"] = AntibodiesDiagnosis.GREY1..getText("UI_Antibodies_KnoxUncertainStage"),
+                ["result"] = false
+            }
+        end
+    end
+    return false
+end
+]]
+
+local getKnoxStageText = function(medicalFile)
+    local color = AntibodiesDiagnosis.GREY1
+    if medicalFile.knoxInfectionStage > Antibodies.InfectionStage.None then
+        color = AntibodiesDiagnosis.RED1
+    end
+    if medicalFile.knoxInfectionStage > Antibodies.InfectionStage.Terminal then
+        color = AntibodiesDiagnosis.GREEN1
+    end
+    return getText("UI_Antibodies_Stage_"..tostring(medicalFile.knoxInfectionStage))
 end
 
 local createInfectionsDiagnosis = function(medicalFile, skill, options)
@@ -225,7 +312,19 @@ local createInfectionsDiagnosis = function(medicalFile, skill, options)
 
     if medicalFile.status.infections.virus > 0 then
         table.insert(sentences, AntibodiesDiagnosis.RED1..getText("UI_Antibodies_Infections_KnoxInfections"))
-        table.insert(sentences, getText("UI_Antibodies_Infections_KnoxStage", "INFECTED"))
+        table.insert(sentences, AntibodiesDiagnosis.GREY1..getText(
+            "UI_Antibodies_Infections_KnoxStage", getKnoxStageText(medicalFile)
+        ))
+        table.insert(sentences, AntibodiesDiagnosis.GREY1..getText(
+            "UI_Antibodies_Infections_KnoxInfection", 
+            AntibodiesUtils.format_float(medicalFile.knoxInfectionLevel),
+            formatChange(medicalFile.knoxInfectionDelta)
+        ))
+        table.insert(sentences, AntibodiesDiagnosis.GREY1..getText(
+            "UI_Antibodies_Infections_KnoxAntibodies", 
+            AntibodiesUtils.format_float(medicalFile.knoxAntibodiesLevel),
+            formatChange(medicalFile.knoxAntibodiesDelta)
+        ))
     end
 
     if #sentences < 1 then
@@ -273,44 +372,7 @@ local computeDoctorSkill = function(medicalFile, doctor)
     }
 end
 
---[[
-
-    UI_Antibodies_Stage_0 = "None",
-    UI_Antibodies_Stage_1 = "Incubation",
-    UI_Antibodies_Stage_2 = "Prodromal",
-    UI_Antibodies_Stage_3 = "Illness",
-    UI_Antibodies_Stage_4 = "Terminal",
-    UI_Antibodies_Stage_5 = "Decline",
-    UI_Antibodies_Stage_6 = "Convalescence",   
-
-]]
-
---[[
-local computeCache = function(options)
-    if AntibodiesDiagnosis.Cache then
-        return AntibodiesDiagnosis.Cache
-    end
-    local result = {
-        ["moodles"] = {["min"] = 10000, ["max"] = -10000},
-        ["wounds"] = {["min"] = 10000, ["max"] = -10000},
-        ["hygiene"] = {["min"] = 10000, ["max"] = -10000},
-        ["infections"] = {["min"] = 10000, ["max"] = -10000}
-    }
-    for group_key in pairs(result) do
-        for key in pairs(options[group_key]) do
-            local val = options[group_key][key]
-            if result[group_key]["min"] > val then result[group_key]["min"] = val end
-            if result[group_key]["max"] < val then result[group_key]["max"] = val end    
-        end
-    end
-    result["moodles"].min = result["moodles"].min * 4.0
-    result["moodles"].max = result["moodles"].max * 4.0
-    return result
-end
-]]
-
 AntibodiesDiagnosis.create = function(medicalFile, doctor)
-    --AntibodiesDiagnosis.Cache = computeCache(options)
     --AntibodiesUtils.print_table(medicalFile.status.condition)
     local skill = computeDoctorSkill(medicalFile, doctor)
     return {
