@@ -1,0 +1,52 @@
+The Antibodies mod enhances the vanilla zombification mechanic by introducing an antibodies curve inspired by real-life immune system responses. If the antibodies successfully counteract the infection, the character will experience a gradual recovery over time.
+
+[hr][/hr]
+[h2]How it Works[/h2]
+
+As you get infected, the Knox Virus in your body spreads. Alongside, your body slowly mounts an immunological response.
+
+The antibodies output rate is tied to infection progression (peaks at 50% infection), your condition, wounds, infections and hygiene.
+
+Your job is to sustain all positive effects, and reduce all negative effects (see diagnose panel) - so that antibodies can overtake the infection and eradicate the virus.
+
+Playing as character with medical background actually makes sense now, since it allows you to diagnose yourself and others, and also provide significant bonuses while treating wounds.
+
+By default, sandbox settings are rather forgiving. The easiest way to tweak that is by changing "Base Antibodies Growth" property in General section.
+
+[hr][/hr]
+[h1]FAQ:[/h1]
+
+[b]Will this mod work if I install it after my character got infected?[/b]
+Yes, unless you are past certain point. Infection length is randomized, but it takes between 2-3 days to resolve (either way).
+
+[b]I've been nursing my character back to health for several days now, and he hasn't died, but it still says he's bitten. Should it be taking this long?[/b]
+
+Most likely you are confusing a wound and the infection. Wound will stay with you for a while, even if you survive the virus - but it will eventually heal.
+
+[b]Does this mod work in multiplayer mode?[/b]
+Yes, including local co-op.
+
+[b]Susceptible Mod compatibility?[/b]
+Yes. Investigated by @The Animeville Horror. Thanks again.
+
+[b]Does antibiotics pill found in the game help at all?[/b]
+In real life antibiotics don't do anything against viruses. It will help by healing bacterial infections, however it won't do anything against Knox Virus.
+
+[b]How can I make sure this mod works?[/b]
+Create a character with medical background (with +2 First Aid) - this will add diagnose button in your health panel.
+This is also the best way to tailor sandbox settings to your needs.
+
+[hr][/hr]
+[h1]Translations:[/h1]
+
+For now only ENG and PL translations are provided, but I'm happy to include more.
+
+You can contribute through here:
+https://github.com/lonegamedev/pz_mod_antibodies
+
+[hr][/hr]
+[h1]Update Schedule:[/h1]
+
+I have constrained myself to update only Tue-Thu. All potential problems with the update should be resolved in this time window.
+
+I do however reserve a right to fix critical issues ASAP (for example when game update breaks the mod). 
