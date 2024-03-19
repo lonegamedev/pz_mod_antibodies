@@ -1,9 +1,13 @@
 # Antibodies (Project Zomboid Mod)
 
-Antibodies mod expands vanilla zombification mechanic by adding antibodies curve which is loosely based on real-life immune system response. If antibodies overtake the infection, the character will slowly recover.
+The Antibodies mod enhances the vanilla zombification mechanic by introducing an antibodies curve inspired by real-life immune system responses. If the antibodies successfully counteract the infection, the character will experience a gradual recovery over time.
 
 Steam Workshop: `https://steamcommunity.com/sharedfiles/filedetails/?id=2392676812`
 
-## Installation
+## Building
+
+Run either `build.sh` or `build_dev.sh`
+
+## Manual Installation
 
 Place mod directory under `/Zomboid/mods`.
