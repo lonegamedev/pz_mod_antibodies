@@ -5,7 +5,7 @@ function ISCharacterInfoWindow:createChildren()
 	local enableHygiene = true
 	local options = AntibodiesOptions.getOptions()
 	if options then
-		enableHygiene = options.general.enableHygienePanel
+		enableHygiene = options.general.hygienePanelEnabled
 	end
 
 	if enableHygiene then

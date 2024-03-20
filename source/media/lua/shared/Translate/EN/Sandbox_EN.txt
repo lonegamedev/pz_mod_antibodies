@@ -31,7 +31,7 @@ Sandbox_EN = {
     Sandbox_{{MOD_ID}}_general_diagnoseEnabled = "Enable Knox Diagnosis"
     Sandbox_{{MOD_ID}}_general_diagnoseEnabled_tooltip = "Adds Knox diagnosis panel."
 
-    Sandbox_{{MOD_ID}}_general_diagnoseSkillNeeded = "Knox Diagnosis Required Skill"
+    Sandbox_{{MOD_ID}}_general_diagnoseSkillNeeded = "Knox Diagnosis First-Aid Level"
     Sandbox_{{MOD_ID}}_general_diagnoseSkillNeeded_tooltip = "First-Aid skill requried."
 
     Sandbox_{{MOD_ID}}_general_doctorSkillTreatmentMod = "Doctor Skill Treatment Mod"
