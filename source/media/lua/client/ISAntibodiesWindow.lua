@@ -209,6 +209,8 @@ function ISAntibodiesWindow:render()
 	local save = self.patient:getModData()
 	local medicalFile = save.medicalFile
 
+	print("Patient Medical File", medicalFile)
+
 	self.progressPanel.medicalFile = medicalFile
 	self.conditionPanel.medicalFile = medicalFile
 	self.woundsPanel.medicalFile = medicalFile

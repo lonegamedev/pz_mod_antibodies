@@ -10,7 +10,7 @@ Run either `build.sh` or `build_dev.sh`
 
 ## Translations
 
-Mod now requires some translations.
+Antibodies requires some translations, because of UI elements.
 
 I have provided ENG and PL, but would gladly accept contributions.
 Worst case scenario, I can do machine translations - but these can be worse than default ENG.

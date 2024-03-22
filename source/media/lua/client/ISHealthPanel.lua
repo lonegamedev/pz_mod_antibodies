@@ -91,7 +91,7 @@ function ISHealthPanel:update()
 	if Antibodies then
 		if Antibodies.currentOptions and self.knox_infection then
 			if Antibodies.currentOptions.general.diagnoseEnabled then
-				self.doctorLevel = AntibodiesUtils.getMedicalSkill(self.character)
+				self.doctorLevel = AntibodiesUtils.getMedicalSkill(self:getDoctor())
 				self.knox_infection:setVisible(
 					self.doctorLevel >= Antibodies.currentOptions.general.diagnoseSkillNeeded
 						or Antibodies.currentOptions.general.debug

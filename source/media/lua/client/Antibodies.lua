@@ -801,6 +801,7 @@ Antibodies.currentOptions = nil
 Antibodies.currentCurves = nil
 Antibodies.getCustomBodyParts = getCustomBodyParts
 Antibodies.maxAbsConditionValue = 1
+Antibodies.createMedicalFile = createMedicalFile
 
 -----------------------------------------------------
 --CALLBACKS------------------------------------------
@@ -816,11 +817,33 @@ local function onMainMenuEnter()
 end
 Events.OnMainMenuEnter.Add(onMainMenuEnter)
 
+local function onServerCommand(module, command, arguments)
+	if module == Antibodies.info.modId then
+		if command == "shareMedicalFile" then
+			local player = getPlayerByOnlineID(arguments.playerOnlineId)
+			if player then
+				local modData = player:getModData()
+				modData.medicalFile = arguments.medicalFile
+			end
+		end
+	end
+end
+Events.OnServerCommand.Add(onServerCommand)
+
 local function onEveryOneMinute()
 	ensureOptionsInitialization()
 	local players = AntibodiesUtils.getLocalPlayers()
 	for key, player in ipairs(players) do
 		updateKnoxAntibodies(player)
+		if isClient() then
+			local save = player:getModData()
+			sendClientCommand(
+				player,
+				Antibodies.info.modId,
+				"shareMedicalFile",
+				{ playerOnlineId = player:getOnlineID(), medicalFile = save.medicalFile }
+			)
+		end
 	end
 end
 Events.EveryOneMinute.Add(onEveryOneMinute)
