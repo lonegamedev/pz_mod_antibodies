@@ -45,6 +45,13 @@ You can contribute through here:
 https://github.com/lonegamedev/pz_mod_antibodies
 
 [hr][/hr]
+[h1]Known conflicts:[/h1]
+
+[b]zRe Vaccine ReMod by kERHUS[/b] - this mod packs older version of Antibodies, and will break the current version. If you want new features please ask author of that mod to update theirs. You shouldn't try to run both.
+
+The same goes for any other mod that includes previous version of Antibodies.
+
+[hr][/hr]
 [h1]Update Schedule:[/h1]
 
 I have constrained myself to update only Tue-Thu. All potential problems with the update should be resolved in this time window.

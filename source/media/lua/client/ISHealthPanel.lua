@@ -1,3 +1,6 @@
+require("Antibodies")
+require("ISAntibodiesWindow")
+
 function ISHealthPanel:showAntibodiesWindow()
 	if ISAntibodiesWindow.instance and ISAntibodiesWindow.instance[self:getDoctor():getPlayerNum() + 1] then
 		ISAntibodiesWindow.instance[self:getDoctor():getPlayerNum() + 1]:removeFromUIManager()
@@ -85,11 +88,17 @@ end
 local ISHealthPanel_update = ISHealthPanel.update
 function ISHealthPanel:update()
 	ISHealthPanel_update(self)
-	if Antibodies.currentOptions and self.knox_infection then
-		self.doctorLevel = AntibodiesUtils.getMedicalSkill(self.character)
-		self.knox_infection:setVisible(
-			self.doctorLevel >= Antibodies.currentOptions.general.diagnoseSkillNeeded
-				or Antibodies.currentOptions.general.debug
-		)
+	if Antibodies then
+		if Antibodies.currentOptions and self.knox_infection then
+			if Antibodies.currentOptions.general.diagnoseEnabled then
+				self.doctorLevel = AntibodiesUtils.getMedicalSkill(self:getDoctor())
+				self.knox_infection:setVisible(
+					self.doctorLevel >= Antibodies.currentOptions.general.diagnoseSkillNeeded
+						or Antibodies.currentOptions.general.debug
+				)
+			else
+				self.knox_infection:setVisible(false)
+			end
+		end
 	end
 end
