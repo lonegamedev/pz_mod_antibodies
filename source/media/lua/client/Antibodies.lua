@@ -3,18 +3,19 @@ Antibodies.__index = Antibodies
 
 require("AntibodiesOptions")
 require("AntibodiesUtils")
+require("AntibodiesShared")
 
 -----------------------------------------------------
 --CONSTS---------------------------------------------
 -----------------------------------------------------
 
 Antibodies.info = {
-	["version"] = "{{MOD_VERSION}}",
-	["optionsVersion"] = "{{MOD_OPTIONS_VERSION}}",
-	["author"] = "lonegamedev.com",
-	["modName"] = "{{MOD_NAME}}",
-	["modId"] = "{{MOD_ID}}",
-	["modWorkshopId"] = "{{MOD_WORKSHOP_ID}}",
+	["version"] = AntibodiesShared.info.version,
+	["optionsVersion"] = AntibodiesShared.info.optionsVersion,
+	["author"] = AntibodiesShared.info.author,
+	["modName"] = AntibodiesShared.info.modName,
+	["modId"] = AntibodiesShared.info.modId,
+	["modWorkshopId"] = AntibodiesShared.info.modWorkshopId,
 }
 
 Antibodies.InfectionStage = {
@@ -95,6 +96,9 @@ local function ensureOptionsInitialization(player)
 	end
 	if not hasCurves() then
 		Antibodies.currentCurves = AntibodiesOptions.getCurves()
+	end
+	if Antibodies.timeAccumlator == nil then
+		Antibodies.timeAccumlator = 0
 	end
 end
 
@@ -793,6 +797,32 @@ local function updateKnoxAntibodies(player)
 	save.medicalFile = medicalFile
 end
 
+local function updatePlayers()
+	local players = AntibodiesUtils.getLocalPlayers()
+	for key, player in ipairs(players) do
+		updateKnoxAntibodies(player)
+	end
+end
+
+local function networkSync(player)
+	if isClient() then
+		Antibodies.timeAccumlator = Antibodies.timeAccumlator + getGameTime():getInvMultiplier()
+		if Antibodies.timeAccumlator >= 1.0 then
+			local players = AntibodiesUtils.getLocalPlayers()
+			for key, player in ipairs(players) do
+				local save = player:getModData()
+				sendClientCommand(
+					player,
+					Antibodies.info.modId,
+					AntibodiesShared.networkCommand.shareMedicalFile,
+					{ playerOnlineId = player:getOnlineID(), medicalFile = save.medicalFile }
+				)
+			end
+		end
+		Antibodies.timeAccumlator = 0.0
+	end
+end
+
 -----------------------------------------------------
 --GLOBALS--------------------------------------------
 -----------------------------------------------------
@@ -819,9 +849,9 @@ Events.OnMainMenuEnter.Add(onMainMenuEnter)
 
 local function onServerCommand(module, command, arguments)
 	if module == Antibodies.info.modId then
-		if command == "shareMedicalFile" then
+		if command == AntibodiesShared.networkCommand.shareMedicalFile then
 			local player = getPlayerByOnlineID(arguments.playerOnlineId)
-			if player then
+			if player and not player:isLocalPlayer() then
 				local modData = player:getModData()
 				modData.medicalFile = arguments.medicalFile
 			end
@@ -832,18 +862,7 @@ Events.OnServerCommand.Add(onServerCommand)
 
 local function onEveryOneMinute()
 	ensureOptionsInitialization()
-	local players = AntibodiesUtils.getLocalPlayers()
-	for key, player in ipairs(players) do
-		updateKnoxAntibodies(player)
-		if isClient() then
-			local save = player:getModData()
-			sendClientCommand(
-				player,
-				Antibodies.info.modId,
-				"shareMedicalFile",
-				{ playerOnlineId = player:getOnlineID(), medicalFile = save.medicalFile }
-			)
-		end
-	end
+	updatePlayers()
+	networkSync()
 end
 Events.EveryOneMinute.Add(onEveryOneMinute)
