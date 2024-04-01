@@ -6,7 +6,8 @@ import image_gen
 import codecs
 
 encoding_map = {
-    "Translate/PL": "windows-1250"
+    "Translate/PL": "windows-1250",
+    "Translate/ES": "windows-1252"
 }
 
 def render_jinja_template(source_file_path, destination_file_path, context):
