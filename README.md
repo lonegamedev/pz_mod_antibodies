@@ -8,6 +8,10 @@ Steam Workshop: `https://steamcommunity.com/sharedfiles/filedetails/?id=23926768
 
 Run either `build.sh` or `build_dev.sh`
 
+## Special Thanks
+
+`MrTerreII` for providing ES (Spanish) translation.
+
 ## Translations
 
 Antibodies requires some translations, because of UI elements.

@@ -37,9 +37,14 @@ Create a character with medical background (with +2 First Aid) - this will add d
 This is also the best way to tailor sandbox settings to your needs.
 
 [hr][/hr]
+[h1]Special Thanks:[/h1]
+
+[b]MrTerreII[/b] for providing ES (Spanish) translation.
+
+[hr][/hr]
 [h1]Translations:[/h1]
 
-For now only ENG and PL translations are provided, but I'm happy to include more.
+For now only ENG, PL and ES translations are provided, but I'm happy to include more.
 
 You can contribute through here:
 https://github.com/lonegamedev/pz_mod_antibodies
