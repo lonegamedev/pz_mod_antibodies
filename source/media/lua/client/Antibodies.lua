@@ -187,7 +187,7 @@ local function getWoundsPart(bodyPart)
 		if bodyPart:getBurnTime() > 0 then
 			result.burnt = true
 		end
-		if bodyPart:isNeedBurnWash() then
+		if bodyPart:isNeedBurnWash() and bodyPart:getBurnTime() > 0 then
 			result.needBurnWash = true
 		end
 		if bodyPart:getStitchTime() > 0 then
