@@ -1,5 +1,5 @@
 name={{MOD_NAME}} (v{{MOD_VERSION}})
-id={{MOD_ID}}
+id={{WORKSHOP_ID}}/{{MOD_ID}}
 author=lonegamedev
 modversion={{MOD_VERSION}}
 versionMin=42.0.0

@@ -76,7 +76,8 @@ def transform_files(source_dir, destination_dir, context):
                 render_jinja_template(source_file_path, destination_file_path, context)
                 for encoding_key, encoding_value in encoding_map.items():
                     if encoding_key in source_file_path:
-                        change_encoding(destination_file_path, encoding_value)
+                        if not '42.0' in source_file_path:
+                            change_encoding(destination_file_path, encoding_value)
             else:
                 shutil.copy2(source_file_path, destination_file_path)
 
@@ -137,6 +138,7 @@ transform_files('source', f'mods/{args.MOD_ID}', vars(args))
 
 if args.MOD_POSTER_FILTER == "greyscale":
     image_gen.make_greyscale(f'mods/{args.MOD_ID}/poster.png')
+    image_gen.make_greyscale(f'mods/{args.MOD_ID}/42.0/poster.png')
 
 copy_files(f'mods/{args.MOD_ID}', f'workshop/{args.MOD_ID}/Contents/mods/{args.MOD_ID}', {})
 image_gen.resize(f'mods/{args.MOD_ID}/poster.png', f'workshop/{args.MOD_ID}/preview.png', 256, 256)
