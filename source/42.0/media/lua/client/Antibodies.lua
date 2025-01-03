@@ -330,34 +330,34 @@ local function getRawConditions(player)
 	local bodyDamage = player:getBodyDamage()
 
 	return {
-		["thirst"] = stats:getThirst(), -- 0-1
-		["drunkness"] = stats:getDrunkenness() / 100, -- 0-1
-		["hunger"] = stats:getHunger(), -- 0-1
-		["weight"] = nutrition:getWeight(), -- 35-130
+		["thirst"] = AntibodiesUtils.clamp(stats:getThirst(), 0, 1),
+		["drunkness"] = AntibodiesUtils.clamp(stats:getDrunkenness() / 100, 0, 1),
+		["hunger"] = AntibodiesUtils.clamp(stats:getHunger(), 0, 1),
+		["weight"] = AntibodiesUtils.clamp(nutrition:getWeight(), 35, 130),
 
-		["carbohydrates"] = nutrition:getCarbohydrates(), -- -500-1000
-		["lipids"] = nutrition:getLipids(), -- -500-1000
-		["proteins"] = nutrition:getProteins(), -- -500-1700
+		["carbohydrates"] = AntibodiesUtils.clamp(nutrition:getCarbohydrates(), -500, 1000),
+		["lipids"] = AntibodiesUtils.clamp(nutrition:getLipids(), -500, 1000),
+		["proteins"] = AntibodiesUtils.clamp(nutrition:getProteins(), -500, 1700),
 
-		["sickness"] = stats:getSickness(), -- 0-1
-		["foodSickness"] = bodyDamage:getFoodSicknessLevel(), -- 0-100
+		["sickness"] = AntibodiesUtils.clamp(stats:getSickness(), 0, 1),
+		["foodSickness"] = AntibodiesUtils.clamp(bodyDamage:getFoodSicknessLevel(), 0, 100),
 
-		["fitness"] = player:getPerkLevel(Perks.Fitness), -- 1-10
-		["strength"] = player:getPerkLevel(Perks.Strength), -- 1-10
-		["fatigue"] = stats:getFatigue(), -- 0-1
+		["fitness"] = AntibodiesUtils.clamp(player:getPerkLevel(Perks.Fitness), 1, 10),
+		["strength"] = AntibodiesUtils.clamp(player:getPerkLevel(Perks.Strength), 1, 10),
+		["fatigue"] = AntibodiesUtils.clamp(stats:getFatigue(), 0, 1),
 
-		["endurance"] = stats:getEndurance(), -- 0-1
-		["temperature"] = bodyDamage:getTemperature(), -- 20-40
+		["endurance"] = AntibodiesUtils.clamp(stats:getEndurance(), 0, 1),
+		["temperature"] = AntibodiesUtils.clamp(bodyDamage:getTemperature(), 20, 40),
 
-		["pain"] = stats:getPain(), -- 0-100
-		["stress"] = stats:getStress(), -- 0-1.5
-		["unhappiness"] = bodyDamage:getUnhappynessLevel(), -- 0-100
-		["boredom"] = stats:getBoredom(), -- 0-100
-		["panic"] = stats:getPanic(), -- 0-100
+		["pain"] = AntibodiesUtils.clamp(stats:getPain(), 0, 100),
+		["stress"] = AntibodiesUtils.clamp(stats:getStress(), 0, 1.5),
+		["unhappiness"] = AntibodiesUtils.clamp(bodyDamage:getUnhappynessLevel(), 0, 100),
+		["boredom"] = AntibodiesUtils.clamp(stats:getBoredom(), 0, 100),
+		["panic"] = AntibodiesUtils.clamp(stats:getPanic(), 0, 100),
 
-		["sanity"] = stats:getSanity(), -- 0-100
-		["anger"] = stats:getAnger(), -- 0-100
-		["fear"] = stats:getFear(), -- 0-100
+		["sanity"] = AntibodiesUtils.clamp(stats:getSanity(), 0, 100),
+		["anger"] = AntibodiesUtils.clamp(stats:getAnger(), 0, 100),
+		["fear"] = AntibodiesUtils.clamp(stats:getFear(), 0, 100),
 	}
 end
 

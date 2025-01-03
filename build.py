@@ -97,7 +97,7 @@ def format_workshop_txt(args):
     lines = []
     lines.append(f'version={args.MOD_VERSION}')
     lines.append(f'id={args.WORKSHOP_ID}')
-    lines.append(f'title={args.MOD_NAME} (v{args.MOD_VERSION})')
+    lines.append(f'title={args.MOD_NAME} (v{args.MOD_VERSION}) [B41 + B42]')
     lines.append(render_jinja_template_from_string(format_workshop_description(args.WORKSHOP_DESCRIPTION), vars(args)))
     lines.append(f'tags={args.WORKSHOP_TAGS}')
     lines.append(f'visibility={args.WORKSHOP_VISIBILITY}')
