@@ -5,10 +5,39 @@ from jinja2 import Environment, FileSystemLoader
 import image_gen
 import codecs
 
-encoding_map = {
-    "Translate/PL": "windows-1250",
-    "Translate/ES": "windows-1252"
+build_41_encoding_map = {
+    "Translate/PL": "windows-1250",  # Polish
+    "Translate/ES": "windows-1252",  # Spanish
+    "Translate/DE": "windows-1252",  # German
+    "Translate/FR": "windows-1252",  # French
+    "Translate/FI": "windows-1252",  # Finnish
+    "Translate/RU": "windows-1251",  # Russian
+    "Translate/JA": "utf-8",         # Japanese
+    "Translate/KO": "utf-8",         # Korean
+    "Translate/ZH": "utf-8",         # Chinese
+    "Translate/TH": "utf-8",         # Thai
+    "Translate/TR": "windows-1254",  # Turkish
+    "Translate/UK": "windows-1251",  # Ukrainian
+    "Translate/PT": "windows-1252",  # Portuguese
+    "Translate/IT": "windows-1252",  # Italian
+    "Translate/NL": "windows-1252",  # Dutch
+    "Translate/SV": "windows-1252",  # Swedish
+    "Translate/NO": "windows-1252",  # Norwegian
+    "Translate/DA": "windows-1252",  # Danish
+    "Translate/CS": "windows-1250",  # Czech
+    "Translate/HU": "windows-1250",  # Hungarian
+    "Translate/RO": "windows-1250",  # Romanian
+    "Translate/HR": "windows-1250",  # Croatian
+    "Translate/SK": "windows-1250",  # Slovak
+    "Translate/SL": "windows-1250",  # Slovenian
+    "Translate/EL": "windows-1253",  # Greek
+    "Translate/BG": "windows-1251",  # Bulgarian
+    "Translate/SR": "windows-1251",  # Serbian
+    "Translate/HE": "windows-1255",  # Hebrew
+    "Translate/AR": "windows-1256",  # Arabic
 }
+build_41_translate_path = 'media/lua/shared/Translate'
+common_translate_path = 'common/media/lua/shared/Translate'
 
 def render_jinja_template(source_file_path, destination_file_path, context):
     env = Environment(loader=FileSystemLoader(os.path.dirname(source_file_path)))
@@ -30,6 +59,8 @@ def render_and_save_to_string(template_string, context, destination_file_path):
     return rendered_content
 
 def change_encoding(path, dest_encoding):
+    if dest_encoding == 'utf-8':
+        return
     with open(path, 'r', encoding='utf-8') as input_file:
         content = input_file.read()
     with open(path, 'w', encoding=dest_encoding) as output_file:
@@ -58,7 +89,7 @@ def transform_files(source_dir, destination_dir, context):
     if os.path.exists(destination_dir):
         shutil.rmtree(destination_dir)
     
-    os.makedirs(destination_dir)
+    os.makedirs(destination_dir, exist_ok=True)
 
     for root, dirs, files in os.walk(source_dir):
         relative_path = os.path.relpath(root, source_dir)
@@ -71,15 +102,22 @@ def transform_files(source_dir, destination_dir, context):
         for file_name in files:
             source_file_path = os.path.join(root, file_name)
             destination_file_path = os.path.join(destination_path, file_name)
-
             if file_name.endswith(('.lua', '.txt', '.info', '.md')):
                 render_jinja_template(source_file_path, destination_file_path, context)
-                for encoding_key, encoding_value in encoding_map.items():
-                    if encoding_key in source_file_path:
-                        if not '42.0' in source_file_path:
-                            change_encoding(destination_file_path, encoding_value)
             else:
                 shutil.copy2(source_file_path, destination_file_path)
+
+    #Backport translation to build 41
+    for root, dirs, files in os.walk(destination_dir):
+        for file_name in files:
+            file_path = os.path.join(root, file_name)
+            if common_translate_path in file_path:
+                dest_41_path = file_path.replace(common_translate_path,build_41_translate_path)
+                os.makedirs(os.path.dirname(dest_41_path), exist_ok=True)
+                shutil.copy2(file_path, dest_41_path)
+                for encoding_key, encoding_value in build_41_encoding_map.items():
+                    if encoding_key in dest_41_path:
+                        change_encoding(dest_41_path, encoding_value)
 
 def format_description(text):
     lines = text.split('\n')
