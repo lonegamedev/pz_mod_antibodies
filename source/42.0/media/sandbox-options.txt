@@ -1,0 +1,436 @@
+VERSION = 1,
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_general_baseAntibodyGrowth
+{
+	type = double, min = 0.0, max = 300.0, default = 180.0,
+	page = {{MOD_ID}}_general, translation = {{MOD_ID}}_general_baseAntibodyGrowth,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_general_knoxInfectionsSurvivedEffect
+{
+	type = double, min = -300.0, max = 300.0, default = 0.0,
+	page = {{MOD_ID}}_general, translation = {{MOD_ID}}_general_knoxInfectionsSurvivedEffect,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_general_knoxInfectionsSurvivedThreshold
+{
+	type = double, min = 0.0, max = 300.0, default = 100.0,
+	page = {{MOD_ID}}_general, translation = {{MOD_ID}}_general_knoxInfectionsSurvivedThreshold,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_general_knoxMutationEffect
+{
+	type = double, min = -300.0, max = 300.0, default = 0.0,
+	page = {{MOD_ID}}_general, translation = {{MOD_ID}}_general_knoxMutationEffect,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_general_knoxMutationThreshold
+{
+	type = double, min = 0.0, max = 300.0, default = 100.0,
+	page = {{MOD_ID}}_general, translation = {{MOD_ID}}_general_knoxMutationThreshold,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_general_knoxMutationStart
+{
+	type = enum, numValues = 2, default = 2,
+	page = {{MOD_ID}}_general, translation = {{MOD_ID}}_general_knoxMutationStart,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_general_hygienePanelEnabled
+{
+	type = boolean, default = true,
+	page = {{MOD_ID}}_general, translation = {{MOD_ID}}_general_hygienePanelEnabled,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_general_diagnoseEnabled
+{
+	type = boolean, default = true,
+	page = {{MOD_ID}}_general, translation = {{MOD_ID}}_general_diagnoseEnabled,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_general_diagnoseSkillNeeded
+{
+	type = integer, min = 0, max = 10, default = 2,
+	page = {{MOD_ID}}_general, translation = {{MOD_ID}}_general_diagnoseSkillNeeded,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_general_doctorSkillTreatmentMod
+{
+	type = double, min = 0, max = 10, default = 1,
+	page = {{MOD_ID}}_general, translation = {{MOD_ID}}_general_doctorSkillTreatmentMod,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_general_debug
+{
+	type = boolean, default = false,
+	page = {{MOD_ID}}_general, translation = {{MOD_ID}}_general_debug,
+}
+
+
+
+
+
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_fitness
+{
+	type = double, min = -100.0, max = 100.0, default = 5.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_fitness,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_strength
+{
+	type = double, min = -100.0, max = 100.0, default = 5.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_strength,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_fatigue
+{
+	type = double, min = -100.0, max = 100.0, default = -10.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_fatigue,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_endurance
+{
+	type = double, min = -100.0, max = 100.0, default = -10.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_endurance,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_weight
+{
+	type = double, min = -100.0, max = 100.0, default = -20.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_weight,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_thirst
+{
+	type = double, min = -100.0, max = 100.0, default = -20.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_thirst,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_sickness
+{
+	type = double, min = -100.0, max = 100.0, default = -10.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_sickness,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_foodSickness
+{
+	type = double, min = -100.0, max = 100.0, default = -10.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_foodSickness,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_temperature
+{
+	type = double, min = -100.0, max = 100.0, default = 20.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_temperature,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_drunkness
+{
+	type = double, min = -100.0, max = 100.0, default = 10.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_drunkness,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_hunger
+{
+	type = double, min = -100.0, max = 100.0, default = -20.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_hunger,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_pain
+{
+	type = double, min = -100.0, max = 100.0, default = -5.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_pain,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_stress
+{
+	type = double, min = -100.0, max = 100.0, default = -5.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_stress,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_unhappiness
+{
+	type = double, min = -100.0, max = 100.0, default = -5.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_unhappiness,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_boredom
+{
+	type = double, min = -100.0, max = 100.0, default = -1.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_boredom,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_panic
+{
+	type = double, min = -100.0, max = 100.0, default = -5.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_panic,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_sanity
+{
+	type = double, min = -100.0, max = 100.0, default = 0.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_sanity,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_anger
+{
+	type = double, min = -100.0, max = 100.0, default = 0.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_anger,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_condition_fear
+{
+	type = double, min = -100.0, max = 100.0, default = 0.0,
+	page = {{MOD_ID}}_condition, translation = {{MOD_ID}}_condition_fear,
+}
+
+
+
+
+
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_wounds_bandaged
+{
+	type = double, min = 0.0, max = 10.0, default = 0.25,
+	page = {{MOD_ID}}_wounds, translation = {{MOD_ID}}_wounds_bandaged,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_wounds_cleanBandage
+{
+	type = double, min = 0.0, max = 10.0, default = 0.25,
+	page = {{MOD_ID}}_wounds, translation = {{MOD_ID}}_wounds_cleanBandage,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_wounds_sterilizedBandage
+{
+	type = double, min = 0.0, max = 10.0, default = 0.25,
+	page = {{MOD_ID}}_wounds, translation = {{MOD_ID}}_wounds_sterilizedBandage,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_wounds_sterilizedWound
+{
+	type = double, min = 0.0, max = 10.0, default = 0.25,
+	page = {{MOD_ID}}_wounds, translation = {{MOD_ID}}_wounds_sterilizedWound,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_wounds_garlic
+{
+	type = double, min = 0.0, max = 10.0, default = 1.0,
+	page = {{MOD_ID}}_wounds, translation = {{MOD_ID}}_wounds_garlic,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_wounds_plantain
+{
+	type = double, min = 0.0, max = 10.0, default = 0.5,
+	page = {{MOD_ID}}_wounds, translation = {{MOD_ID}}_wounds_plantain,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_wounds_comfrey
+{
+	type = double, min = 0.0, max = 10.0, default = 0.25,
+	page = {{MOD_ID}}_wounds, translation = {{MOD_ID}}_wounds_comfrey,
+}
+
+
+
+
+
+
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_wounds_deepWounded
+{
+	type = double, min = -10.0, max = 0.0, default = -4.0,
+	page = {{MOD_ID}}_wounds, translation = {{MOD_ID}}_wounds_deepWounded,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_wounds_bleeding
+{
+	type = double, min = -10.0, max = 0.0, default = -4.0,
+	page = {{MOD_ID}}_wounds, translation = {{MOD_ID}}_wounds_bleeding,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_wounds_bitten
+{
+	type = double, min = -10.0, max = 0.0, default = -3.0,
+	page = {{MOD_ID}}_wounds, translation = {{MOD_ID}}_wounds_bitten,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_wounds_cut
+{
+	type = double, min = -10.0, max = 0.0, default = -2.0,
+	page = {{MOD_ID}}_wounds, translation = {{MOD_ID}}_wounds_cut,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_wounds_scratched
+{
+	type = double, min = -10.0, max = 0.0, default = -1.0,
+	page = {{MOD_ID}}_wounds, translation = {{MOD_ID}}_wounds_scratched,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_wounds_burnt
+{
+	type = double, min = -10.0, max = 0.0, default = -2.0,
+	page = {{MOD_ID}}_wounds, translation = {{MOD_ID}}_wounds_burnt,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_wounds_needBurnWash
+{
+	type = double, min = -10.0, max = 0.0, default = -3.0,
+	page = {{MOD_ID}}_wounds, translation = {{MOD_ID}}_wounds_needBurnWash,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_wounds_stiched
+{
+	type = double, min = -10.0, max = 0.0, default = -1.0,
+	page = {{MOD_ID}}_wounds, translation = {{MOD_ID}}_wounds_stiched,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_wounds_haveBullet
+{
+	type = double, min = -10.0, max = 0.0, default = -3.0,
+	page = {{MOD_ID}}_wounds, translation = {{MOD_ID}}_wounds_haveBullet,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_wounds_haveGlass
+{
+	type = double, min = -10.0, max = 0.0, default = -2.0,
+	page = {{MOD_ID}}_wounds, translation = {{MOD_ID}}_wounds_haveGlass,
+}
+
+
+
+
+
+
+
+
+
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_infections_regular
+{
+	type = double, min = -10.0, max = 0.0, default = -1.0,
+	page = {{MOD_ID}}_infections, translation = {{MOD_ID}}_infections_regular,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_infections_virusScratch
+{
+	type = double, min = -10.0, max = 0.0, default = -2.0,
+	page = {{MOD_ID}}_infections, translation = {{MOD_ID}}_infections_virusScratch,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_infections_virusCut
+{
+	type = double, min = -10.0, max = 0.0, default = -3.0,
+	page = {{MOD_ID}}_infections, translation = {{MOD_ID}}_infections_virusCut,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_infections_virusBite
+{
+	type = double, min = -10.0, max = 0.0, default = -4.0,
+	page = {{MOD_ID}}_infections, translation = {{MOD_ID}}_infections_virusBite,
+}
+
+
+
+
+
+
+
+
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_hygiene_bloodEffect
+{
+	type = double, min = -100.0, max = 0.0, default = -20.0,
+	page = {{MOD_ID}}_hygiene, translation = {{MOD_ID}}_hygiene_bloodEffect,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_hygiene_dirtEffect
+{
+	type = double, min = -100.0, max = 0.0, default = -10.0,
+	page = {{MOD_ID}}_hygiene, translation = {{MOD_ID}}_hygiene_dirtEffect,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_hygiene_bandaged
+{
+	type = double, min = 0.0, max = 1.0, default = 0.25,
+	page = {{MOD_ID}}_hygiene, translation = {{MOD_ID}}_hygiene_bandaged,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_hygiene_cleanBandage
+{
+	type = double, min = 0.0, max = 1.0, default = 0.25,
+	page = {{MOD_ID}}_hygiene, translation = {{MOD_ID}}_hygiene_cleanBandage,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_hygiene_sterilizedBandage
+{
+	type = double, min = 0.0, max = 1.0, default = 0.25,
+	page = {{MOD_ID}}_hygiene, translation = {{MOD_ID}}_hygiene_sterilizedBandage,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_hygiene_sterilizedWound
+{
+	type = double, min = 0.0, max = 1.0, default = 0.25,
+	page = {{MOD_ID}}_hygiene, translation = {{MOD_ID}}_hygiene_sterilizedWound,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_hygiene_deepWounded
+{
+	type = double, min = -10.0, max = 0.0, default = -0.80,
+	page = {{MOD_ID}}_hygiene, translation = {{MOD_ID}}_hygiene_deepWounded,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_hygiene_bleeding
+{
+	type = double, min = -10.0, max = 0.0, default = -0.60,
+	page = {{MOD_ID}}_hygiene, translation = {{MOD_ID}}_hygiene_bleeding,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_hygiene_bitten
+{
+	type = double, min = -10.0, max = 0.0, default = -0.40,
+	page = {{MOD_ID}}_hygiene, translation = {{MOD_ID}}_hygiene_bitten,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_hygiene_cut
+{
+	type = double, min = -10.0, max = 0.0, default = -0.20,
+	page = {{MOD_ID}}_hygiene, translation = {{MOD_ID}}_hygiene_cut,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_hygiene_scratched
+{
+	type = double, min = -10.0, max = 0.0, default = -0.10,
+	page = {{MOD_ID}}_hygiene, translation = {{MOD_ID}}_hygiene_scratched,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_hygiene_burnt
+{
+	type = double, min = -10.0, max = 0.0, default = -0.40,
+	page = {{MOD_ID}}_hygiene, translation = {{MOD_ID}}_hygiene_burnt,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_hygiene_needBurnWash
+{
+	type = double, min = -10.0, max = 0.0, default = -0.60,
+	page = {{MOD_ID}}_hygiene, translation = {{MOD_ID}}_hygiene_needBurnWash,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_hygiene_stiched
+{
+	type = double, min = -10.0, max = 0.0, default = -0.10,
+	page = {{MOD_ID}}_hygiene, translation = {{MOD_ID}}_hygiene_stiched,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_hygiene_haveBullet
+{
+	type = double, min = -10.0, max = 0.0, default = -0.60,
+	page = {{MOD_ID}}_hygiene, translation = {{MOD_ID}}_hygiene_haveBullet,
+}
+
+option {{MOD_ID}}_{{MOD_OPTIONS_VERSION}}_hygiene_haveGlass
+{
+	type = double, min = -10.0, max = 0.0, default = -0.40,
+	page = {{MOD_ID}}_hygiene, translation = {{MOD_ID}}_hygiene_haveGlass,
+}

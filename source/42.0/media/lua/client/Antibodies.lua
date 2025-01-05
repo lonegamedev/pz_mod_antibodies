@@ -778,6 +778,7 @@ local function updateKnoxAntibodies(player)
 	ensurePlayerInitialization(player)
 	local save = player:getModData()
 	local medicalFile = createMedicalFile(player)
+
 	--[[
 	if Antibodies.currentOptions.general.debug then
 		print(string.format("%s: %s", Antibodies.info.modId, AntibodiesUtils.tableToJson(medicalFile)))
