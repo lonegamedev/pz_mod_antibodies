@@ -40,6 +40,7 @@ This is also the best way to tailor sandbox settings to your needs.
 [h1]Special Thanks:[/h1]
 
 [b]MrTerreII[/b] for providing ES (Spanish) translation.
+[b]VVentos[/b] for providing TR (Turkish) translation.
 
 [hr][/hr]
 [h1]Translations:[/h1]
