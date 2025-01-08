@@ -4,11 +4,13 @@ The Antibodies mod enhances the vanilla zombification mechanic by introducing an
 
 Steam Workshop: `https://steamcommunity.com/sharedfiles/filedetails/?id=2392676812`
 
-## Building
+## Build script
 
-To build the project, run either `build.sh` or `build_dev.sh`. These scripts are wrappers around the Python build script `build.py`.
+To streamline the update process and minimize errors, a Python build script is used to convert the source code into a mod and a workshop package.
 
-Alternatively, you can run the Python build script directly, especially if you're on Windows.
+To build the project, you can run build.sh or build_dev.sh, which serve as wrappers for the Python build script build.py.
+
+Alternatively, if you're using Windows or prefer direct execution, you can run the Python build script (build.py) directly.
 
 ## Translations
 
@@ -42,5 +44,5 @@ Make sure to unsubscribe from Steam Workshop version (to ensure local version wi
 
 ## Special Thanks
 
-`MrTerreII` for providing ES (Spanish) translation.
-`VVentos` for providing TR (Turkish) translation.
+- `MrTerreII` for providing ES (Spanish) translation.
+- `VVentos` for providing TR (Turkish) translation.
