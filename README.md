@@ -46,3 +46,4 @@ Make sure to unsubscribe from Steam Workshop version (to ensure local version wi
 
 - `MrTerreII` for providing ES (Spanish) translation.
 - `VVentos` for providing TR (Turkish) translation.
+- `llerafel` for providing RU (Russian) translation.

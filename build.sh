@@ -12,7 +12,7 @@ pip install -r requirements.txt
 python build.py \
     --MOD_ID="lgd_antibodies" \
     --MOD_NAME="Antibodies" \
-    --MOD_VERSION="1.91" \
+    --MOD_VERSION="1.92" \
     --MOD_OPTIONS_VERSION="1_80" \
     --MOD_POSTER_FILTER="" \
     --WORKSHOP_ID="2392676812" \
