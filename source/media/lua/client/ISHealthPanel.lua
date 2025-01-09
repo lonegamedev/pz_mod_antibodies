@@ -33,10 +33,15 @@ function ISHealthPanel:showAntibodiesWindow()
 	end
 end
 
+function ISHealthPanel:canDiagnose()
+	return self.doctorLevel >= Antibodies.currentOptions.general.diagnoseSkillNeeded
+		or Antibodies.currentOptions.general.debug
+end
+
 local ISHealthPanel_onJoypadDown = ISHealthPanel.onJoypadDown
 function ISHealthPanel:onJoypadDown(button)
 	ISHealthPanel_onJoypadDown(self, button)
-	if button == Joypad.XButton then
+	if button == Joypad.XButton and self:canDiagnose() then
 		if self:getDoctor() == self:getPatient() then
 			getPlayerInfoPanel(self:getDoctor():getPlayerNum()):toggleView(xpSystemText.health)
 		else
@@ -57,7 +62,9 @@ end
 ISHealthPanel_onGainJoypadFocus = ISHealthPanel.onGainJoypadFocus
 function ISHealthPanel:onGainJoypadFocus(joypadData)
 	ISHealthPanel_onGainJoypadFocus(self, joypadData)
-	self:setISButtonForX(self.knox_infection)
+	if self:canDiagnose() then
+		self:setISButtonForX(self.knox_infection)
+	end
 end
 
 local ISHealthPanel_createChildren = ISHealthPanel.createChildren
@@ -92,10 +99,7 @@ function ISHealthPanel:update()
 		if Antibodies.currentOptions and self.knox_infection then
 			if Antibodies.currentOptions.general.diagnoseEnabled then
 				self.doctorLevel = AntibodiesUtils.getMedicalSkill(self:getDoctor())
-				self.knox_infection:setVisible(
-					self.doctorLevel >= Antibodies.currentOptions.general.diagnoseSkillNeeded
-						or Antibodies.currentOptions.general.debug
-				)
+				self.knox_infection:setVisible(self:canDiagnose())
 			else
 				self.knox_infection:setVisible(false)
 			end
