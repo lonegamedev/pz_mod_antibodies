@@ -88,12 +88,15 @@ local function predrawEntries(panel, entries, viewId)
 	local y = AntibodiesUI.CONTENT_PADDING_Y
 	local drawFunc = drawEntryEmpty
 	local numEntries = #entries
-	for i, entry in ipairs(entries) do
+
+	for i = 1, numEntries do
+		local entry = entries[i]
 		y = y + drawFunc(panel, AntibodiesUI.CONTENT_PADDING, y, panel:getAvailableWidth(), entry, viewId)
 		if i < numEntries then
 			y = y + AntibodiesUI.ROW_MARGIN
 		end
 	end
+
 	y = y + AntibodiesUI.CONTENT_PADDING_Y
 	return y
 end
@@ -104,13 +107,16 @@ local function drawEntries(panel, entries, contentHeight, viewId)
 	if panel.height > contentHeight then
 		y = y + ((panel.height - contentHeight) / 2)
 	end
+
 	local numEntries = #entries
-	for _, entry in ipairs(entries) do
+	for i = 1, numEntries do
+		local entry = entries[i]
 		y = y + drawFunc(panel, AntibodiesUI.CONTENT_PADDING, y, panel:getAvailableWidth(), entry, viewId)
 		if i < numEntries then
 			y = y + AntibodiesUI.ROW_MARGIN
 		end
 	end
+
 	y = y + AntibodiesUI.CONTENT_PADDING_Y
 	return y
 end

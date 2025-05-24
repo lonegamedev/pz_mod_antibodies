@@ -36,12 +36,41 @@ In real life antibiotics don't do anything against viruses. It will help by heal
 Create a character with medical background (with +2 First Aid) - this will add diagnose button in your health panel.
 This is also the best way to tailor sandbox settings to your needs.
 
+[b]How can I make this mod harder or adjust the difficulty?[/b]
+The key setting is [i]Base Antibodies Growth[/i], which controls how quickly your character develops immunity. Here's what different values mean (assuming no other effects):
+[list]
+    [*][b]180 (default)[/b] - You overcome the infection at [b]40% progression[/b].
+    [*][b]140[/b] - You overcome it at [b]66% progression[/b].
+    [*][b]138[/b] - You overcome it at [b]70% progression[/b].
+    [*][b]135[/b] - [b]You die[/b]. The infection progresses faster than your body can fight it.
+[/list]
+
+Every in-game effect modifies this baseline. You can adjust difficulty by:
+[list]
+    [*]Lowering [i]Base Antibodies Growth[/i] to shrink your margin for error.
+    [*]Adding harsher penalties (e.g., from injuries, exhaustion, etc.).
+    [*]Combining both for a tougher experience.
+[/list]
+
+[b]Personal note:[/b]
+I think the vanilla Knox Infection kind of sidesteps some (even core) mechanics in the game. For example:
+[list]
+    [*][i]First Aid[/i] feels almost irrelevant without human enemies like bandits or raiders.
+    [*][i]Tailoring[/i] also doesn't offer enough incentive to grind it to meaningful levels.
+    [*][i]Hygiene/Washing[/i] completely meaningless, even though you can plumb your washing machine, after water gets shut off.
+[/list]
+
+Personally, I find [b]managing the infection[/b] more engaging than just hiding in a base for a few days - especially in multiplayer.
+Don't worry, you will get cocky at some point, and you will get stranded without necessary supplies to survive the infection. It's just a matter of time.
+But hey, don't let me tell you how to play your game.
+
 [hr][/hr]
 [h1]Special Thanks:[/h1]
 
 [b]MrTerreII[/b] for providing ES (Spanish) translation.
 [b]VVentos[/b] for providing TR (Turkish) translation.
 [b]llerafel[/b] for providing RU (Russian) translation.
+[b]Rookavite[/b] for providing DE (German) translation.
 
 [hr][/hr]
 [h1]Translations:[/h1]
