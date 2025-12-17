@@ -324,10 +324,96 @@ local function getHygienePart(player, bodyPart, wounds)
 	return result
 end
 
+--[[
 local function getRawConditions(player)
 	local stats = player:getStats()
+	local nutrition = player:getNutrition()
+	local bodyDamage = player:getBodyDamage()
+
+	return {
+		["thirst"] = AntibodiesUtils.clamp(stats:getThirst(), 0, 1),
+		["drunkness"] = AntibodiesUtils.clamp(stats:getDrunkenness() / 100, 0, 1),
+		["hunger"] = AntibodiesUtils.clamp(stats:getHunger(), 0, 1),
+		["weight"] = AntibodiesUtils.clamp(nutrition:getWeight(), 35, 130),
+
+		["carbohydrates"] = AntibodiesUtils.clamp(nutrition:getCarbohydrates(), -500, 1000),
+		["lipids"] = AntibodiesUtils.clamp(nutrition:getLipids(), -500, 1000),
+		["proteins"] = AntibodiesUtils.clamp(nutrition:getProteins(), -500, 1700),
+
+		["sickness"] = AntibodiesUtils.clamp(stats:getSickness(), 0, 1),
+		["foodSickness"] = AntibodiesUtils.clamp(bodyDamage:getFoodSicknessLevel(), 0, 100),
+
+		["fitness"] = AntibodiesUtils.clamp(player:getPerkLevel(Perks.Fitness), 1, 10),
+		["strength"] = AntibodiesUtils.clamp(player:getPerkLevel(Perks.Strength), 1, 10),
+		["fatigue"] = AntibodiesUtils.clamp(stats:getFatigue(), 0, 1),
+
+		["endurance"] = AntibodiesUtils.clamp(stats:getEndurance(), 0, 1),
+		["temperature"] = AntibodiesUtils.clamp(bodyDamage:getTemperature(), 20, 40),
+
+		["pain"] = AntibodiesUtils.clamp(stats:getPain(), 0, 100),
+		["stress"] = AntibodiesUtils.clamp(stats:getStress(), 0, 1.5),
+		["unhappiness"] = AntibodiesUtils.clamp(bodyDamage:getUnhappynessLevel(), 0, 100),
+		["boredom"] = AntibodiesUtils.clamp(stats:getBoredom(), 0, 100),
+		["panic"] = AntibodiesUtils.clamp(stats:getPanic(), 0, 100),
+
+		["sanity"] = AntibodiesUtils.clamp(stats:getSanity(), 0, 100),
+		["anger"] = AntibodiesUtils.clamp(stats:getAnger(), 0, 100),
+		["fear"] = AntibodiesUtils.clamp(stats:getFear(), 0, 100),
+	}
+end
+]]
+
+local function getRawConditions(player)
+	local stats = player:getStats()
+	local nutrition = player:getNutrition()
 	local res = {}
 
+	local getStatNormalized = function(stat)
+		local val = stats:get(stat)
+		local min = stat:getMinimumValue()
+		local max = stat:getMaximumValue()
+		local normalized = (val - min) / (max - min)
+		return normalized
+	end
+
+	local test = AntibodiesCondition:new(AntibodiesEnum.Condition.THIRST)
+	print("condition test id: ", test:get_id())
+
+	res[AntibodiesEnum.Condition.THIRST] = getStatNormalized(CharacterStat.THIRST)
+	res[AntibodiesEnum.Condition.INTOXICATION] = getStatNormalized(CharacterStat.INTOXICATION)
+	res[AntibodiesEnum.Condition.HUNGER] = getStatNormalized(CharacterStat.HUNGER)
+	res[AntibodiesEnum.Condition.WEIGHT] = AntibodiesUtils.clamp(nutrition:getWeight(), 35, 130)
+
+	res[AntibodiesEnum.Condition.CARBOHYDRATES] = AntibodiesUtils.clamp(nutrition:getCarbohydrates(), -500, 1000)
+	res[AntibodiesEnum.Condition.LIPIDS] = AntibodiesUtils.clamp(nutrition:getLipids(), -500, 1000)
+	res[AntibodiesEnum.Condition.PROTEINS] = AntibodiesUtils.clamp(nutrition:getProteins(), -500, 1700)
+
+	res[AntibodiesEnum.Condition.SICKNESS] = AntibodiesUtils.clamp(getStatNormalized(CharacterStat.SICKNESS), 0, 1)
+	res[AntibodiesEnum.Condition.FOOD_SICKNESS] = getStatNormalized(CharacterStat.FOOD_SICKNESS)
+
+	res[AntibodiesEnum.Condition.FITNESS] = AntibodiesUtils.clamp(player:getPerkLevel(Perks.Fitness), 1, 10)
+	res[AntibodiesEnum.Condition.STRENGTH] = AntibodiesUtils.clamp(player:getPerkLevel(Perks.Strength), 1, 10)
+	res[AntibodiesEnum.Condition.FATIGUE] = getStatNormalized(CharacterStat.FATIGUE)
+
+	res[AntibodiesEnum.Condition.ENDURANCE] = getStatNormalized(CharacterStat.ENDURANCE)
+	--res[AntibodiesEnum.Condition.TEMPERATURE] = AntibodiesUtils.clamp(bodyDamage:getTemperature(), 20, 40)
+
+	--[[
+
+		["pain"] = AntibodiesUtils.clamp(stats:getPain(), 0, 100),
+		["stress"] = AntibodiesUtils.clamp(stats:getStress(), 0, 1.5),
+		["unhappiness"] = AntibodiesUtils.clamp(bodyDamage:getUnhappynessLevel(), 0, 100),
+		["boredom"] = AntibodiesUtils.clamp(stats:getBoredom(), 0, 100),
+		["panic"] = AntibodiesUtils.clamp(stats:getPanic(), 0, 100),
+
+		["sanity"] = AntibodiesUtils.clamp(stats:getSanity(), 0, 100),
+		["anger"] = AntibodiesUtils.clamp(stats:getAnger(), 0, 100),
+		["fear"] = AntibodiesUtils.clamp(stats:getFear(), 0, 100),
+	]]
+
+	print(AntibodiesUtils.table_to_string(res))
+
+	--[[
 	for _i, stat in ipairs(CharacterStatsList) do
 		local val = stats:get(stat)
 		local id = stat:getId()
@@ -336,6 +422,7 @@ local function getRawConditions(player)
 		local normalized = (val - min) / (max - min)
 		res[id] = normalized
 	end
+	]]
 	return res
 end
 
@@ -773,7 +860,7 @@ local function updateKnoxAntibodies(player)
 	local medicalFile = createMedicalFile(player)
 
 	--if Antibodies.currentOptions.general.debug then
-	print(string.format("%s: %s", Antibodies.info.modId, AntibodiesUtils.tableToJson(medicalFile)))
+	--print(string.format("%s: %s", Antibodies.info.modId, AntibodiesUtils.tableToJson(medicalFile)))
 	--end
 
 	if medicalFile.knoxInfectionStage == Antibodies.InfectionStage.None then
