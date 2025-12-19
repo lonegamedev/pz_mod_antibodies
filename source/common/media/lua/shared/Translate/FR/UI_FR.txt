@@ -1,0 +1,101 @@
+UI_Antibodies_FR = {
+
+    UI_Antibodies_Infection_Stage_0 = "Aucun",
+    UI_Antibodies_Infection_Stage_1 = "Incubation",
+    UI_Antibodies_Infection_Stage_2 = "Prodrome",
+    UI_Antibodies_Infection_Stage_3 = "Maladie",
+    UI_Antibodies_Infection_Stage_4 = "Terminal",
+    UI_Antibodies_Infection_Stage_5 = "Déclin",
+    UI_Antibodies_Infection_Stage_6 = "Convalescence",
+    UI_Antibodies_Infection_Stage_Unknown = "Inconnu",
+
+    UI_Antibodies_BodyParts_Hand_L = "Main gauche (%1)",
+    UI_Antibodies_BodyParts_Hand_R = "Main droite (%1)",
+    UI_Antibodies_BodyParts_ForeArm_L = "Avant-bras gauche (%1)",
+    UI_Antibodies_BodyParts_ForeArm_R = "Avant-bras droit (%1)",
+    UI_Antibodies_BodyParts_UpperArm_L = "Haut bras gauche (%1)",
+    UI_Antibodies_BodyParts_UpperArm_R = "Haut bras droit (%1)",
+    UI_Antibodies_BodyParts_Torso_Upper = "Haut torse (%1)",
+    UI_Antibodies_BodyParts_Torso_Lower = "Bas torse (%1)",
+    UI_Antibodies_BodyParts_Head = "Tête (%1)",
+    UI_Antibodies_BodyParts_Neck = "Cou (%1)",
+    UI_Antibodies_BodyParts_Groin = "Aine (%1)",
+    UI_Antibodies_BodyParts_UpperLeg_L = "Cuisse gauche (%1)",
+    UI_Antibodies_BodyParts_UpperLeg_R = "Cuisse droite (%1)",
+    UI_Antibodies_BodyParts_LowerLeg_L = "Tibia gauche (%1)",
+    UI_Antibodies_BodyParts_LowerLeg_R = "Tibia droit (%1)",
+    UI_Antibodies_BodyParts_Foot_L = "Pied gauche (%1)",
+    UI_Antibodies_BodyParts_Foot_R = "Pied droit (%1)",
+
+    UI_Antibodies_Condition_thirst = "Soif (%1)",
+    UI_Antibodies_Condition_drunkness = "Ivresse (%1)",
+    UI_Antibodies_Condition_hunger = "Faim (%1)",
+    UI_Antibodies_Condition_weight = "Poids (%1)",
+    UI_Antibodies_Condition_carbohydrates = "Glucides (%1)",
+    UI_Antibodies_Condition_lipids = "Lipides (%1)",
+    UI_Antibodies_Condition_proteins = "Protéines (%1)",
+    UI_Antibodies_Condition_sickness = "Maladie (%1)",
+    UI_Antibodies_Condition_foodSickness = "Intox. alimentaire (%1)",
+    UI_Antibodies_Condition_fitness = "Forme (%1)",
+    UI_Antibodies_Condition_strength = "Force (%1)",
+    UI_Antibodies_Condition_fatigue = "Fatigue (%1)",
+    UI_Antibodies_Condition_endurance = "Endurance (%1)",
+    UI_Antibodies_Condition_temperature = "Température (%1)",
+    UI_Antibodies_Condition_pain = "Douleur (%1)",
+    UI_Antibodies_Condition_stress = "Stress (%1)",
+    UI_Antibodies_Condition_stressSmoker = "Stress fumeur (%1)",
+    UI_Antibodies_Condition_unhappiness = "Tristesse (%1)",
+    UI_Antibodies_Condition_boredom = "Ennui (%1)",
+    UI_Antibodies_Condition_panic = "Panique (%1)",
+    UI_Antibodies_Condition_sanity = "Lucidité (%1)",
+    UI_Antibodies_Condition_anger = "Colère (%1)",
+    UI_Antibodies_Condition_fear = "Peur (%1)",
+
+    UI_Antibodies_KnoxInfection_TitleSelf = "Infection Knox",
+    UI_Antibodies_KnoxInfection_TitleOther = "Infection Knox de %1",
+
+    UI_Antibodies_KnoxInfection_Button = "Infection Knox",
+    UI_Antibodies_KnoxInfection_Virus = "Virus: %1% (%2)",
+    UI_Antibodies_KnoxInfection_Antibodies = "Anticorps: %1% (%2)",
+
+    UI_Antibodies_KnoxInfection_Stage = "STADE",
+
+	  UI_Antibodies_KnoxInfection_ConditionEffects = "Effets État",
+	  UI_Antibodies_KnoxInfection_WoundEffects = "Effets Blessures",
+	  UI_Antibodies_KnoxInfection_InfectionEffects = "Effets Infections",
+	  UI_Antibodies_KnoxInfection_HygieneEffects = "Effets Hygiène",
+
+    UI_Antibodies_KnoxInfection_NoEffect = "Aucun effet actif",
+
+    UI_Antibodies_Wounds_bitten = "Mordu (%1)",
+    UI_Antibodies_Wounds_bandaged = "Bandé (%1)",
+    UI_Antibodies_Wounds_cleanBandage = "Bandage propre (%1)",
+    UI_Antibodies_Wounds_sterilizedBandage = "Bandage stérilisé (%1)",
+    UI_Antibodies_Wounds_sterilizedWound = "Blessure stérilisée (%1)",
+
+    UI_Antibodies_Wounds_plantain = "Cataplasme plantain (%1)",
+    UI_Antibodies_Wounds_garlic = "Cataplasme ail (%1)",
+    UI_Antibodies_Wounds_comfrey = "Cataplasme consoude (%1)",
+
+    UI_Antibodies_Wounds_deepWounded = "Blessure profonde (%1)",
+    UI_Antibodies_Wounds_bleeding = "Saignement (%1)",
+
+    UI_Antibodies_Wounds_cut = "Lacération (%1)",
+    UI_Antibodies_Wounds_scratched = "Égratigné (%1)",
+
+    UI_Antibodies_Wounds_burnt = "Brûlé (%1)",
+    UI_Antibodies_Wounds_needBurnWash = "Brûlé à laver (%1)",
+    UI_Antibodies_Wounds_stiched = "Recousu (%1)",
+
+    UI_Antibodies_Wounds_haveBullet = "Balle logée (%1)",
+    UI_Antibodies_Wounds_haveGlass = "Verre logé (%1)",
+
+    UI_Antibodies_Infections_regular = "Infecté (%1)",
+    UI_Antibodies_Infections_virus = "Virus (%1)",
+    UI_Antibodies_Infections_virusScratch = "Virus égratignure (%1)",
+    UI_Antibodies_Infections_virusCut = "Virus lacération (%1)",
+    UI_Antibodies_Infections_virusBite = "Virus morsure (%1)",
+
+    UI_Antibodies_Hygiene = "Hygiène",
+    UI_Antibodies_Hygiene_Info = " <CENTRE> <SIZE:medium> Ceci est le panneau d'hygiène. <LINE> <LINE> <LEFT> Une bonne hygiène garde votre personnage en bonne santé, évite les infections et aide à récupérer. <LINE> <LINE> Soigner vite les blessures et appliquer des soins adaptés peut temporairement limiter les effets d'une mauvaise hygiène."
+}
