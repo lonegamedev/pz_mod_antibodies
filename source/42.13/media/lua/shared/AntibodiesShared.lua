@@ -1,4 +1,4 @@
-AntibodiesShared = {}
+local AntibodiesShared = {}
 AntibodiesShared.__index = AntibodiesShared
 
 AntibodiesShared.info = {
@@ -13,3 +13,5 @@ AntibodiesShared.info = {
 AntibodiesShared.networkCommand = {
 	["shareMedicalFile"] = "shareMedicalFile",
 }
+
+return AntibodiesShared

@@ -1,0 +1,21 @@
+{
+    "runtime.version": "Lua 5.1",
+    "diagnostics.globals": [
+        "getPlayer",
+        "getSpecificPlayer",
+        "Events",
+        "LuaEventManager",
+        "IsoPlayer",
+        "ArrayList",
+        "CharacterStat",
+        "Perks",
+        "BloodBodyPartType",
+        "getNumActivePlayers",
+        "getNumActivePlayers",
+        "instanceof",
+        "GameTime",
+        "getTextManager",
+        "UIFont",
+        "BodyPartType"
+    ]
+}

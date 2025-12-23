@@ -1,66 +1,115 @@
-AntibodiesCondition = {}
+local AntibodiesEnum = require("AntibodiesEnum")
+local AntibodiesUtils = require("AntibodiesUtils")
+local AntibodiesConfig = require("AntibodiesConfig")
+
+local AntibodiesCondition = {}
 AntibodiesCondition.__index = AntibodiesCondition
 
-local Enum = AntibodiesEnum.create_enum()
-
-Enum.define("THIRST")
-Enum.define("INTOXICATION")
-Enum.define("HUNGER")
-Enum.define("WEIGHT")
-
-Enum.define("CALORIES")
-Enum.define("CARBOHYDRATES")
-Enum.define("LIPIDS")
-Enum.define("PROTEINS")
-
-Enum.define("SICKNESS")
-Enum.define("FOOD_SICKNESS")
-
-Enum.define("FITNESS")
-Enum.define("STRENGTH")
-Enum.define("FATIGUE")
-
-Enum.define("ENDURANCE")
-Enum.define("TEMPERATURE")
-
-Enum.define("PAIN")
-Enum.define("STRESS")
-Enum.define("UNHAPPINESS")
-Enum.define("BOREDOM")
-Enum.define("PANIC")
-
-Enum.define("SANITY")
-Enum.define("ANGER")
-Enum.define("FEAR")
-
-AntibodiesCondition.Enum = Enum
-
-function AntibodiesCondition:new(id, min, max, curve)
-	local instance = {}
-	setmetatable(instance, AntibodiesCondition)
-	instance.id = id
-	instance.min = min
-	instance.max = max
-	instance.curve = curve
-	instance.raw = nil
-	instance.computed = nil
+function AntibodiesCondition.new(player)
+	local instance = setmetatable({}, AntibodiesCondition)
+	instance:update(player, nil)
 	return instance
 end
 
-function AntibodiesCondition:get_id()
-	return self.id
+function AntibodiesCondition.rehydrate(condition)
+	if getmetatable(condition) ~= AntibodiesCondition then
+		setmetatable(condition, AntibodiesCondition)
+		return condition
+	end
 end
 
-function AntibodiesCondition:set_raw(raw)
-	self.raw = AntibodiesUtils.clamp(raw, self.min, self.max)
-	self.computed = AntibodiesUtils.lagrange(self.curve, self.raw)
-	return self.raw
+function AntibodiesCondition:update(player, config)
+	self:probePlayer(player)
+	self:calculateEffect(config)
 end
 
-function AntibodiesCondition:get_raw()
-	return self.raw
+function AntibodiesCondition:probePlayer(player)
+	local stats = player:getStats()
+	local nutrition = player:getNutrition()
+	local bodyDamage = player:getBodyDamage()
+	local thermoregulator = bodyDamage:getThermoregulator()
+
+	self.raw = {}
+
+	self.raw[AntibodiesEnum.Condition.THIRST] = AntibodiesCondition.getStatNormalized(stats, CharacterStat.THIRST)
+	self.raw[AntibodiesEnum.Condition.INTOXICATION] =
+		AntibodiesCondition.getStatNormalized(stats, CharacterStat.INTOXICATION)
+	self.raw[AntibodiesEnum.Condition.HUNGER] = AntibodiesCondition.getStatNormalized(stats, CharacterStat.HUNGER)
+	self.raw[AntibodiesEnum.Condition.WEIGHT] = AntibodiesUtils.clamp(nutrition:getWeight(), 35, 130)
+
+	self.raw[AntibodiesEnum.Condition.CARBOHYDRATES] = AntibodiesUtils.clamp(nutrition:getCarbohydrates(), -500, 1000)
+	self.raw[AntibodiesEnum.Condition.LIPIDS] = AntibodiesUtils.clamp(nutrition:getLipids(), -500, 1000)
+	self.raw[AntibodiesEnum.Condition.PROTEINS] = AntibodiesUtils.clamp(nutrition:getProteins(), -500, 1700)
+
+	self.raw[AntibodiesEnum.Condition.SICKNESS] =
+		AntibodiesUtils.clamp(AntibodiesCondition.getStatNormalized(stats, CharacterStat.SICKNESS), 0, 1)
+	self.raw[AntibodiesEnum.Condition.FOOD_SICKNESS] =
+		AntibodiesCondition.getStatNormalized(stats, CharacterStat.FOOD_SICKNESS)
+
+	self.raw[AntibodiesEnum.Condition.FITNESS] = AntibodiesUtils.clamp(player:getPerkLevel(Perks.Fitness), 1, 10)
+	self.raw[AntibodiesEnum.Condition.STRENGTH] = AntibodiesUtils.clamp(player:getPerkLevel(Perks.Strength), 1, 10)
+	self.raw[AntibodiesEnum.Condition.FATIGUE] = AntibodiesCondition.getStatNormalized(stats, CharacterStat.FATIGUE)
+
+	self.raw[AntibodiesEnum.Condition.ENDURANCE] = AntibodiesCondition.getStatNormalized(stats, CharacterStat.ENDURANCE)
+	self.raw[AntibodiesEnum.Condition.TEMPERATURE] = AntibodiesUtils.clamp(thermoregulator:getCoreTemperature(), 20, 42)
+
+	self.raw[AntibodiesEnum.Condition.PAIN] = AntibodiesCondition.getStatNormalized(stats, CharacterStat.PAIN)
+	self.raw[AntibodiesEnum.Condition.STRESS] = AntibodiesCondition.getStatNormalized(stats, CharacterStat.STRESS)
+	self.raw[AntibodiesEnum.Condition.UNHAPPINESS] =
+		AntibodiesCondition.getStatNormalized(stats, CharacterStat.UNHAPPINESS)
+	self.raw[AntibodiesEnum.Condition.BOREDOM] = AntibodiesCondition.getStatNormalized(stats, CharacterStat.BOREDOM)
+	self.raw[AntibodiesEnum.Condition.PANIC] = AntibodiesCondition.getStatNormalized(stats, CharacterStat.PANIC)
+	self.raw[AntibodiesEnum.Condition.SANITY] = AntibodiesCondition.getStatNormalized(stats, CharacterStat.SANITY)
+	self.raw[AntibodiesEnum.Condition.ANGER] = AntibodiesCondition.getStatNormalized(stats, CharacterStat.ANGER)
+
+	--AntibodiesUtils.print_table(res)
+
+	return self
 end
 
-function AntibodiesCondition:get_computed()
-	return self.computed
+function AntibodiesCondition:calculateEffect(config)
+	self.effect = {}
+	self.totalEffect = 0.0
+
+	if not config then
+		return self
+	end
+
+	local mods = config[AntibodiesEnum.Config.CONDITION]
+	local curves = config[AntibodiesEnum.Config.CONDITION_CURVE]
+
+	for _, key in ipairs(AntibodiesEnum.Condition.list()) do
+		if curves[key] then
+			self.effect[key] = AntibodiesUtils.lagrange(curves[key], self.raw[key]) * mods[key]
+			self.totalEffect = self.totalEffect + self.effect[key]
+		else
+			self.effect[key] = 0.0
+		end
+	end
+	return self
 end
+
+function AntibodiesCondition.getStatNormalized(stats, stat)
+	local val = stats:get(stat)
+	local min = stat:getMinimumValue()
+	local max = stat:getMaximumValue()
+	local normalized = (val - min) / (max - min)
+	return normalized
+end
+
+function AntibodiesCondition:getEffect(computed)
+	local res = {}
+	for key in pairs(computed) do
+		local curve = computed[key]
+		local mod = Antibodies.currentOptions.condition[key]
+		if mod then
+			res[key] = (curve * mod)
+		end
+	end
+
+	--AntibodiesUtils.print_table(res)
+
+	return res
+end
+
+return AntibodiesCondition

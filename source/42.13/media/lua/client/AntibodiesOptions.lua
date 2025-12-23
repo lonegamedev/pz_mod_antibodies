@@ -1,4 +1,9 @@
-AntibodiesOptions = {}
+--[[
+local AntibodiesUtils = require("AntibodiesUtils")
+local AntibodiesCondition = require("AntibodiesCondition")
+local AntibodiesBodyPart = require("AntibodiesBodyPart")
+
+local AntibodiesOptions = {}
 AntibodiesOptions.__index = AntibodiesOptions
 
 -----------------------------------------------------
@@ -20,49 +25,48 @@ AntibodiesOptions.defaultOptions = {
 		["debug"] = false,
 	},
 	["condition"] = {
-		[CharacterStat.FITNESS.id] = 5.0,
-		--["strength"] = 5.0,
-		[CharacterStat.FATIGUE.id] = -10.0,
-		[CharacterStat.ENDURANCE.id] = -10.0,
-		--["weight"] = -20.0,
-		[CharacterStat.THIRST.id] = -20.0,
-		[CharacterStat.SICKNESS.id] = -10.0,
-		[CharacterStat.FOOD_SICKNESS.id] = -10.0,
-		[CharacterStat.TEMPERATURE.id] = 20.0,
-		[CharacterStat.INTOXICATION.id] = 10.0,
-		[CharacterStat.HUNGER.id] = -20.0,
-		[CharacterStat.PAIN.id] = -5.0,
-		[CharacterStat.STRESS.id] = -5.0,
-		[CharacterStat.UNHAPPINESS.id] = -5.0,
-		[CharacterStat.BOREDOM.id] = -1.0,
-		[CharacterStat.PANIC.id] = -5.0,
-		[CharacterStat.SANITY.id] = 0.0,
-		[CharacterStat.ANGER.id] = 0.0,
-		--["fear"] = 0.0,
+		[AntibodiesCondition.Enum.FITNESS] = 5.0,
+		[AntibodiesCondition.Enum.STRENGTH] = 5.0,
+		[AntibodiesCondition.Enum.FATIGUE] = -10.0,
+		[AntibodiesCondition.Enum.ENDURANCE] = -10.0,
+		[AntibodiesCondition.Enum.WEIGHT] = -20.0,
+		[AntibodiesCondition.Enum.THIRST] = -20.0,
+		[AntibodiesCondition.Enum.SICKNESS] = -10.0,
+		[AntibodiesCondition.Enum.FOOD_SICKNESS] = -10.0,
+		[AntibodiesCondition.Enum.TEMPERATURE] = 20.0,
+		[AntibodiesCondition.Enum.INTOXICATION] = 10.0,
+		[AntibodiesCondition.Enum.HUNGER] = -20.0,
+		[AntibodiesCondition.Enum.PAIN] = -5.0,
+		[AntibodiesCondition.Enum.STRESS] = -5.0,
+		[AntibodiesCondition.Enum.UNHAPPINESS] = -5.0,
+		[AntibodiesCondition.Enum.BOREDOM] = -1.0,
+		[AntibodiesCondition.Enum.PANIC] = -5.0,
+		[AntibodiesCondition.Enum.SANITY] = 0.0,
+		[AntibodiesCondition.Enum.ANGER] = 0.0,
 	},
 	["wounds"] = {
-		["bandaged"] = 0.25,
-		["cleanBandage"] = 0.25,
-		["sterilizedBandage"] = 0.25,
-		["sterilizedWound"] = 0.25,
+		[AntibodiesBodyPart.TreatmentEnum.BANDAGED] = 0.25,
+		[AntibodiesBodyPart.TreatmentEnum.CLEAN_BANDAGE] = 0.25,
+		[AntibodiesBodyPart.TreatmentEnum.STERILIZED_BANDAGE] = 0.25,
+		[AntibodiesBodyPart.TreatmentEnum.STERILIZED_WOUND] = 0.25,
 
-		["garlic"] = 1.0,
-		["plantain"] = 0.5,
-		["comfrey"] = 0.25,
+		[AntibodiesBodyPart.TreatmentEnum.GARLIC] = 1.0,
+		[AntibodiesBodyPart.TreatmentEnum.PLANTAIN] = 0.5,
+		[AntibodiesBodyPart.TreatmentEnum.COMFREY] = 0.25,
 
-		["deepWounded"] = -4.0,
-		["bleeding"] = -4.0,
+		[AntibodiesBodyPart.WoundEnum.DEEP_WOUNDED] = -4.0,
+		[AntibodiesBodyPart.WoundEnum.BLEEDING] = -4.0,
 
-		["bitten"] = -3.0,
-		["cut"] = -2.0,
-		["scratched"] = -1.0,
+		[AntibodiesBodyPart.WoundEnum.BITTEN] = -3.0,
+		[AntibodiesBodyPart.WoundEnum.CUT] = -2.0,
+		[AntibodiesBodyPart.WoundEnum.SCRATCHED] = -1.0,
 
-		["burnt"] = -2.0,
-		["needBurnWash"] = -3.0,
-		["stiched"] = -1.0,
+		[AntibodiesBodyPart.WoundEnum.BURNT] = -2.0,
+		[AntibodiesBodyPart.WoundEnum.NEED_BURN_WASH] = -3.0,
+		[AntibodiesBodyPart.WoundEnum.STICHED] = -1.0,
 
-		["haveBullet"] = -3.0,
-		["haveGlass"] = -2.0,
+		[AntibodiesBodyPart.WoundEnum.HAVE_BULLET] = -3.0,
+		[AntibodiesBodyPart.WoundEnum.HAVE_GLASS] = -2.0,
 	},
 	["infections"] = {
 		["virus"] = 0.0,
@@ -133,7 +137,7 @@ local mergeOptions = function(default, loaded)
 		if type(loaded[group_key]) == "table" then
 			for prop_key, prop_val in pairs(default[group_key]) do
 				if loaded[group_key][prop_key] ~= nil then
-					--[[
+					
 					if result[group_key][prop_key] ~= loaded[group_key][prop_key] then
 						print(
 							string.format(
@@ -148,7 +152,7 @@ local mergeOptions = function(default, loaded)
 							)
 						)
 					end
-					]]
+					
 					result[group_key][prop_key] = loaded[group_key][prop_key]
 				end
 			end
@@ -158,93 +162,89 @@ local mergeOptions = function(default, loaded)
 end
 
 local getOptions = function()
-	--return AntibodiesOptions.defaultOptions
-	return mergeOptions(AntibodiesOptions.defaultOptions, getAntibodiesSandboxOptions())
+	return AntibodiesOptions.defaultOptions
+	--return mergeOptions(AntibodiesOptions.defaultOptions, getAntibodiesSandboxOptions())
 end
 
 local getCurves = function()
 	return {
-		[CharacterStat.FITNESS.id] = {
+		[AntibodiesCondition.Enum.FITNESS] = {
 			{ 0.0, -1.0 },
 			{ 5.0, 0.0 },
 			{ 10.0, 1.0 },
 		},
-		--["strength"] = {
-		--	{ 0.0, -1.0 },
-		--	{ 5.0, 0.0 },
-		--	{ 10.0, 1.0 },
-		--},
-		[CharacterStat.FATIGUE.id] = {
+		[AntibodiesCondition.Enum.STRENGTH] = {
+			{ 0.0, -1.0 },
+			{ 5.0, 0.0 },
+			{ 10.0, 1.0 },
+		},
+		[AntibodiesCondition.Enum.FATIGUE] = {
 			{ 0.0, 0.0 },
 			{ 1.0, 1.0 },
 		},
-		[CharacterStat.ENDURANCE.id] = {
+		[AntibodiesCondition.Enum.ENDURANCE] = {
 			{ 0.0, 1.0 },
 			{ 1.0, 0.0 },
 		},
-		--["weight"] = {
-		--	{ 35.0, 1.0 },
-		--	{ 80.0, 0.0 },
-		--	{ 130.0, 1.0 },
-		--},
-		[CharacterStat.THIRST.id] = {
+		[AntibodiesCondition.Enum.WEIGHT] = {
+			{ 35.0, 1.0 },
+			{ 80.0, 0.0 },
+			{ 130.0, 1.0 },
+		},
+		[AntibodiesCondition.Enum.THIRST] = {
 			{ 0.0, 0.0 },
 			{ 1.0, 1.0 },
 		},
-		[CharacterStat.SICKNESS.id] = {
+		[AntibodiesCondition.Enum.SICKNESS] = {
 			{ 0.0, 0.0 },
 			{ 1.0, 1.0 },
 		},
-		[CharacterStat.FOOD_SICKNESS.id] = {
+		[AntibodiesCondition.Enum.FOOD_SICKNESS] = {
 			{ 0.0, 0.0 },
 			{ 100.0, 1.0 },
 		},
-		[CharacterStat.TEMPERATURE.id] = {
+		[AntibodiesCondition.Enum.TEMPERATURE] = {
 			{ 20.0, -1.0 },
 			{ 36.6, 0.0 },
 			{ 40.0, 1.0 },
 		},
-		[CharacterStat.INTOXICATION.id] = {
+		[AntibodiesCondition.Enum.INTOXICATION] = {
 			{ 0.0, 0.0 },
 			{ 0.5, 1 },
 			{ 1.0, 0.8 },
 		},
-		[CharacterStat.HUNGER.id] = {
+		[AntibodiesCondition.Enum.HUNGER] = {
 			{ 0.0, 0.0 },
 			{ 1.0, 1.0 },
 		},
-		[CharacterStat.PAIN.id] = {
+		[AntibodiesCondition.Enum.PAIN] = {
 			{ 0.0, 0.0 },
 			{ 100.0, 1.0 },
 		},
-		[CharacterStat.STRESS.id] = {
+		[AntibodiesCondition.Enum.STRESS] = {
 			{ 0.0, 0.0 },
 			{ 1.5, 1.0 },
 		},
-		[CharacterStat.UNHAPPINESS.id] = {
+		[AntibodiesCondition.Enum.UNHAPPINESS] = {
 			{ 0.0, 0.0 },
 			{ 100.0, 1.0 },
 		},
-		[CharacterStat.BOREDOM.id] = {
+		[AntibodiesCondition.Enum.BOREDOM] = {
 			{ 0.0, 0.0 },
 			{ 100.0, 1.0 },
 		},
-		[CharacterStat.PANIC.id] = {
+		[AntibodiesCondition.Enum.PANIC] = {
 			{ 0.0, 0.0 },
 			{ 100.0, 1.0 },
 		},
-		[CharacterStat.SANITY.id] = {
+		[AntibodiesCondition.Enum.SANITY] = {
 			{ 0.0, 1.0 },
 			{ 100.0, 0.0 },
 		},
-		[CharacterStat.ANGER.id] = {
+		[AntibodiesCondition.Enum.ANGER] = {
 			{ 0.0, 0.0 },
 			{ 100.0, 1.0 },
 		},
-		--["fear"] = {
-		--	{ 0.0, 0.0 },
-		--	{ 100.0, 1.0 },
-		--},
 	}
 end
 
@@ -254,3 +254,6 @@ end
 
 AntibodiesOptions.getOptions = getOptions
 AntibodiesOptions.getCurves = getCurves
+
+return AntibodiesOptions
+]]

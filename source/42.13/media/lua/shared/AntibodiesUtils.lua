@@ -1,4 +1,4 @@
-AntibodiesUtils = {}
+local AntibodiesUtils = {}
 AntibodiesUtils.__index = AntibodiesUtils
 
 local function has_value(table, val)
@@ -73,6 +73,26 @@ local function deep_copy(val)
 		val_copy = val
 	end
 	return val_copy
+end
+
+local function deepCopy(val, seen)
+	if type(val) ~= "table" then
+		return val
+	end
+
+	seen = seen or {}
+	if seen[val] then
+		return seen[val]
+	end
+
+	local copy = {}
+	seen[val] = copy
+
+	for k, v in pairs(val) do
+		copy[deepCopy(k, seen)] = deepCopy(v, seen)
+	end
+
+	return copy
 end
 
 local function parse_value(txt)
