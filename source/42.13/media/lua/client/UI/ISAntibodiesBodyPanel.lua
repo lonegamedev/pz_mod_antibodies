@@ -1,3 +1,4 @@
+--[[
 require("ISUI/ISPanel")
 ISAntibodiesBodyPanel = ISPanel:derive("ISAntibodiesBodyPanel")
 
@@ -274,3 +275,4 @@ function ISAntibodiesBodyPanel:render()
 		--self:drawRect(0, 0, self.width, self.height, 0.25, 0, 0, 0);
 	end
 end
+]]

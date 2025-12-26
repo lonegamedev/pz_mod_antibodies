@@ -1,6 +1,6 @@
-require("ISUI/ISPanelJoypad")
-
 --[[
+
+require("ISUI/ISPanelJoypad")
 
 ISCharacterHygiene = ISPanelJoypad:derive("ISCharacterHygiene")
 

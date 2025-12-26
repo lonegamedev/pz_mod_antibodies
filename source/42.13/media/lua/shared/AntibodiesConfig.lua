@@ -9,8 +9,8 @@ function AntibodiesConfig.new()
 
 	instance[AntibodiesEnum.Config.GENERAL] = {
 		[AntibodiesEnum.Config.General.BASE_GROWTH] = 180.0,
-		[AntibodiesEnum.Config.General.SURVIVED_EFFECT] = 0.0,
-		[AntibodiesEnum.Config.General.SURVIVED_THRESHOLD] = 100.0,
+		[AntibodiesEnum.Config.General.RECOVERY_EFFECT] = 0.0,
+		[AntibodiesEnum.Config.General.RECOVERY_THRESHOLD] = 100.0,
 		[AntibodiesEnum.Config.General.MUTATION_EFFECT] = 0.0,
 		[AntibodiesEnum.Config.General.MUTATION_THRESHOLD] = 100.0,
 		[AntibodiesEnum.Config.General.MUTATION_START] = 2,

@@ -1,3 +1,4 @@
+--[[
 require("AntibodiesUI")
 
 ISAntibodiesWindow = ISPanelJoypad:derive("ISAntibodiesWindow")
@@ -325,3 +326,4 @@ local function onPlayerDeath(player)
 	end
 end
 Events.OnPlayerDeath.Add(onPlayerDeath)
+]]

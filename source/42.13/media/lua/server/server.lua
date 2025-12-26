@@ -1,4 +1,4 @@
-require("AntibodiesShared")
+local Antibodies = require("Antibodies")
 
 AntibodiesServer = {}
 AntibodiesServer.__index = AntibodiesServer
@@ -16,8 +16,8 @@ local function ensureServerInitialization()
 end
 
 local function onClientCommand(module, command, player, data)
-	if module == AntibodiesShared.info.modId then
-		if command == AntibodiesShared.networkCommand.shareMedicalFile then
+	if module == Antibodies.info.modId then
+		if command == Antibodies.networkCommand.shareMedicalFile then
 			AntibodiesServer.medicalFile[data.playerOnlineId] = data.medicalFile
 		end
 	end
@@ -32,8 +32,8 @@ local function onEveryOneMinute()
 			for playerOnlineId in pairs(AntibodiesServer.medicalFile) do
 				local medicalFile = AntibodiesServer.medicalFile[playerOnlineId]
 				sendServerCommand(
-					AntibodiesShared.info.modId,
-					AntibodiesShared.networkCommand.shareMedicalFile,
+					Antibodies.info.modId,
+					Antibodies.networkCommand.shareMedicalFile,
 					{ playerOnlineId = playerOnlineId, medicalFile = medicalFile }
 				)
 			end

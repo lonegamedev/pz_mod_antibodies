@@ -1,14 +1,21 @@
 local AntibodiesEnum = require("AntibodiesEnum")
 local AntibodiesBodyPart = require("AntibodiesBodyPart")
+local AntibodiesEffects = require("AntibodiesEffects")
 
 local AntibodiesBody = {}
 AntibodiesBody.__index = AntibodiesBody
+AntibodiesBody.__name = "AntibodiesBody"
 
 function AntibodiesBody.new(player)
 	local instance = setmetatable({}, AntibodiesBody)
 
-	local bodyDamage = player:getBodyDamage()
 	instance.bodyParts = {}
+	instance.woundEffects = AntibodiesEffects:new()
+	instance.treatmentEffects = AntibodiesEffects:new()
+	instance.infectionEffects = AntibodiesEffects:new()
+	instance.hygieneEffects = AntibodiesEffects:new()
+
+	local bodyDamage = player:getBodyDamage()
 	for i = 0, bodyDamage:getBodyParts():size() - 1 do
 		local bodyPart = bodyDamage:getBodyParts():get(i)
 		local id = AntibodiesEnum.BodyPart.fromIndex(bodyPart:getType():index())
@@ -25,35 +32,68 @@ function AntibodiesBody.rehydrate(body)
 		setmetatable(body, AntibodiesBody)
 		for _, key in ipairs(AntibodiesEnum.BodyPart.list()) do
 			AntibodiesBodyPart.rehydrate(body.bodyParts[key])
+			AntibodiesEffects.rehydrate(body.woundEffects)
+			AntibodiesEffects.rehydrate(body.treatmentEffects)
+			AntibodiesEffects.rehydrate(body.infectionEffects)
+			AntibodiesEffects.rehydrate(body.hygieneEffects)
 		end
 		return body
 	end
 end
 
 function AntibodiesBody:update(player, config)
-	self.totalWoundEffect = 0
-	self.totalTreatmentEffect = 0
-	self.totalInfectionEffect = 0
-	self.totalHygieneEffect = 0
-	self.totalEffect = 0
+	self.woundEffects:clear()
+	self.treatmentEffects:clear()
+	self.infectionEffects:clear()
+	self.hygieneEffects:clear()
 
 	local bodyDamage = player:getBodyDamage()
 	for _, key in ipairs(AntibodiesEnum.BodyPart.list()) do
 		local index = AntibodiesEnum.BodyPart.toIndex(key)
-		local bodyPart = bodyDamage:getBodyParts():get(index)
-		self.bodyParts[key]:update(bodyPart, config)
-		self.totalWoundEffect = self.totalWoundEffect + self.bodyParts[key].totalWoundEffect
-		self.totalTreatmentEffect = self.totalTreatmentEffect + self.bodyParts[key].totalTreatmentEffect
-		self.totalInfectionEffect = self.totalInfectionEffect + self.bodyParts[key].totalInfectionEffect
-		self.totalHygieneEffect = self.totalHygieneEffect + self.bodyParts[key].totalHygieneEffect
+		local bodyPartNative = bodyDamage:getBodyParts():get(index)
+		local bodyPart = self.bodyParts[key]
+		bodyPart:update(bodyPartNative, config)
+		self.woundEffects:set(key, bodyPart.woundEffects:getTotal())
+		self.treatmentEffects:set(key, bodyPart.treatmentEffects:getTotal())
+		self.infectionEffects:set(key, bodyPart.infectionEffects:getTotal())
+		self.hygieneEffects:set(key, bodyPart.hygieneEffects:getTotal())
 	end
 
-	self.totalEffect = self.totalWoundEffect
-		+ self.totalTreatmentEffect
-		+ self.totalInfectionEffect
-		+ self.totalHygieneEffect
-
 	return self
+end
+
+function AntibodiesBody:getBodyPartByIndex(index)
+	local id = AntibodiesEnum.BodyPart.fromIndex(index)
+	return self.bodyParts[id]
+end
+
+function AntibodiesBody:getEffect()
+	return self.woundEffects:getTotal()
+		+ self.treatmentEffects:getTotal()
+		+ self.infectionEffects:getTotal()
+		+ self.hygieneEffects:getTotal()
+end
+
+function AntibodiesBody:toString()
+	return self.__name .. self:__tostring()
+end
+
+function AntibodiesBody:__tostring()
+	return (
+		"{ "
+		.. "woundEffects="
+		.. tostring(self.woundEffects)
+		.. " "
+		.. "treatmentEffects="
+		.. tostring(self.treatmentEffects)
+		.. " "
+		.. "infectionEffects="
+		.. tostring(self.infectionEffects)
+		.. " "
+		.. "hygieneEffects="
+		.. tostring(self.hygieneEffects)
+		.. " }"
+	)
 end
 
 return AntibodiesBody

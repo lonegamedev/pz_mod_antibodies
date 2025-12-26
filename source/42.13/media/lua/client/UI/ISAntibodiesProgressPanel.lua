@@ -1,3 +1,4 @@
+--[[
 require("ISUI/ISPanel")
 ISAntibodiesProgressPanel = ISPanel:derive("ISAntibodiesProgressPanel")
 
@@ -123,3 +124,4 @@ function ISAntibodiesProgressPanel:render()
 	end
 	--self:drawRect(0, 0, self.width, self.height, 0.25, 1, 0, 0);
 end
+]]

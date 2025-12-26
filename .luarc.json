@@ -1,8 +1,21 @@
 {
     "runtime.version": "Lua 5.1",
     "diagnostics.globals": [
+        "instanceof",
+        "isClient",
+        "isServer",
+        "GameTime",
+        "getGameTime",
+        "sendClientCommand",
+        "sendServerCommand",
         "getPlayer",
         "getSpecificPlayer",
+        "getPlayerByOnlineID",
+        "getNumActivePlayers",
+        "BodyPartType",
+        "getTextManager",
+        "getText",
+        "UIFont",
         "Events",
         "LuaEventManager",
         "IsoPlayer",
@@ -10,12 +23,10 @@
         "CharacterStat",
         "Perks",
         "BloodBodyPartType",
-        "getNumActivePlayers",
-        "getNumActivePlayers",
-        "instanceof",
-        "GameTime",
-        "getTextManager",
-        "UIFont",
-        "BodyPartType"
+        "ISApplyBandage",
+        "ISComfreyCataplasm",
+        "ISDisinfect",
+        "ISGarlicCataplasm",
+        "ISPlantainCataplasm"
     ]
 }

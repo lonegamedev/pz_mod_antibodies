@@ -22,6 +22,15 @@ function AntibodiesEnum.createEnum()
 	return enum
 end
 
+AntibodiesEnum.InfectionStage = AntibodiesEnum.createEnum()
+AntibodiesEnum.InfectionStage.define("NONE", 0)
+AntibodiesEnum.InfectionStage.define("INCUBATION", 1)
+AntibodiesEnum.InfectionStage.define("PRODROMAL", 2)
+AntibodiesEnum.InfectionStage.define("ILLNESS", 3)
+AntibodiesEnum.InfectionStage.define("TERMINAL", 4)
+AntibodiesEnum.InfectionStage.define("DECLINE", 5)
+AntibodiesEnum.InfectionStage.define("CONVALESCENCE", 6)
+
 AntibodiesEnum.Config = AntibodiesEnum.createEnum()
 AntibodiesEnum.Config.define("GENERAL", string.lower)
 AntibodiesEnum.Config.define("CONDITION", string.lower)
@@ -35,8 +44,8 @@ AntibodiesEnum.Config.define("HYGIENE_TREATMENT_MOD", string.lower)
 
 AntibodiesEnum.Config.General = AntibodiesEnum.createEnum()
 AntibodiesEnum.Config.General.define("BASE_GROWTH", string.lower)
-AntibodiesEnum.Config.General.define("SURVIVED_EFFECT", string.lower)
-AntibodiesEnum.Config.General.define("SURVIVED_THRESHOLD", string.lower)
+AntibodiesEnum.Config.General.define("RECOVERY_EFFECT", string.lower)
+AntibodiesEnum.Config.General.define("RECOVERY_THRESHOLD", string.lower)
 AntibodiesEnum.Config.General.define("MUTATION_EFFECT", string.lower)
 AntibodiesEnum.Config.General.define("MUTATION_THRESHOLD", string.lower)
 AntibodiesEnum.Config.General.define("MUTATION_START", string.lower)

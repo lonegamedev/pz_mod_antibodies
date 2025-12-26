@@ -1,34 +1,39 @@
-local Antibodies = {}
-Antibodies.__index = Antibodies
+local AntibodiesClient = {}
+AntibodiesClient.__index = AntibodiesClient
+AntibodiesClient.__name = "AntibodiesClient"
 
+require("TimedActions.ISApplyBandage")
+require("TimedActions.ISComfreyCataplasm")
+require("TimedActions.ISDisinfect")
+require("TimedActions.ISGarlicCataplasm")
+require("TimedActions.ISPlantainCataplasm")
+
+local Antibodies = require("Antibodies")
 local AntibodiesUtils = require("AntibodiesUtils")
-local AntibodiesOptions = require("AntibodiesOptions")
-local AntibodiesShared = require("AntibodiesShared")
 local AntibodiesMedicalFile = require("AntibodiesMedicalFile")
 local AntibodiesConfig = require("AntibodiesConfig")
 
-local timeAccumlator = 0
-local config = nil
+AntibodiesClient.timeAccumlator = 0
+AntibodiesClient.config = nil
 
-local function ensureModInitialization(player)
-	if config == nil then
-		config = AntibodiesConfig.new()
+function AntibodiesClient.ensureInitialization(player)
+	if AntibodiesClient.config == nil then
+		AntibodiesClient.config = AntibodiesConfig.new()
 	end
-	if timeAccumlator == nil then
-		timeAccumlator = 0
+	if AntibodiesClient.timeAccumlator == nil then
+		AntibodiesClient.timeAccumlator = 0
 	end
 end
 
-local function updatePlayers()
+function AntibodiesClient.updatePlayers()
 	local players = AntibodiesUtils.getLocalPlayers()
 	for _, player in ipairs(players) do
-		local medicalFile = AntibodiesMedicalFile.of(player, true)
-		medicalFile:update(player, config)
-		player:getModData().antibodiesMedicalFile = medicalFile
+		local medicalFile = AntibodiesMedicalFile.of(player)
+		medicalFile:update(player, AntibodiesClient.config)
 	end
 end
 
-local function networkSync(player)
+function AntibodiesClient.networkSync(player)
 	if isClient() then
 		Antibodies.timeAccumlator = Antibodies.timeAccumlator + getGameTime():getInvMultiplier()
 		if Antibodies.timeAccumlator >= 1.0 then
@@ -38,7 +43,7 @@ local function networkSync(player)
 				sendClientCommand(
 					player,
 					Antibodies.info.modId,
-					AntibodiesShared.networkCommand.shareMedicalFile,
+					Antibodies.networkCommand.shareMedicalFile,
 					{ playerOnlineId = player:getOnlineID(), medicalFile = save.medicalFile }
 				)
 			end
@@ -63,7 +68,7 @@ Events.OnMainMenuEnter.Add(onMainMenuEnter)
 
 local function onServerCommand(module, command, arguments)
 	if module == Antibodies.info.modId then
-		if command == AntibodiesShared.networkCommand.shareMedicalFile then
+		if command == Antibodies.networkCommand.shareMedicalFile then
 			local player = getPlayerByOnlineID(arguments.playerOnlineId)
 			if player and not player:isLocalPlayer() then
 				local modData = player:getModData()
@@ -75,10 +80,10 @@ end
 Events.OnServerCommand.Add(onServerCommand)
 
 local function onEveryOneMinute()
-	ensureModInitialization()
-	updatePlayers()
+	AntibodiesClient.ensureInitialization()
+	AntibodiesClient.updatePlayers()
 	--networkSync()
 end
 Events.EveryOneMinute.Add(onEveryOneMinute)
 
-return Antibodies
+return AntibodiesClient

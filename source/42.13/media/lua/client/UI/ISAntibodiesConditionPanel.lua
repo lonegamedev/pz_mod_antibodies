@@ -1,3 +1,4 @@
+--[[
 require("ISUI/ISPanel")
 ISAntibodiesConditionPanel = ISPanel:derive("ISAntibodiesConditionPanel")
 
@@ -134,3 +135,4 @@ function ISAntibodiesConditionPanel:render()
 		end
 	end
 end
+]]

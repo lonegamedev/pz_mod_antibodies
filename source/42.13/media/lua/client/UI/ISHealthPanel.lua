@@ -1,7 +1,7 @@
+--[[
+
 require("Antibodies")
 require("ISAntibodiesWindow")
-
---[[
 
 local UI_BORDER_SPACING = 10
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)

@@ -1,12 +1,14 @@
 local AntibodiesEnum = require("AntibodiesEnum")
 local AntibodiesUtils = require("AntibodiesUtils")
-local AntibodiesConfig = require("AntibodiesConfig")
+local AntibodiesEffects = require("AntibodiesEffects")
 
 local AntibodiesCondition = {}
 AntibodiesCondition.__index = AntibodiesCondition
+AntibodiesCondition.__name = "AntibodiesCondition"
 
 function AntibodiesCondition.new(player)
 	local instance = setmetatable({}, AntibodiesCondition)
+	instance.effects = AntibodiesEffects.new()
 	instance:update(player, nil)
 	return instance
 end
@@ -14,6 +16,7 @@ end
 function AntibodiesCondition.rehydrate(condition)
 	if getmetatable(condition) ~= AntibodiesCondition then
 		setmetatable(condition, AntibodiesCondition)
+		AntibodiesEffects.rehydrate(condition.effects)
 		return condition
 	end
 end
@@ -62,31 +65,28 @@ function AntibodiesCondition:probePlayer(player)
 	self.raw[AntibodiesEnum.Condition.SANITY] = AntibodiesCondition.getStatNormalized(stats, CharacterStat.SANITY)
 	self.raw[AntibodiesEnum.Condition.ANGER] = AntibodiesCondition.getStatNormalized(stats, CharacterStat.ANGER)
 
-	--AntibodiesUtils.print_table(res)
-
 	return self
 end
 
 function AntibodiesCondition:calculateEffect(config)
-	self.effect = {}
-	self.totalEffect = 0.0
-
+	self.effects:clear()
 	if not config then
 		return self
 	end
-
 	local mods = config[AntibodiesEnum.Config.CONDITION]
 	local curves = config[AntibodiesEnum.Config.CONDITION_CURVE]
-
 	for _, key in ipairs(AntibodiesEnum.Condition.list()) do
+		local value = 0
 		if curves[key] then
-			self.effect[key] = AntibodiesUtils.lagrange(curves[key], self.raw[key]) * mods[key]
-			self.totalEffect = self.totalEffect + self.effect[key]
-		else
-			self.effect[key] = 0.0
+			value = AntibodiesUtils.lagrange(curves[key], self.raw[key]) * mods[key]
 		end
+		self.effects:set(key, value)
 	end
 	return self
+end
+
+function AntibodiesCondition:getEffect()
+	return self.effects:getTotal()
 end
 
 function AntibodiesCondition.getStatNormalized(stats, stat)
@@ -97,19 +97,12 @@ function AntibodiesCondition.getStatNormalized(stats, stat)
 	return normalized
 end
 
-function AntibodiesCondition:getEffect(computed)
-	local res = {}
-	for key in pairs(computed) do
-		local curve = computed[key]
-		local mod = Antibodies.currentOptions.condition[key]
-		if mod then
-			res[key] = (curve * mod)
-		end
-	end
+function AntibodiesCondition:toString()
+	return self.__name .. self:__tostring()
+end
 
-	--AntibodiesUtils.print_table(res)
-
-	return res
+function AntibodiesCondition:__tostring()
+	return "{ effects=" .. self.effects:__tostring() .. "}"
 end
 
 return AntibodiesCondition
