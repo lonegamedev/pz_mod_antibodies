@@ -1,8 +1,9 @@
-local AntibodiesUtils = require("AntibodiesUtils")
 local AntibodiesEnum = require("AntibodiesEnum")
 
 local AntibodiesConfig = {}
 AntibodiesConfig.__index = AntibodiesConfig
+
+AntibodiesConfig.current = nil
 
 function AntibodiesConfig.new()
 	local instance = setmetatable({}, AntibodiesConfig)

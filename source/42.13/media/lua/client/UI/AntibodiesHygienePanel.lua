@@ -1,18 +1,18 @@
---[[
-
 require("ISUI/ISPanelJoypad")
+local AntibodiesMedicalFile = require("AntibodiesMedicalFile")
 
-ISCharacterHygiene = ISPanelJoypad:derive("ISCharacterHygiene")
+local AntibodiesHygienePanel = ISPanelJoypad:derive("ISCharacterProtection")
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
+local UI_BORDER_SPACING = 10
 
-function ISCharacterHygiene:initialise()
+function AntibodiesHygienePanel:initialise()
 	ISPanelJoypad.initialise(self)
 	self:create()
 end
 
-function ISCharacterHygiene:createChildren()
+function AntibodiesHygienePanel:createChildren()
 	ISPanelJoypad.createChildren(self)
 
 	self.cacheColor = Color.new(1.0, 1.0, 1.0, 1.0)
@@ -38,11 +38,11 @@ function ISCharacterHygiene:createChildren()
 		},
 	}
 
-	local y = 8
-	self.bpPanelX = 0
-	self.bpPanelY = y
-	self.bpAnchorX = 123
-	self.bpAnchorY = 50
+	local y = UI_BORDER_SPACING + 1
+	local x = UI_BORDER_SPACING + 1
+
+	self.bpPanelX = self.bodyOutline:getWidth() - 123 + 2 + x
+	self.bpPanelY = self.bodyOutline:getHeight() - 302 + 2 + y
 	self.bodyPartPanel = ISBodyPartPanel:new(self.char, self.bpPanelX, self.bpPanelY, self, nil)
 	self.bodyPartPanel.maxValue = 100
 	self.bodyPartPanel.canSelect = false
@@ -52,47 +52,50 @@ function ISCharacterHygiene:createChildren()
 	self:addChild(self.bodyPartPanel)
 end
 
-function ISCharacterHygiene:setVisible(visible)
+function AntibodiesHygienePanel:setVisible(visible)
 	if visible then
 		-- init?
 	end
 	self.javaObject:setVisible(visible)
 end
 
-function ISCharacterHygiene:prerender()
+function AntibodiesHygienePanel:prerender()
 	ISPanelJoypad.prerender(self)
 end
 
-function ISCharacterHygiene:render()
+function AntibodiesHygienePanel:render()
 	local labelPart = getText("IGUI_health_Part")
 	local labelBody = getText("UI_characreation_body")
 	local labelClothing = getText("UI_characreation_clothing")
 	local bodyWidth = getTextManager():MeasureStringX(UIFont.Small, labelBody)
 	local clothesWidth = getTextManager():MeasureStringX(UIFont.Small, labelClothing)
 
-	local xOffset = 0
-	local yOffset = 8
+	local xOffset = UI_BORDER_SPACING + 1
+	local yOffset = UI_BORDER_SPACING + 1
 	local yText = yOffset
-	local partX = 150
-	local biteX = partX + self.maxLabelWidth + 20
-	local scratchX = biteX + bodyWidth + 20
-	--self:drawTexture(self.bodyOutline, xOffset, yOffset, 1, 1, 1, 1)
+	local partX = self.bodyOutline:getWidth() + xOffset + UI_BORDER_SPACING
+	local bodyX = partX + self.maxLabelWidth + UI_BORDER_SPACING
+	local scratchX = bodyX + bodyWidth + UI_BORDER_SPACING
 
 	self:drawText(labelPart, partX, yText, 1, 1, 1, 1, UIFont.Small)
-	self:drawText(labelBody, biteX, yText, 1, 1, 1, 1, UIFont.Small)
+	self:drawText(labelBody, bodyX, yText, 1, 1, 1, 1, UIFont.Small)
 	self:drawText(labelClothing, scratchX, yText, 1, 1, 1, 1, UIFont.Small)
-	yText = yText + FONT_HGT_SMALL + 5
+	yText = yText + FONT_HGT_SMALL + 6
 
 	local player = getSpecificPlayer(self.playerNum)
-	local save = player:getModData()
-	local medicalFile = save.medicalFile
+	local medicalFile = AntibodiesMedicalFile.of(player)
 
+	-- draw each part as overlay
 	for i = 0, BodyPartType.ToIndex(BodyPartType.MAX) do
 		local string = BodyPartType.ToString(BodyPartType.FromIndex(i))
 		if self.bparts[string] then
-			local part_hygiene = medicalFile.status.parts[string].hygiene
-			local bodyHygiene = 100.0 - luautils.round(part_hygiene.body * 100.0)
-			local clothingHygiene = 100.0 - luautils.round(part_hygiene.clothing * 100.0)
+			local bodyPart = medicalFile.body:getBodyPartByIndex(i)
+
+			local bodyHygiene = bodyPart.bodyBlood + bodyPart.bodyDirt
+			local clothingHygiene = bodyPart.clothingBlood + bodyPart.clothingDirt
+
+			local bodyHygiene = 100.0 - luautils.round(bodyHygiene * 100.0)
+			local clothingHygiene = 100.0 - luautils.round(clothingHygiene * 100.0)
 
 			bodyHygiene = math.floor(bodyHygiene)
 			clothingHygiene = math.floor(clothingHygiene)
@@ -112,27 +115,23 @@ function ISCharacterHygiene:render()
 			)
 
 			local r, g, b = self.bodyPartPanel:getRgbForValue(bodyHygiene)
-			self:drawText(bodyHygiene .. "%", biteX, yText, r, g, b, 1, UIFont.Small)
+			self:drawText(bodyHygiene .. "%", bodyX, yText, r, g, b, 1, UIFont.Small)
 
-			if part_hygiene.clothingPieces > 0 then
-				r, g, b = self.bodyPartPanel:getRgbForValue(clothingHygiene)
-				self:drawText(clothingHygiene .. "%", scratchX, yText, r, g, b, 1, UIFont.Small)
-			else
-				self:drawText("", scratchX, yText, r, g, b, 1, UIFont.Small)
-			end
+			r, g, b = self.bodyPartPanel:getRgbForValue(clothingHygiene)
+			self:drawText(clothingHygiene .. "%", scratchX, yText, r, g, b, 1, UIFont.Small)
 
 			yText = yText + FONT_HGT_SMALL
 		end
 	end
 
-	local width = math.max(self.width, scratchX + clothesWidth + 20)
-	self:setWidthAndParentWidth(width)
+	local width = math.max(self.width, scratchX + clothesWidth + UI_BORDER_SPACING + 1)
+	self:setWidthAndParentWidth(math.max(self.width, width))
 
-	local height = math.max(self.height, yText + 20)
+	local height = math.max(self.height, yText + UI_BORDER_SPACING + 1)
 	self:setHeightAndParentHeight(height)
 end
 
-function ISCharacterHygiene:create()
+function AntibodiesHygienePanel:create()
 	self:initTextures()
 
 	self.maxLabelWidth = 0
@@ -146,7 +145,7 @@ function ISCharacterHygiene:create()
 	end
 end
 
-function ISCharacterHygiene:initTextures()
+function AntibodiesHygienePanel:initTextures()
 	self.bparts = {}
 
 	self.bparts["Hand_L"] = true
@@ -168,7 +167,7 @@ function ISCharacterHygiene:initTextures()
 	self.bparts["Foot_R"] = true
 end
 
-function ISCharacterHygiene:onJoypadDown(button)
+function AntibodiesHygienePanel:onJoypadDown(button)
 	if button == Joypad.BButton then
 		getPlayerInfoPanel(self.playerNum):toggleView(xpSystemText.protection)
 		setJoypadFocus(self.playerNum, nil)
@@ -181,7 +180,7 @@ function ISCharacterHygiene:onJoypadDown(button)
 	end
 end
 
-function ISCharacterHygiene:new(x, y, width, height, playerNum)
+function AntibodiesHygienePanel:new(x, y, width, height, playerNum)
 	local o = {}
 	o = ISPanelJoypad:new(x, y, width, height)
 	o:noBackground()
@@ -199,4 +198,5 @@ function ISCharacterHygiene:new(x, y, width, height, playerNum)
 	o.bodyOutline = getTexture("media/ui/defense/" .. o.sex .. "_base.png")
 	return o
 end
-]]
+
+return AntibodiesHygienePanel

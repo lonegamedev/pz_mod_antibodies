@@ -1,16 +1,18 @@
---[[
+local AntibodiesHygienePanel = require("UI/AntibodiesHygienePanel")
+
 local ISCharacterInfoWindow_createChildren = ISCharacterInfoWindow.createChildren
+---@diagnostic disable-next-line: duplicate-set-field
 function ISCharacterInfoWindow:createChildren()
 	ISCharacterInfoWindow_createChildren(self)
 
 	local enableHygiene = true
-	local options = AntibodiesOptions.getOptions()
-	if options then
-		enableHygiene = options.general.hygienePanelEnabled
-	end
+	--local options = AntibodiesOptions.getOptions()
+	--if options then
+	--	enableHygiene = options.general.hygienePanelEnabled
+	--end
 
 	if enableHygiene then
-		self.hygieneView = ISCharacterHygiene:new(0, 8, self.width, (self.height - 8) + 120, self.playerNum)
+		self.hygieneView = AntibodiesHygienePanel:new(0, 8, self.width, (self.height - 8) + 120, self.playerNum)
 		self.hygieneView:initialise()
 		self.hygieneView.infoText = getTextOrNull("UI_Antibodies_Hygiene_Info")
 		self.panel:addView(getText("UI_Antibodies_Hygiene"), self.hygieneView)
@@ -23,4 +25,3 @@ function ISCharacterInfoWindow:createChildren()
 		self:setHeight(self.charScreen.height)
 	end
 end
-]]

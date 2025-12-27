@@ -15,6 +15,7 @@
         "BodyPartType",
         "getTextManager",
         "getText",
+        "getTextOrNull",
         "UIFont",
         "Events",
         "LuaEventManager",
@@ -22,11 +23,24 @@
         "ArrayList",
         "CharacterStat",
         "Perks",
+        "Joypad",
+        "setJoypadFocus",
+        "ISButton",
+        "getPlayerInfoPanel",
         "BloodBodyPartType",
         "ISApplyBandage",
         "ISComfreyCataplasm",
         "ISDisinfect",
         "ISGarlicCataplasm",
-        "ISPlantainCataplasm"
+        "ISPlantainCataplasm",
+        "ISHealthPanel",
+        "ISPanelJoypad",
+        "Color",
+        "getCore",
+        "ISBodyPartPanel",
+        "xpSystemText",
+        "luautils",
+        "getTexture",
+        "ISCharacterInfoWindow"
     ]
 }

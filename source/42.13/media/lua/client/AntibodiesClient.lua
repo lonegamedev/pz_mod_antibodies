@@ -2,6 +2,8 @@ local AntibodiesClient = {}
 AntibodiesClient.__index = AntibodiesClient
 AntibodiesClient.__name = "AntibodiesClient"
 
+AntibodiesClient.timeAccumlator = 0
+
 require("TimedActions.ISApplyBandage")
 require("TimedActions.ISComfreyCataplasm")
 require("TimedActions.ISDisinfect")
@@ -13,12 +15,9 @@ local AntibodiesUtils = require("AntibodiesUtils")
 local AntibodiesMedicalFile = require("AntibodiesMedicalFile")
 local AntibodiesConfig = require("AntibodiesConfig")
 
-AntibodiesClient.timeAccumlator = 0
-AntibodiesClient.config = nil
-
 function AntibodiesClient.ensureInitialization(player)
-	if AntibodiesClient.config == nil then
-		AntibodiesClient.config = AntibodiesConfig.new()
+	if AntibodiesConfig.current == nil then
+		AntibodiesConfig.current = AntibodiesConfig.new()
 	end
 	if AntibodiesClient.timeAccumlator == nil then
 		AntibodiesClient.timeAccumlator = 0
@@ -29,7 +28,7 @@ function AntibodiesClient.updatePlayers()
 	local players = AntibodiesUtils.getLocalPlayers()
 	for _, player in ipairs(players) do
 		local medicalFile = AntibodiesMedicalFile.of(player)
-		medicalFile:update(player, AntibodiesClient.config)
+		medicalFile:update(player, AntibodiesConfig.current)
 	end
 end
 
