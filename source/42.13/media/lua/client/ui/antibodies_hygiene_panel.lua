@@ -1,5 +1,6 @@
+require("ISCharacterProtection")
 require("ISUI/ISPanelJoypad")
-local AntibodiesMedicalFile = require("AntibodiesMedicalFile")
+local AntibodiesMedicalFile = require("antibodies_medical_file")
 
 local AntibodiesHygienePanel = ISPanelJoypad:derive("ISCharacterProtection")
 

@@ -1,4 +1,5 @@
-local AntibodiesHygienePanel = require("UI/AntibodiesHygienePanel")
+require("ISCharacterInfoWindow")
+local AntibodiesHygienePanel = require("ui/antibodies_hygiene_panel")
 
 local ISCharacterInfoWindow_createChildren = ISCharacterInfoWindow.createChildren
 ---@diagnostic disable-next-line: duplicate-set-field

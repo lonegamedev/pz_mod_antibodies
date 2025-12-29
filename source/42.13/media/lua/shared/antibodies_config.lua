@@ -1,4 +1,4 @@
-local AntibodiesEnum = require("AntibodiesEnum")
+local AntibodiesEnum = require("antibodies_enum")
 
 local AntibodiesConfig = {}
 AntibodiesConfig.__index = AntibodiesConfig

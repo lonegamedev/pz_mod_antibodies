@@ -1,6 +1,6 @@
-local AntibodiesEnum = require("AntibodiesEnum")
-local AntibodiesBodyPart = require("AntibodiesBodyPart")
-local AntibodiesEffects = require("AntibodiesEffects")
+local AntibodiesEnum = require("antibodies_enum")
+local AntibodiesBodyPart = require("antibodies_body_part")
+local AntibodiesEffects = require("antibodies_effects")
 
 local AntibodiesBody = {}
 AntibodiesBody.__index = AntibodiesBody

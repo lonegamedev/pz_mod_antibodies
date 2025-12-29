@@ -1,16 +1,17 @@
 require("ISHealthPanel")
 
-local Antibodies = require("Antibodies")
-local AntibodiesUI = require("UI/AntibodiesUI")
-local AntibodiesWindow = require("UI/AntibodiesWindow")
+local Antibodies = require("antibodies")
+local AntibodiesUI = require("ui/antibodies_ui")
+local AntibodiesWindow = require("ui/antibodies_window")
 
-local AntibodiesConfig = require("AntibodiesConfig")
-local AntibodiesEnum = require("AntibodiesEnum")
-local AntibodiesUtils = require("AntibodiesUtils")
+local AntibodiesConfig = require("antibodies_config")
+local AntibodiesEnum = require("antibodies_enum")
+local AntibodiesUtils = require("antibodies_utils")
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local UI_BORDER_SPACING = 10
 
+---@diagnostic disable-next-line: duplicate-set-field
 function ISHealthPanel:onKnoxInfectionClicked()
 	print("ANTIBODIES BUTTON CLICKED")
 	--self:showAntibodiesWindow()

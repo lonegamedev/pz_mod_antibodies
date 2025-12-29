@@ -1,9 +1,9 @@
-local Antibodies = require("Antibodies")
-local AntibodiesCondition = require("AntibodiesCondition")
-local AntibodiesBody = require("AntibodiesBody")
-local AntibodiesUtils = require("AntibodiesUtils")
-local AntibodiesEnum = require("AntibodiesEnum")
-local AntibodiesEffects = require("AntibodiesEffects")
+local Antibodies = require("antibodies")
+local AntibodiesCondition = require("antibodies_condition")
+local AntibodiesBody = require("antibodies_body")
+local AntibodiesUtils = require("antibodies_utils")
+local AntibodiesEnum = require("antibodies_enum")
+local AntibodiesEffects = require("antibodies_effects")
 
 local AntibodiesMedicalFile = {}
 AntibodiesMedicalFile.__index = AntibodiesMedicalFile
@@ -74,7 +74,7 @@ function AntibodiesMedicalFile:update(player, config)
 		end
 	end
 
-	print(self:toString())
+	--print(self:toString())
 	--print(self.condition:toString())
 	--print("HAND_L: ", self.body.bodyParts[AntibodiesEnum.BodyPart.HAND_L])
 
