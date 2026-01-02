@@ -1,6 +1,6 @@
 require("TimedActions/ISPlantainCataplasm")
-local AntibodiesMedicalFile = require("AntibodiesMedicalFile")
-local AntibodiesEnum = require("AntibodiesEnum")
+local AntibodiesMedicalFile = require("antibodies_medical_file")
+local AntibodiesEnum = require("antibodies_enum")
 
 ISPlantainCataplasm_perform = ISPlantainCataplasm.perform
 ---@diagnostic disable-next-line: duplicate-set-field

@@ -67,7 +67,7 @@ function AntibodiesBody:getBodyPartByIndex(index)
 	return self.bodyParts[id]
 end
 
-function AntibodiesBody:getEffect()
+function AntibodiesBody:getTotalEffect()
 	return self.woundEffects:getTotal()
 		+ self.treatmentEffects:getTotal()
 		+ self.infectionEffects:getTotal()

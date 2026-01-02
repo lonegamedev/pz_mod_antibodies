@@ -22,6 +22,10 @@ function AntibodiesEnum.createEnum()
 	return enum
 end
 
+AntibodiesEnum.Network = AntibodiesEnum.createEnum()
+AntibodiesEnum.Network.define("REQUEST_MEDICAL_FILE", "requestMedicalFile")
+AntibodiesEnum.Network.define("SHARE_MEDICAL_FILE", "shareMedicalFile")
+
 AntibodiesEnum.InfectionStage = AntibodiesEnum.createEnum()
 AntibodiesEnum.InfectionStage.define("NONE", 0)
 AntibodiesEnum.InfectionStage.define("INCUBATION", 1)
@@ -36,8 +40,9 @@ AntibodiesEnum.Config.define("GENERAL", string.lower)
 AntibodiesEnum.Config.define("CONDITION", string.lower)
 AntibodiesEnum.Config.define("CONDITION_CURVE", string.lower)
 AntibodiesEnum.Config.define("WOUND", string.lower)
-AntibodiesEnum.Config.define("INFECTION", string.lower)
 AntibodiesEnum.Config.define("TREATMENT", string.lower)
+AntibodiesEnum.Config.define("WOUND_AND_TREATMENT", string.lower)
+AntibodiesEnum.Config.define("INFECTION", string.lower)
 AntibodiesEnum.Config.define("HYGIENE", string.lower)
 AntibodiesEnum.Config.define("HYGIENE_WOUND_MOD", string.lower)
 AntibodiesEnum.Config.define("HYGIENE_TREATMENT_MOD", string.lower)

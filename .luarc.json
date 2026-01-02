@@ -35,15 +35,21 @@
         "ISPlantainCataplasm",
         "ISHealthPanel",
         "ISPanelJoypad",
+        "ISPanel",
+        "ISTabPanel",
+        "ISBodyPartPanel",
         "Color",
         "getCore",
-        "ISBodyPartPanel",
         "xpSystemText",
         "luautils",
         "getTexture",
         "ISCharacterInfoWindow",
-        "ISPanel",
         "getOnlinePlayers",
-        "getPlayerFromUsername"
+        "getPlayerFromUsername",
+        "getPlayerScreenTop",
+        "getPlayerScreenHeight",
+        "getPlayerScreenLeft",
+        "getPlayerScreenWidth",
+        "JoypadState"
     ]
 }

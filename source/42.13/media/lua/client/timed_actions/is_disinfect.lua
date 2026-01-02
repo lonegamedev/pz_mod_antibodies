@@ -1,6 +1,6 @@
 require("TimedActions/ISDisinfect")
-local AntibodiesMedicalFile = require("AntibodiesMedicalFile")
-local AntibodiesEnum = require("AntibodiesEnum")
+local AntibodiesMedicalFile = require("antibodies_medical_file")
+local AntibodiesEnum = require("antibodies_enum")
 
 ISDisinfect_perform = ISDisinfect.perform
 ---@diagnostic disable-next-line: duplicate-set-field

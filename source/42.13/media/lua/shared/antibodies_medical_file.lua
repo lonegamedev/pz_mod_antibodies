@@ -55,17 +55,19 @@ function AntibodiesMedicalFile:clone()
 end
 
 function AntibodiesMedicalFile:update(player, config)
+	self.timestamp = os.time()
+
 	self.condition:update(player, config)
 	self.body:update(player, config)
 
 	self:updateAdaptiveEffects(config)
 	self:updateKnoxInfection(player)
 
-	self.knoxAntibodiesDelta = self:getKnoxAntibodiesDelta(config)
 	if self.knoxInfectionStage == AntibodiesEnum.InfectionStage.NONE then
 		self:cureKnoxVirus(player)
 		self.knoxAntibodiesLevel = 0
 	else
+		self.knoxAntibodiesDelta = self:getKnoxAntibodiesDelta(config)
 		self.knoxAntibodiesLevel = self.knoxAntibodiesLevel + self.knoxAntibodiesDelta
 		if self:consumeKnoxInfection(player) then
 			self:cureKnoxVirus(player)
@@ -137,8 +139,8 @@ function AntibodiesMedicalFile.getKnoxInfectionLevel(character, survivedTime)
 	local startTime = bodyDamage:getInfectionTime()
 	local duration = bodyDamage:getInfectionMortalityDuration()
 	local elapsed = survivedTime - startTime
-	local level = elapsed / duration
-	return math.max(0, math.min(1, level))
+	local level = (elapsed / duration) * 100
+	return math.max(0, math.min(100, level))
 end
 
 function AntibodiesMedicalFile.getKnoxInfectionDelta(player)
@@ -181,8 +183,8 @@ function AntibodiesMedicalFile:getKnoxAntibodiesDelta(config)
 		return 0.0
 	end
 	local effectSum = config[AntibodiesEnum.Config.GENERAL][AntibodiesEnum.Config.General.BASE_GROWTH]
-	effectSum = effectSum + self.condition:getEffect()
-	effectSum = effectSum + self.body:getEffect()
+	effectSum = effectSum + self.condition:getTotalEffect()
+	effectSum = effectSum + self.body:getTotalEffect()
 	effectSum = effectSum + self.recoveryEffect
 	effectSum = effectSum + self.mutationEffect
 	effectSum = effectSum * 0.01
@@ -200,11 +202,10 @@ function AntibodiesMedicalFile:consumeKnoxInfection(player)
 		return false
 	end
 
-	local infectionDelta = self.knoxInfectionDelta
 	local bodyDamage = player:getBodyDamage()
 	local infectionTime = bodyDamage:getInfectionTime()
 	local infectionDuration = bodyDamage:getInfectionMortalityDuration()
-	local healStep = (infectionDelta + difference) * 2.0
+	local healStep = (self.knoxInfectionDelta + difference) * 2.0
 
 	local newTime = infectionTime + ((healStep / 100) * infectionDuration)
 	bodyDamage:setInfectionTime(newTime)

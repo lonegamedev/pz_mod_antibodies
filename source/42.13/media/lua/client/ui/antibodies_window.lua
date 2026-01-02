@@ -1,118 +1,130 @@
---[[
-require("AntibodiesUI")
+require("ISUI/ISPanelJoypad")
+require("ISUI/ISButton")
 
-ISAntibodiesWindow = ISPanelJoypad:derive("ISAntibodiesWindow")
-ISAntibodiesWindow.__index = ISAntibodiesWindow
+local AntibodiesMedicalFile = require("antibodies_medical_file")
 
-local WINDOW_WIDTH = 600
-local WINDOW_HEIGHT = 400
-local WINDOW_PADDING = 10
+local AntibodiesUI = require("ui/antibodies_ui")
+local AntibodiesTabPanel = require("ui/antibodies_tab_panel")
+local AntibodiesProgressPanel = require("ui/antibodies_progress_panel")
+local AntibodiesConditionPanel = require("ui/antibodies_condition_panel")
+local AntibodiesWoundsPanel = require("ui/antibodies_wounds_panel")
 
-local BORDER_COLOR = AntibodiesUI.GREY
+local AntibodiesWindow = ISPanelJoypad:derive("AntibodiesWindow")
 
-local TOP_HEIGHT = 40
-local BOTTOM_HEIGHT = 45
+AntibodiesWindow.WINDOW_WIDTH = 600
+AntibodiesWindow.WINDOW_HEIGHT = 400
+AntibodiesWindow.WINDOW_PADDING = 10
+AntibodiesWindow.BORDER_COLOR = AntibodiesUI.GREY
 
-local TAB_BUTTONS_HEIGHT = 21
-local TAB_PANEL_HEIGHT = WINDOW_HEIGHT - (TOP_HEIGHT + BOTTOM_HEIGHT)
-local TAB_BOTTOM = TOP_HEIGHT + TAB_BUTTONS_HEIGHT
+AntibodiesWindow.TOP_HEIGHT = 40
+AntibodiesWindow.BOTTOM_HEIGHT = 45
 
-local LEFT_RIGHT_SEP = 10
-local LEFT_PANEL_WIDTH = (WINDOW_WIDTH * 0.4) - LEFT_RIGHT_SEP
-local RIGHT_PANEL_WIDTH = WINDOW_WIDTH - LEFT_PANEL_WIDTH - LEFT_RIGHT_SEP
-local LEFT_RIGHT_HEIGHT = WINDOW_HEIGHT - (TOP_HEIGHT + BOTTOM_HEIGHT + TAB_BUTTONS_HEIGHT)
+AntibodiesWindow.TAB_BUTTONS_HEIGHT = 21
+AntibodiesWindow.TAB_PANEL_HEIGHT = AntibodiesWindow.WINDOW_HEIGHT
+	- (AntibodiesWindow.TOP_HEIGHT + AntibodiesWindow.BOTTOM_HEIGHT)
+AntibodiesWindow.TAB_BOTTOM = AntibodiesWindow.TOP_HEIGHT + AntibodiesWindow.TAB_BUTTONS_HEIGHT
 
-ISAntibodiesWindow.instance = {}
-ISAntibodiesWindow.WindowWidth = WINDOW_WIDTH
-ISAntibodiesWindow.WindowHeight = WINDOW_HEIGHT
+AntibodiesWindow.LEFT_RIGHT_SEP = 10
+AntibodiesWindow.LEFT_PANEL_WIDTH = (AntibodiesWindow.WINDOW_WIDTH * 0.4) - AntibodiesWindow.LEFT_RIGHT_SEP
+AntibodiesWindow.RIGHT_PANEL_WIDTH = AntibodiesWindow.WINDOW_WIDTH
+	- AntibodiesWindow.LEFT_PANEL_WIDTH
+	- AntibodiesWindow.LEFT_RIGHT_SEP
+AntibodiesWindow.LEFT_RIGHT_HEIGHT = AntibodiesWindow.WINDOW_HEIGHT
+	- (AntibodiesWindow.TOP_HEIGHT + AntibodiesWindow.BOTTOM_HEIGHT + AntibodiesWindow.TAB_BUTTONS_HEIGHT)
 
-ISAntibodiesWindow.conditionProgressBar = 10
-ISAntibodiesWindow.woundsProgressBar = 10
-ISAntibodiesWindow.infectionsProgressBar = 10
-ISAntibodiesWindow.hygieneProgressBar = 10
+AntibodiesWindow.instance = {}
 
-local computeConditionBarWidth = function()
-	local options = Antibodies.currentOptions
-	local res = 0
-	for key, value in pairs(options.condition) do
-		local val = math.abs(value)
-		if val > res then
-			res = val
-		end
+function AntibodiesWindow.show(doctor, patient)
+	local doctorNum = doctor:getPlayerNum()
+	if JoypadState.players[doctorNum + 1] then
+		getPlayerInfoPanel(doctorNum):toggleView(xpSystemText.health)
 	end
-	if res > 0 then
-		return res
+
+	if AntibodiesWindow.instance[doctorNum + 1] then
+		AntibodiesWindow.instance[doctorNum + 1]:removeFromUIManager()
+		AntibodiesWindow.instance[doctorNum + 1] = nil
 	end
-	return 1.0
+
+	local rect = AntibodiesWindow.getWindowRect(doctor)
+	local window = AntibodiesWindow:new(rect.x, rect.y, rect.width, rect.height, doctor, patient)
+	window:initialise()
+	window:addToUIManager()
+	AntibodiesWindow.instance[doctorNum + 1] = window
+
+	setJoypadFocus(doctorNum, window)
 end
 
-local computeWoundsBarWidth = function()
-	local options = Antibodies.currentOptions
-	local val1 = 0
-	for _, key in ipairs(Antibodies.WoundTreatmentBase) do
-		val1 = val1 + options.wounds[key]
-	end
-	local val2 = 0
-	for _, key in ipairs(Antibodies.WoundTreatmentMods) do
-		val2 = val2 + (options.wounds[key] * options.general.doctorSkillTreatmentMod * 10)
-	end
-	val1 = math.abs(val1)
-	val2 = math.abs(val2)
-	local res = val1
-	if res > val2 then
-		res = val2
-	end
-	if res > 0 then
-		return res
-	end
-	return 1.0
+function AntibodiesWindow.getWindowRect(doctor)
+	local playerNum = doctor:getPlayerNum()
+	local width = AntibodiesWindow.WINDOW_WIDTH
+	local height = AntibodiesWindow.WINDOW_HEIGHT
+	local y = getPlayerScreenTop(playerNum) + (getPlayerScreenHeight(playerNum) - height) / 2
+	local x = getPlayerScreenLeft(playerNum) + (getPlayerScreenWidth(playerNum) - width) / 2
+	local maxX = getCore():getScreenWidth()
+	x = math.max(0, math.min(x, maxX - width))
+	return {
+		x = x,
+		y = y,
+		width = width,
+		height = height,
+	}
 end
 
-local computeInfectionsBarWidth = function()
-	local options = Antibodies.currentOptions
-	local res = 0
-	for key, value in pairs(options.infections) do
-		res = res + value
-	end
-	res = math.abs(res)
-	if res > 0 then
-		return res
-	end
-	return 1.0
+function AntibodiesWindow:new(x, y, width, height, doctor, patient)
+	local instance = ISPanelJoypad:new(x, y, width, height)
+	setmetatable(instance, self)
+	self.__index = self
+
+	instance.joypadFocus = true
+	instance.backgroundColor.a = 0.9
+	instance.visibleOnStartup = false
+	instance.moveWithMouse = true
+
+	instance.doctor = doctor
+	instance.patient = patient
+
+	instance.progressPanel = nil
+	instance.conditionPanel = nil
+	instance.woundsPanel = nil
+
+	return instance
 end
 
-local computeHygineBarWidth = function()
-	local options = Antibodies.currentOptions
-	local mod = 0
-	for _, key in ipairs(Antibodies.HygieneMods) do
-		mod = mod + options.hygiene[key]
-	end
-	local res = math.abs(mod * options.hygiene.bloodEffect) + math.abs(mod * options.hygiene.dirtEffect)
-	if res > 0.0 then
-		return res
-	end
-	return 1.0
-end
-
-function ISAntibodiesWindow:initialise()
+function AntibodiesWindow:initialise()
 	ISPanelJoypad.initialise(self)
+end
 
-	ISAntibodiesWindow.conditionProgressBar = computeConditionBarWidth()
-	ISAntibodiesWindow.woundsProgressBar = computeWoundsBarWidth()
-	ISAntibodiesWindow.infectionsProgressBar = computeInfectionsBarWidth()
-	ISAntibodiesWindow.hygieneProgressBar = computeHygineBarWidth()
+function AntibodiesWindow:onClick(button)
+	if button.internal == "CLOSE" then
+		self:close()
+	end
+end
 
+function AntibodiesWindow:close()
+	ISPanelJoypad.close(self)
+	local doctorNum = self.doctor:getPlayerNum()
+
+	if AntibodiesWindow.instance[doctorNum + 1] then
+		AntibodiesWindow.instance[doctorNum + 1]:removeFromUIManager()
+		AntibodiesWindow.instance[doctorNum + 1] = nil
+	end
+
+	if JoypadState.players[doctorNum] then
+		setJoypadFocus(doctorNum, nil)
+	end
+end
+
+function AntibodiesWindow:createCloseBtn()
 	local btnWid = 100
 	local btnHgt = math.max(AntibodiesUI.FONT_HGT_SMALL + 3 * 2, 25)
-
 	self.closeButton = ISButton:new(
-		self:getWidth() - btnWid - 10,
-		self:getHeight() - WINDOW_PADDING - btnHgt,
+		self:getWidth() - AntibodiesWindow.WINDOW_PADDING - btnWid,
+		self:getHeight() - AntibodiesWindow.WINDOW_PADDING - btnHgt,
 		btnWid,
 		btnHgt,
 		getText("UI_Close"),
 		self,
-		ISAntibodiesWindow.onClick
+		AntibodiesWindow.onClick
 	)
 	self.closeButton.internal = "CLOSE"
 	self.closeButton.anchorLeft = false
@@ -121,67 +133,57 @@ function ISAntibodiesWindow:initialise()
 	self.closeButton.anchorBottom = true
 	self.closeButton:initialise()
 	self.closeButton:instantiate()
-	self.closeButton.borderColor = BORDER_COLOR
+	self.closeButton.borderColor = AntibodiesWindow.BORDER_COLOR
 	self:addChild(self.closeButton)
 end
 
-function ISAntibodiesWindow:createChildren()
+function AntibodiesWindow:createChildren()
 	ISPanelJoypad.createChildren(self)
 
-	self.progressPanel = ISAntibodiesProgressPanel:new(0, TAB_BOTTOM, LEFT_PANEL_WIDTH, LEFT_RIGHT_HEIGHT)
+	self.tabs = AntibodiesTabPanel:new(
+		0,
+		AntibodiesWindow.TOP_HEIGHT,
+		AntibodiesWindow.WINDOW_WIDTH,
+		AntibodiesWindow.TAB_PANEL_HEIGHT
+	)
+	self.tabs.target = self
+	self.tabs:initialise()
+	self:addChild(self.tabs)
+
+	self.progressPanel = AntibodiesProgressPanel:new(
+		0,
+		AntibodiesWindow.TAB_BOTTOM,
+		AntibodiesWindow.LEFT_PANEL_WIDTH,
+		AntibodiesWindow.LEFT_RIGHT_HEIGHT
+	)
+	self.progressPanel:initialise()
 	self:addChild(self.progressPanel)
 
-	self.conditionPanel = ISAntibodiesConditionPanel:new(
-		LEFT_RIGHT_SEP + LEFT_PANEL_WIDTH,
-		TAB_BOTTOM,
-		RIGHT_PANEL_WIDTH,
-		LEFT_RIGHT_HEIGHT
+	self.conditionPanel = AntibodiesConditionPanel:new(
+		AntibodiesWindow.LEFT_RIGHT_SEP + AntibodiesWindow.LEFT_PANEL_WIDTH,
+		AntibodiesWindow.TAB_BOTTOM,
+		AntibodiesWindow.RIGHT_PANEL_WIDTH,
+		AntibodiesWindow.LEFT_RIGHT_HEIGHT
 	)
-	self:addChild(self.conditionPanel)
+	self.conditionPanel:initialise()
 
-	self.woundsPanel = ISAntibodiesBodyPanel:new(
-		LEFT_RIGHT_SEP + LEFT_PANEL_WIDTH,
-		TAB_BOTTOM,
-		RIGHT_PANEL_WIDTH,
-		LEFT_RIGHT_HEIGHT,
-		ISAntibodiesBodyPanel.View.Wounds
+	self.woundsPanel = AntibodiesWoundsPanel:new(
+		AntibodiesWindow.LEFT_RIGHT_SEP + AntibodiesWindow.LEFT_PANEL_WIDTH,
+		AntibodiesWindow.TAB_BOTTOM,
+		AntibodiesWindow.RIGHT_PANEL_WIDTH,
+		AntibodiesWindow.LEFT_RIGHT_HEIGHT
 	)
-	self:addChild(self.woundsPanel)
-
-	self.infectionsPanel = ISAntibodiesBodyPanel:new(
-		LEFT_RIGHT_SEP + LEFT_PANEL_WIDTH,
-		TAB_BOTTOM,
-		RIGHT_PANEL_WIDTH,
-		LEFT_RIGHT_HEIGHT,
-		ISAntibodiesBodyPanel.View.Infections
-	)
-	self:addChild(self.infectionsPanel)
-
-	self.hygienePanel = ISAntibodiesBodyPanel:new(
-		LEFT_RIGHT_SEP + LEFT_PANEL_WIDTH,
-		TAB_BOTTOM,
-		RIGHT_PANEL_WIDTH,
-		LEFT_RIGHT_HEIGHT,
-		ISAntibodiesBodyPanel.View.Hygiene
-	)
-	self:addChild(self.hygienePanel)
-
-	self.tabs = ISTabPanel:new(0, TOP_HEIGHT, WINDOW_WIDTH, TAB_PANEL_HEIGHT)
-	self.tabs:initialise()
-	self.tabs:setAnchorRight(true)
-	self.tabs:setAnchorBottom(true)
-	self.tabs.borderColor = BORDER_COLOR
-	self.tabs.target = self
-	self.tabs:setEqualTabWidth(true)
-	self:addChild(self.tabs)
+	self.woundsPanel:initialise()
 
 	self.tabs:addView(getText("UI_Antibodies_KnoxInfection_ConditionEffects"), self.conditionPanel)
 	self.tabs:addView(getText("UI_Antibodies_KnoxInfection_WoundEffects"), self.woundsPanel)
-	self.tabs:addView(getText("UI_Antibodies_KnoxInfection_InfectionEffects"), self.infectionsPanel)
-	self.tabs:addView(getText("UI_Antibodies_KnoxInfection_HygieneEffects"), self.hygienePanel)
+	--self.tabs:addView(getText("UI_Antibodies_KnoxInfection_InfectionEffects"), self.infectionsPanel)
+	--self.tabs:addView(getText("UI_Antibodies_KnoxInfection_HygieneEffects"), self.hygienePanel)
+
+	self:createCloseBtn()
 end
 
-function ISAntibodiesWindow:drawTitle()
+function AntibodiesWindow:drawTitle()
 	local title = getText("UI_Antibodies_KnoxInfection_TitleSelf")
 	if self.patient ~= self.doctor then
 		title = getText(
@@ -190,140 +192,127 @@ function ISAntibodiesWindow:drawTitle()
 		)
 	end
 	local titleWidth = getTextManager():MeasureStringX(UIFont.Medium, title)
-	self:drawText(title, (self:getWidth() / 2) - (titleWidth / 2), WINDOW_PADDING, 1, 1, 1, 1, UIFont.Medium)
-end
-
-function ISAntibodiesWindow:drawTabs()
-	self:drawRectBorder(
-		0,
-		TOP_HEIGHT,
-		WINDOW_WIDTH,
-		TAB_BUTTONS_HEIGHT,
-		BORDER_COLOR.a,
-		BORDER_COLOR.r,
-		BORDER_COLOR.g,
-		BORDER_COLOR.b
+	self:drawText(
+		title,
+		(self:getWidth() / 2) - (titleWidth / 2),
+		AntibodiesWindow.WINDOW_PADDING,
+		1,
+		1,
+		1,
+		1,
+		UIFont.Medium
 	)
 end
 
-function ISAntibodiesWindow:render()
+function AntibodiesWindow:drawTabsBox()
+	self:drawRectBorder(
+		0,
+		AntibodiesWindow.TOP_HEIGHT,
+		AntibodiesWindow.WINDOW_WIDTH,
+		AntibodiesWindow.TAB_BUTTONS_HEIGHT,
+		AntibodiesWindow.BORDER_COLOR.a,
+		AntibodiesWindow.BORDER_COLOR.r,
+		AntibodiesWindow.BORDER_COLOR.g,
+		AntibodiesWindow.BORDER_COLOR.b
+	)
+end
+
+function AntibodiesWindow:render()
 	ISPanelJoypad.render(self)
 
-	local save = self.patient:getModData()
-	local medicalFile = save.medicalFile
+	self:drawTitle()
 
+	local medicalFile = AntibodiesMedicalFile.of(self.patient)
 	self.progressPanel.medicalFile = medicalFile
 	self.conditionPanel.medicalFile = medicalFile
 	self.woundsPanel.medicalFile = medicalFile
-	self.infectionsPanel.medicalFile = medicalFile
-	self.hygienePanel.medicalFile = medicalFile
-
-	self:drawTitle()
-	self:drawTabs()
+	--self.infectionsPanel.medicalFile = medicalFile
+	--self.hygienePanel.medicalFile = medicalFile
 end
 
-function ISAntibodiesWindow:onGainJoypadFocus(joypadData)
+function AntibodiesWindow:onGainJoypadFocus(joypadData)
 	ISPanelJoypad.onGainJoypadFocus(self, joypadData)
-	self:setISButtonForB(self.closeButton)
-end
-
-function ISAntibodiesWindow:onJoypadDirUp(joypadData)
-	ISPanelJoypad.onJoypadDirUp(self, joypadData)
-	local viewIndex = self.tabs:getActiveViewIndex()
-	if viewIndex == 1 then
-		self.conditionPanel:scrollUp()
-	elseif viewIndex == 2 then
-		self.woundsPanel:scrollUp()
-	elseif viewIndex == 3 then
-		self.infectionsPanel:scrollUp()
-	elseif viewIndex == 4 then
-		self.hygienePanel:scrollUp()
+	if self.closeButton and self.closeButton:isVisible() then
+		self:setISButtonForB(self.closeButton)
 	end
-end
 
-function ISAntibodiesWindow:onJoypadDirDown(joypadData)
-	ISPanelJoypad.onJoypadDirDown(self, joypadData)
-	local viewIndex = self.tabs:getActiveViewIndex()
-	if viewIndex == 1 then
-		self.conditionPanel:scrollDown()
-	elseif viewIndex == 2 then
-		self.woundsPanel:scrollDown()
-	elseif viewIndex == 3 then
-		self.infectionsPanel:scrollDown()
-	elseif viewIndex == 4 then
-		self.hygienePanel:scrollDown()
-	end
-end
-
-function ISAntibodiesWindow:onJoypadDown(button)
-	ISPanelJoypad.onJoypadDown(self, button)
-	if button == Joypad.LBumper or button == Joypad.RBumper then
-		local viewIndex = self.tabs:getActiveViewIndex()
-		if button == Joypad.LBumper then
-			if viewIndex == 1 then
-				viewIndex = #self.tabs.viewList
-			else
-				viewIndex = viewIndex - 1
-			end
+	--[[
+	if self.tabs then
+		local tabButton = self.tabs:getTabButton(self.tabs.activeView)
+		if tabButton then
+			tabButton:setJoypadFocused(true)
+			self.joypadFocused = tabButton
 		end
-		if button == Joypad.RBumper then
-			if viewIndex == #self.tabs.viewList then
-				viewIndex = 1
-			else
-				viewIndex = viewIndex + 1
-			end
-		end
-		self.tabs:activateView(self.tabs.viewList[viewIndex].name)
 	end
+	]]
 end
 
-function ISAntibodiesWindow:close()
-	self:setVisible(false)
-	self:removeFromUIManager()
-	local playerNum = self.doctor:getPlayerNum()
-	if JoypadState.players[playerNum + 1] then
-		setJoypadFocus(playerNum, nil)
+function AntibodiesWindow:getCurrentView()
+	local viewWrapper = self.tabs.viewList[self.tabs:getActiveViewIndex()]
+	if viewWrapper and viewWrapper.view then
+		return viewWrapper.view
 	end
+	return nil
 end
 
-function ISAntibodiesWindow:onClick(button)
-	if button.internal == "CLOSE" then
+function AntibodiesWindow:onJoypadDown(button, joypadData)
+	ISPanelJoypad.onJoypadDown(self, joypadData)
+	if button == Joypad.BButton then
 		self:close()
 	end
-end
-
-function ISAntibodiesWindow:update()
-	ISPanelJoypad.update(self)
-	if self.doctor ~= self.patient then
-		if
-			self.doctor:getAccessLevel() == "None"
-			and math.abs(self.patient:getX() - self.doctor:getX()) > 0.5
-			and math.abs(self.patient:getY() - self.doctor:getY()) > 0.5
-		then
-			self:close()
+	if button == Joypad.LBumper or button == Joypad.RBumper then
+		local count = #self.tabs.viewList
+		if count <= 1 then
+			return
 		end
+		local dir = (button == Joypad.RBumper) and 1 or -1
+		local index = self.tabs:getActiveViewIndex()
+		if dir == 1 then
+			index = index + 1
+			if index > count then
+				index = 1
+			end
+		elseif dir == -1 then
+			index = index - 1
+			if index <= 0 then
+				index = count
+			end
+		end
+		self.tabs:activateView(self.tabs.viewList[index].name)
 	end
 end
 
-function ISAntibodiesWindow:new(x, y, width, height, doctor, patient)
-	local o = ISPanelJoypad:new(x, y, width, height)
-	setmetatable(o, self)
-	self.__index = self
-	o.backgroundColor.a = 0.9
-	o.visibleOnStartup = false
-	o.moveWithMouse = true
-	o.doctor = doctor
-	o.patient = patient
-	ISAntibodiesWindow.instance[doctor:getPlayerNum() + 1] = o
-	return o
+function AntibodiesWindow:onJoypadDirUp(joypadData)
+	ISPanelJoypad.onJoypadDirUp(self, joypadData)
+	local view = self:getCurrentView()
+	if view then
+		view:scrollUp()
+	end
 end
 
+function AntibodiesWindow:onJoypadDirDown(joypadData)
+	ISPanelJoypad.onJoypadDirDown(self, joypadData)
+	local view = self:getCurrentView()
+	if view then
+		view:scrollDown()
+	end
+end
+
+-----------------------------------------------------
+--CALLBACKS------------------------------------------
+-----------------------------------------------------
+
 local function onPlayerDeath(player)
-	for key, window in ipairs(ISAntibodiesWindow.instance) do
+	for key, window in ipairs(AntibodiesWindow.instance) do
 		if window.doctor == player or window.patient == player then
 			window:close()
 		end
 	end
 end
 Events.OnPlayerDeath.Add(onPlayerDeath)
-]]
+
+-----------------------------------------------------
+-----------------------------------------------------
+-----------------------------------------------------
+
+return AntibodiesWindow

@@ -1,12 +1,13 @@
 local AntibodiesEnum = require("antibodies_enum")
+local AntibodiesUtils = require("antibodies_utils")
 
 local AntibodiesConfig = {}
 AntibodiesConfig.__index = AntibodiesConfig
 
 AntibodiesConfig.current = nil
 
-function AntibodiesConfig.new()
-	local instance = setmetatable({}, AntibodiesConfig)
+function AntibodiesConfig:new()
+	local instance = setmetatable({}, self)
 
 	instance[AntibodiesEnum.Config.GENERAL] = {
 		[AntibodiesEnum.Config.General.BASE_GROWTH] = 180.0,
@@ -147,13 +148,6 @@ function AntibodiesConfig.new()
 		[AntibodiesEnum.BodyPart.Wound.HAVE_GLASS] = -2.0,
 	}
 
-	instance[AntibodiesEnum.Config.INFECTION] = {
-		[AntibodiesEnum.BodyPart.Infection.REGULAR] = -1.0,
-		[AntibodiesEnum.BodyPart.Infection.KNOX_SCRATCH] = -2.0,
-		[AntibodiesEnum.BodyPart.Infection.KNOX_CUT] = -3.0,
-		[AntibodiesEnum.BodyPart.Infection.KNOX_BITE] = -4.0,
-	}
-
 	instance[AntibodiesEnum.Config.TREATMENT] = {
 		[AntibodiesEnum.BodyPart.Treatment.BANDAGED] = 0.25,
 		[AntibodiesEnum.BodyPart.Treatment.CLEAN_BANDAGE] = 0.25,
@@ -163,6 +157,13 @@ function AntibodiesConfig.new()
 		[AntibodiesEnum.BodyPart.Treatment.GARLIC] = 1.0,
 		[AntibodiesEnum.BodyPart.Treatment.PLANTAIN] = 0.5,
 		[AntibodiesEnum.BodyPart.Treatment.COMFREY] = 0.25,
+	}
+
+	instance[AntibodiesEnum.Config.INFECTION] = {
+		[AntibodiesEnum.BodyPart.Infection.REGULAR] = -1.0,
+		[AntibodiesEnum.BodyPart.Infection.KNOX_SCRATCH] = -2.0,
+		[AntibodiesEnum.BodyPart.Infection.KNOX_CUT] = -3.0,
+		[AntibodiesEnum.BodyPart.Infection.KNOX_BITE] = -4.0,
 	}
 
 	instance[AntibodiesEnum.Config.HYGIENE] = {
@@ -198,6 +199,34 @@ function AntibodiesConfig.new()
 	}
 
 	return instance
+end
+
+function AntibodiesConfig.computeMaxMagnitude(table)
+	local res = 0
+	if table ~= nil then
+		for key, value in pairs(table) do
+			local val = math.abs(value)
+			if val > res then
+				res = val
+			end
+		end
+		if res > 0 then
+			return res
+		end
+	end
+	return 1.0 --fallback
+end
+
+function AntibodiesConfig.setCurrent(config)
+	AntibodiesConfig.current = config
+	return AntibodiesConfig.current
+end
+
+function AntibodiesConfig.getCurrent()
+	if AntibodiesConfig.current == nil then
+		AntibodiesConfig.current = AntibodiesConfig:new()
+	end
+	return AntibodiesConfig.current
 end
 
 return AntibodiesConfig

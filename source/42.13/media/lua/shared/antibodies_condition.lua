@@ -1,6 +1,7 @@
 local AntibodiesEnum = require("antibodies_enum")
 local AntibodiesUtils = require("antibodies_utils")
 local AntibodiesEffects = require("antibodies_effects")
+local AntibodiesConfig = require("antibodies_config")
 
 local AntibodiesCondition = {}
 AntibodiesCondition.__index = AntibodiesCondition
@@ -73,8 +74,10 @@ function AntibodiesCondition:calculateEffect(config)
 	if not config then
 		return self
 	end
+
 	local mods = config[AntibodiesEnum.Config.CONDITION]
 	local curves = config[AntibodiesEnum.Config.CONDITION_CURVE]
+
 	for _, key in ipairs(AntibodiesEnum.Condition.list()) do
 		local value = 0
 		if curves[key] then
@@ -85,7 +88,7 @@ function AntibodiesCondition:calculateEffect(config)
 	return self
 end
 
-function AntibodiesCondition:getEffect()
+function AntibodiesCondition:getTotalEffect()
 	return self.effects:getTotal()
 end
 

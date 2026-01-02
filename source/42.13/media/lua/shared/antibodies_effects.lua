@@ -18,9 +18,13 @@ end
 
 function AntibodiesEffects:clear()
 	self.values = {}
-	self._total = 0
+	self._total = 0.0
 	self._order = {}
 	self._dirty = false
+end
+
+function AntibodiesEffects:get(id)
+	return self.values[id] or 0
 end
 
 function AntibodiesEffects:set(id, value)

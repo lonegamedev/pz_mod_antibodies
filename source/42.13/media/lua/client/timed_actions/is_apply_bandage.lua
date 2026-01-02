@@ -1,6 +1,6 @@
 require("TimedActions/ISApplyBandage")
-local AntibodiesMedicalFile = require("AntibodiesMedicalFile")
-local AntibodiesEnum = require("AntibodiesEnum")
+local AntibodiesMedicalFile = require("antibodies_medical_file")
+local AntibodiesEnum = require("antibodies_enum")
 
 local ISApplyBandage_perform = ISApplyBandage.perform
 ---@diagnostic disable-next-line: duplicate-set-field

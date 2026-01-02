@@ -4,14 +4,14 @@ local AntibodiesConfig = require("antibodies_config")
 local AntibodiesUtils = require("antibodies_utils")
 local AntibodiesEffectListPanel = require("ui/antibodies_effect_list_panel")
 
-local AntibodiesConditionPanel = AntibodiesEffectListPanel:derive("AntibodiesConditionPanel")
+local AntibodiesWoundsPanel = AntibodiesEffectListPanel:derive("AntibodiesWoundsPanel")
 
-function AntibodiesConditionPanel:new(x, y, width, height)
+function AntibodiesWoundsPanel:new(x, y, width, height)
 	local instance = AntibodiesEffectListPanel.new(self, x, y, width, height)
 	return instance
 end
 
-function AntibodiesConditionPanel:composeEntries()
+function AntibodiesWoundsPanel:composeEntries()
 	local effects = self.medicalFile.condition.effects
 	local sortedKeys = effects:getOrder()
 	local maxMagnitude = AntibodiesConfig.computeMaxMagnitude(
@@ -31,4 +31,4 @@ function AntibodiesConditionPanel:composeEntries()
 	end
 end
 
-return AntibodiesConditionPanel
+return AntibodiesWoundsPanel
