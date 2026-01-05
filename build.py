@@ -4,6 +4,9 @@ import shutil
 from jinja2 import Environment, FileSystemLoader
 import image_gen
 import codecs
+from pathlib import Path
+
+build_42_versions = ['42.0', '42.13']
 
 build_41_encoding_map = {
     "Translate/PL": "windows-1250",  # Polish
@@ -157,6 +160,13 @@ def parse_arguments():
     return parser.parse_args()
 
 image_gen.generate_radial_progress("source/media/ui/lgd_antibodies_radial_progress.png")
+for version in build_42_versions:
+    copy_files(
+        f"source/media/ui",
+        f"source/{version}/media/ui",
+        {}
+    )
+
 
 args = parse_arguments()
 
@@ -175,8 +185,10 @@ except Exception as e:
 transform_files('source', f'mods/{args.MOD_ID}', vars(args))
 
 if args.MOD_POSTER_FILTER == "greyscale":
-    image_gen.make_greyscale(f'mods/{args.MOD_ID}/poster.png')
-    image_gen.make_greyscale(f'mods/{args.MOD_ID}/42.0/poster.png')
+    mod_root = Path(f'mods/{args.MOD_ID}')
+    for name in ["poster.png"]:
+        for path in mod_root.rglob(name):
+            image_gen.make_greyscale(str(path))
 
 copy_files(f'mods/{args.MOD_ID}', f'workshop/{args.MOD_ID}/Contents/mods/{args.MOD_ID}', {})
 image_gen.resize(f'mods/{args.MOD_ID}/poster.png', f'workshop/{args.MOD_ID}/preview.png', 256, 256)

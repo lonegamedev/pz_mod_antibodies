@@ -50,6 +50,7 @@ UI_Antibodies_PL = {
     UI_Antibodies_Condition_sanity = "Poczytalność (%1)",
     UI_Antibodies_Condition_anger = "Gniew (%1)",
     UI_Antibodies_Condition_fear = "Strach (%1)",
+    UI_Antibodies_Condition_intoxication = "Intoksykacja (%1)",
 
     UI_Antibodies_KnoxInfection_TitleSelf = "Infekcja Knox",
     UI_Antibodies_KnoxInfection_TitleOther = "%1 Infekcja Knox",

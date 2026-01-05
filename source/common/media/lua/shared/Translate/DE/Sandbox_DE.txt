@@ -79,6 +79,8 @@ Sandbox_DE = {
     Sandbox_{{MOD_ID}}_condition_anger_tooltip = "Der Rohwert wird auf den Bereich von -1 bis 1 umgerechnet und mit diesem Effekt multipliziert.",
     Sandbox_{{MOD_ID}}_condition_fear = "Angst",
     Sandbox_{{MOD_ID}}_condition_fear_tooltip = "Der Rohwert wird auf den Bereich von -1 bis 1 umgerechnet und mit diesem Effekt multipliziert.",
+    Sandbox_{{MOD_ID}}_condition_intoxication = "Vergiftung",
+    Sandbox_{{MOD_ID}}_condition_intoxication_tooltip = "Der Rohwert wird auf den Bereich von -1 bis 1 umgerechnet und mit diesem Effekt multipliziert.",
 
     Sandbox_{{MOD_ID}}_wounds_bandaged = "Verbunden",
     Sandbox_{{MOD_ID}}_wounds_bandaged_tooltip = "Multipliziert mit der Arzt-Fähigkeit und dem Behandlungsmodifikator. Wird unabhängig pro betroffener Körperstelle angewendet (insgesamt 18).",

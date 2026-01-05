@@ -229,4 +229,8 @@ function AntibodiesConfig.getCurrent()
 	return AntibodiesConfig.current
 end
 
+function AntibodiesConfig:isHygienePanelEnabled()
+	return self[AntibodiesEnum.Config.GENERAL][AntibodiesEnum.Config.General.HYGIENE_PANEL_ENABLED]
+end
+
 return AntibodiesConfig

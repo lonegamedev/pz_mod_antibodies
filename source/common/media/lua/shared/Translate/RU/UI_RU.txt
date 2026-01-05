@@ -50,6 +50,7 @@ UI_Antibodies_RU = {
     UI_Antibodies_Condition_sanity = "Здравомыслие (%1)",
     UI_Antibodies_Condition_anger = "Злость (%1)",
     UI_Antibodies_Condition_fear = "Страх (%1)",
+    UI_Antibodies_Condition_intoxication = "Интоксикация (%1)",
 
     UI_Antibodies_KnoxInfection_TitleSelf = "Заражение Knox",
     UI_Antibodies_KnoxInfection_TitleOther = "%1's заражение Knox",

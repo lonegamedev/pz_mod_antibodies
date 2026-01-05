@@ -50,6 +50,7 @@ UI_Antibodies_TR = {
     UI_Antibodies_Condition_sanity = "Akıl Sağlığı (%1)",
     UI_Antibodies_Condition_anger = "Öfke (%1)",
     UI_Antibodies_Condition_fear = "Korku (%1)",
+    UI_Antibodies_Condition_intoxication = "Zehirlenme (%1)",
 
     UI_Antibodies_KnoxInfection_TitleSelf = "Knox Enfeksiyonu",
     UI_Antibodies_KnoxInfection_TitleOther = "%1'in Knox Enfeksiyonu",

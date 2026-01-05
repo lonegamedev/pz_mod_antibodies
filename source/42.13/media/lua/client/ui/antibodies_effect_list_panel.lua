@@ -92,6 +92,7 @@ function AntibodiesEffectListPanel:composeEntries()
 	---     label = label,   -- display text
 	---     value = value,   -- numeric value
 	---     percent = percent, -- optional float between -1.0 and 1.0
+	--- 	breakdown = breakdown -- optional table of strings
 	--- })
 	---]]
 end
@@ -126,6 +127,35 @@ function AntibodiesEffectListPanel:drawEntry(x, y, width, entry, predraw)
 	end
 	y = y + AntibodiesUI.FONT_HGT_SMALL + AntibodiesUI.LINE_MARGIN
 	y = y + self:drawProgressBar(x, y, width, 10, entry.percent, predraw)
+
+	local breakdown = entry.breakdown or {}
+	if #breakdown > 0 then
+		local walker_x = x
+		y = y + AntibodiesUI.LINE_MARGIN
+		for i, entry in ipairs(entry.breakdown) do
+			local text = entry.label
+			if i < #breakdown then
+				text = text .. ","
+			end
+			local textWidth = getTextManager():MeasureStringX(UIFont.Small, text)
+			if walker_x + textWidth >= width then
+				walker_x = x
+				y = y + AntibodiesUI.FONT_HGT_SMALL + AntibodiesUI.LINE_MARGIN
+			end
+			self:drawText(
+				text,
+				walker_x,
+				y,
+				AntibodiesUI.GREY.r,
+				AntibodiesUI.GREY.g,
+				AntibodiesUI.GREY.b,
+				AntibodiesUI.GREY.a,
+				UIFont.Small
+			)
+			walker_x = walker_x + textWidth + AntibodiesUI.TEXT_SEP
+		end
+		y = y + (AntibodiesUI.LINE_MARGIN * 6)
+	end
 	return y - start_y
 end
 

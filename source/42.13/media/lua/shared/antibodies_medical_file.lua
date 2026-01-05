@@ -9,18 +9,25 @@ local AntibodiesMedicalFile = {}
 AntibodiesMedicalFile.__index = AntibodiesMedicalFile
 AntibodiesMedicalFile.__name = "AntibodiesMedicalFile"
 
-function AntibodiesMedicalFile.new(player)
-	local instance = setmetatable({}, AntibodiesMedicalFile)
+function AntibodiesMedicalFile:new(player)
+	local instance = setmetatable({}, self)
 
 	instance.userName = player:getUsername()
 	instance.timestamp = os.time()
+	instance.version = Antibodies.info.version
 
 	instance.knoxAntibodiesLevel = 0
+	instance.knoxAntibodiesDelta = 0
 	instance.knoxInfectionsSurvived = 0
+	instance.knoxAntibodiesLevel = 0
+	instance.knoxInfectionDelta = 0
 
-	instance.adaptiveEffects = AntibodiesEffects.new()
-	instance.condition = AntibodiesCondition.new(player)
-	instance.body = AntibodiesBody.new(player)
+	instance.recoveryEffect = 0
+	instance.mutationEffect = 0
+
+	instance.adaptiveEffects = AntibodiesEffects:new()
+	instance.condition = AntibodiesCondition:new(player)
+	instance.body = AntibodiesBody:new(player)
 
 	instance:update(player, nil)
 
@@ -30,7 +37,7 @@ end
 function AntibodiesMedicalFile.of(player, forceNew)
 	local md = Antibodies.getNamespacedModData(player)
 	if not md.medicalFile or forceNew then
-		md.medicalFile = AntibodiesMedicalFile.new(player)
+		md.medicalFile = AntibodiesMedicalFile:new(player)
 	elseif getmetatable(md.medicalFile) ~= AntibodiesMedicalFile then
 		AntibodiesMedicalFile.rehydrate(md.medicalFile)
 	end
@@ -235,8 +242,9 @@ end
 
 function AntibodiesMedicalFile:__tostring()
 	return string.format(
-		"{ userName=%s, knoxAntibodiesLevel=%.2f, knoxInfectionLevel=%.2f, knoxInfectionStage=%s }",
+		"{ userName=%s, version=%s, knoxAntibodiesLevel=%.2f, knoxInfectionLevel=%.2f, knoxInfectionStage=%s }",
 		self.userName,
+		self.version,
 		self.knoxAntibodiesLevel,
 		self.knoxInfectionLevel,
 		getText("UI_Antibodies_Infection_Stage_" .. tostring(self.knoxInfectionStage))

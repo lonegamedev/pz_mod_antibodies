@@ -6,10 +6,11 @@ local AntibodiesBodyPart = {}
 AntibodiesBodyPart.__index = AntibodiesBodyPart
 AntibodiesBodyPart.__name = "AntibodiesBodyPart"
 
-function AntibodiesBodyPart.new(bodyPart)
-	local instance = setmetatable({}, AntibodiesBodyPart)
-	instance.type = bodyPart:getType()
-	instance.id = instance.type:index()
+function AntibodiesBodyPart:new(bodyPartNative)
+	local instance = setmetatable({}, self)
+
+	instance.index = bodyPartNative:getType():index()
+	instance.id = AntibodiesEnum.BodyPart.fromIndex(instance.index)
 
 	instance.treatmentSkill = {}
 	for _, key in ipairs(AntibodiesEnum.BodyPart.Treatment.list()) do
@@ -23,12 +24,12 @@ function AntibodiesBodyPart.new(bodyPart)
 	instance.clothingDirt = 0
 	instance.clothingPieces = 0
 
-	instance.woundEffects = AntibodiesEffects.new()
-	instance.treatmentEffects = AntibodiesEffects.new()
-	instance.infectionEffects = AntibodiesEffects.new()
-	instance.hygieneEffects = AntibodiesEffects.new()
+	instance.woundEffects = AntibodiesEffects:new()
+	instance.treatmentEffects = AntibodiesEffects:new()
+	instance.infectionEffects = AntibodiesEffects:new()
+	instance.hygieneEffects = AntibodiesEffects:new()
 
-	instance:update(bodyPart, nil)
+	instance:update(bodyPartNative, nil)
 	return instance
 end
 
@@ -42,8 +43,8 @@ function AntibodiesBodyPart.rehydrate(bodyPart)
 	end
 end
 
-function AntibodiesBodyPart:update(bodyPart, config)
-	self:probeBodyPart(bodyPart)
+function AntibodiesBodyPart:update(bodyPartNative, config)
+	self:probeBodyPart(bodyPartNative)
 	self:calculateEffect(config)
 end
 
@@ -62,7 +63,7 @@ function AntibodiesBodyPart.coversBodyPart(clothing, bloodBodyPart)
 	return false
 end
 
-function AntibodiesBodyPart:probeBodyPart(bodyPart)
+function AntibodiesBodyPart:probeBodyPart(bodyPartNative)
 	self.bodyBlood = 0
 	self.bodyDirt = 0
 
@@ -78,56 +79,61 @@ function AntibodiesBodyPart:probeBodyPart(bodyPart)
 	for _, key in ipairs(AntibodiesEnum.BodyPart.Treatment.list()) do
 		self.treatment[key] = false
 	end
-	if bodyPart:getDeepWoundTime() > 0 then
+
+	if bodyPartNative == nil then
+		return
+	end
+
+	if bodyPartNative:getDeepWoundTime() > 0 then
 		self.wound[AntibodiesEnum.BodyPart.Wound.DEEP_WOUNDED] = true
 	end
-	if bodyPart:bandaged() then
-		if not bodyPart:isBandageDirty() then
+	if bodyPartNative:bandaged() then
+		if not bodyPartNative:isBandageDirty() then
 			self.treatment[AntibodiesEnum.BodyPart.Treatment.BANDAGED] = true
-			if AntibodiesUtils.isAlcoholBandage(bodyPart:getBandageType()) then
+			if AntibodiesUtils.isAlcoholBandage(bodyPartNative:getBandageType()) then
 				self.treatment[AntibodiesEnum.BodyPart.Treatment.STERILIZED_BANDAGE] = true
 			end
 		end
 	else
-		if bodyPart:getBleedingTime() > 0 then
+		if bodyPartNative:getBleedingTime() > 0 then
 			self.wound[AntibodiesEnum.BodyPart.Wound.BLEEDING] = true
 		end
 	end
-	if bodyPart:getBiteTime() > 0 then
+	if bodyPartNative:getBiteTime() > 0 then
 		self.wound[AntibodiesEnum.BodyPart.Wound.BITTEN] = true
 	end
-	if bodyPart:getCutTime() > 0 then
+	if bodyPartNative:getCutTime() > 0 then
 		self.wound[AntibodiesEnum.BodyPart.Wound.CUT] = true
 	end
-	if bodyPart:getScratchTime() > 0 then
+	if bodyPartNative:getScratchTime() > 0 then
 		self.wound[AntibodiesEnum.BodyPart.Wound.SCRATCHED] = true
 	end
-	if bodyPart:getBurnTime() > 0 then
+	if bodyPartNative:getBurnTime() > 0 then
 		self.wound[AntibodiesEnum.BodyPart.Wound.BURNT] = true
 	end
-	if bodyPart:isNeedBurnWash() and bodyPart:getBurnTime() > 0 then
+	if bodyPartNative:isNeedBurnWash() and bodyPartNative:getBurnTime() > 0 then
 		self.wound[AntibodiesEnum.BodyPart.Wound.NEED_BURN_WASH] = true
 	end
-	if bodyPart:getStitchTime() > 0 then
+	if bodyPartNative:getStitchTime() > 0 then
 		self.wound[AntibodiesEnum.BodyPart.Wound.STICHED] = true
 	end
-	if bodyPart:haveBullet() then
+	if bodyPartNative:haveBullet() then
 		self.wound[AntibodiesEnum.BodyPart.Wound.HAVE_BULLET] = true
 	end
-	if bodyPart:haveGlass() then
+	if bodyPartNative:haveGlass() then
 		self.wound[AntibodiesEnum.BodyPart.Wound.HAVE_GLASS] = true
 	end
 
-	if bodyPart:getAlcoholLevel() > 0 then
+	if bodyPartNative:getAlcoholLevel() > 0 then
 		self.treatment[AntibodiesEnum.BodyPart.Treatment.STERILIZED_WOUND] = true
 	end
-	if bodyPart:getGarlicFactor() > 0 then
+	if bodyPartNative:getGarlicFactor() > 0 then
 		self.treatment[AntibodiesEnum.BodyPart.Treatment.GARLIC] = true
 	end
-	if bodyPart:getPlantainFactor() > 0 then
+	if bodyPartNative:getPlantainFactor() > 0 then
 		self.treatment[AntibodiesEnum.BodyPart.Treatment.PLANTAIN] = true
 	end
-	if bodyPart:getComfreyFactor() > 0 then
+	if bodyPartNative:getComfreyFactor() > 0 then
 		self.treatment[AntibodiesEnum.BodyPart.Treatment.COMFREY] = true
 	end
 
@@ -135,10 +141,10 @@ function AntibodiesBodyPart:probeBodyPart(bodyPart)
 	for _, key in ipairs(AntibodiesEnum.BodyPart.Infection.list()) do
 		self.infection[key] = false
 	end
-	if bodyPart:isInfectedWound() then
+	if bodyPartNative:isInfectedWound() then
 		self.infection[AntibodiesEnum.BodyPart.Infection.REGULAR] = true
 	end
-	if bodyPart:IsInfected() then
+	if bodyPartNative:IsInfected() then
 		if self.wound[AntibodiesEnum.BodyPart.Wound.BITTEN] then
 			self.infection[AntibodiesEnum.BodyPart.Infection.KNOX_BITE] = true
 		end
@@ -150,9 +156,9 @@ function AntibodiesBodyPart:probeBodyPart(bodyPart)
 		end
 	end
 
-	local parentChar = bodyPart:getParentChar()
+	local parentChar = bodyPartNative:getParentChar()
 	local humanVisual = parentChar:getHumanVisual()
-	local bloodBodyPart = BloodBodyPartType.FromIndex(bodyPart:getType():index())
+	local bloodBodyPart = BloodBodyPartType.FromIndex(bodyPartNative:getType():index())
 
 	self.bodyBlood = humanVisual:getBlood(bloodBodyPart)
 	self.bodyDirt = humanVisual:getDirt(bloodBodyPart)
@@ -180,56 +186,51 @@ function AntibodiesBodyPart:probeBodyPart(bodyPart)
 end
 
 function AntibodiesBodyPart:calculateEffect(config)
+	self.woundEffects:clear()
+	self.treatmentEffects:clear()
+	self.infectionEffects:clear()
+	self.hygieneEffects:clear()
+
 	if not config then
 		return self
 	end
 
-	for _, key in ipairs(AntibodiesEnum.BodyPart.Wound.list()) do
-		local wound_val = 0
-		local hygiene_val = 0
-		if self.wound[key] then
-			wound_val = config[AntibodiesEnum.Config.WOUND][key]
-			if not self.treatment[AntibodiesEnum.BodyPart.Treatment.BANDAGED] then
-				local blood = math.max(self.bodyBlood, self.clothingBlood)
-				local dirt = math.max(self.bodyDirt, self.clothingDirt)
-
-				local blood_effect = config[AntibodiesEnum.Config.HYGIENE][AntibodiesEnum.Config.Hygiene.BLOOD_EFFECT]
-				local dirt_effect = config[AntibodiesEnum.Config.HYGIENE][AntibodiesEnum.Config.Hygiene.DIRT_EFFECT]
-
-				local wound_mod = config[AntibodiesEnum.Config.HYGIENE_WOUND_MOD][key] or 0
-				hygiene_val = hygiene_val + (wound_mod * blood * -blood_effect)
-				hygiene_val = hygiene_val + (wound_mod * dirt * -dirt_effect)
-
-				local treament_mod = config[AntibodiesEnum.Config.HYGIENE_TREATMENT_MOD][key] or 0
-				hygiene_val = hygiene_val + (treament_mod * blood * -blood_effect)
-				hygiene_val = hygiene_val + (treament_mod * dirt * -dirt_effect)
-			end
-			hygiene_val = math.min(0, hygiene_val)
-		end
-		self.woundEffects:set(key, wound_val)
-		self.hygieneEffects:set(key, hygiene_val)
-	end
-
+	local hygieneTreatmentMod = 0
 	for _, key in ipairs(AntibodiesEnum.BodyPart.Treatment.list()) do
-		local val = 0
 		if self.treatment[key] then
-			val = config[AntibodiesEnum.Config.TREATMENT][key]
+			self.treatmentEffects:set(key, config[AntibodiesEnum.Config.TREATMENT][key] or 0)
+			hygieneTreatmentMod = hygieneTreatmentMod + (config[AntibodiesEnum.Config.HYGIENE_TREATMENT_MOD][key] or 0)
 		end
-		self.treatmentEffects:set(key, val)
 	end
 
 	for _, key in ipairs(AntibodiesEnum.BodyPart.Infection.list()) do
-		local val = 0
 		if self.infection[key] then
-			val = config[AntibodiesEnum.Config.INFECTION][key]
+			self.infectionEffects:set(key, config[AntibodiesEnum.Config.INFECTION][key] or 0)
 		end
-		self.infectionEffects:set(key, val)
+	end
+
+	local blood = math.max(self.bodyBlood, self.clothingBlood)
+	local dirt = math.max(self.bodyDirt, self.clothingDirt)
+
+	local bloodEffect = config[AntibodiesEnum.Config.HYGIENE][AntibodiesEnum.Config.Hygiene.BLOOD_EFFECT]
+	local dirtEffect = config[AntibodiesEnum.Config.HYGIENE][AntibodiesEnum.Config.Hygiene.DIRT_EFFECT]
+
+	for _, key in ipairs(AntibodiesEnum.BodyPart.Wound.list()) do
+		if self.wound[key] then
+			self.woundEffects:set(key, config[AntibodiesEnum.Config.WOUND][key] or 0)
+
+			local hygieneWoundMod = (config[AntibodiesEnum.Config.HYGIENE_WOUND_MOD][key] or 0)
+			local hygieneMod = math.min(hygieneWoundMod + hygieneTreatmentMod, 0)
+			local hygieneEffect = (hygieneMod * blood * -bloodEffect) + (hygieneMod * dirt * -dirtEffect)
+
+			self.hygieneEffects:set(key, hygieneEffect)
+		end
 	end
 
 	return self
 end
 
-function AntibodiesBodyPart:getEffect()
+function AntibodiesBodyPart:getTotalEffect()
 	return self.woundEffects:getTotal() + self.treatmentEffects:getTotal()
 end
 
@@ -257,8 +258,8 @@ end
 function AntibodiesBodyPart:__tostring()
 	return (
 		"{ "
-		.. "type="
-		.. tostring(self.type)
+		.. "id="
+		.. tostring(self.id)
 		.. " "
 		.. "woundEffects="
 		.. tostring(self.woundEffects)

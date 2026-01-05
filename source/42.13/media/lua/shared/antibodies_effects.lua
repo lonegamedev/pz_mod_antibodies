@@ -2,10 +2,27 @@ local AntibodiesEffects = {}
 AntibodiesEffects.__index = AntibodiesEffects
 AntibodiesEffects.__name = "AntibodiesEffects"
 
-function AntibodiesEffects.new(minMagnitude)
-	local instance = setmetatable({}, AntibodiesEffects)
+function AntibodiesEffects:new(minMagnitude)
+	local instance = setmetatable({}, self)
 	instance.minMagnitude = tonumber(minMagnitude) or 0.01
 	instance:clear()
+	return instance
+end
+
+function AntibodiesEffects:newFromEffects(...)
+	local instance = AntibodiesEffects:new()
+	local minMagnitude = 0.0
+	for _, effects in ipairs({ ... }) do
+		if effects.minMagnitude > minMagnitude then
+			minMagnitude = effects.minMagnitude
+		end
+		for id, value in pairs(effects.values) do
+			instance:set(id, value)
+		end
+	end
+	instance.minMagnitude = minMagnitude
+	instance._dirty = true
+	instance:recalculate()
 	return instance
 end
 

@@ -8,6 +8,8 @@ local AntibodiesTabPanel = require("ui/antibodies_tab_panel")
 local AntibodiesProgressPanel = require("ui/antibodies_progress_panel")
 local AntibodiesConditionPanel = require("ui/antibodies_condition_panel")
 local AntibodiesWoundsPanel = require("ui/antibodies_wounds_panel")
+local AntibodiesInfectionsPanel = require("ui/antibodies_infections_panel")
+local AntibodiesHygienePanel = require("ui/antibodies_hygiene_panel")
 
 local AntibodiesWindow = ISPanelJoypad:derive("AntibodiesWindow")
 
@@ -86,6 +88,8 @@ function AntibodiesWindow:new(x, y, width, height, doctor, patient)
 	instance.progressPanel = nil
 	instance.conditionPanel = nil
 	instance.woundsPanel = nil
+	instance.infectionsPanel = nil
+	instance.hygienePanel = nil
 
 	return instance
 end
@@ -175,10 +179,26 @@ function AntibodiesWindow:createChildren()
 	)
 	self.woundsPanel:initialise()
 
+	self.infectionsPanel = AntibodiesInfectionsPanel:new(
+		AntibodiesWindow.LEFT_RIGHT_SEP + AntibodiesWindow.LEFT_PANEL_WIDTH,
+		AntibodiesWindow.TAB_BOTTOM,
+		AntibodiesWindow.RIGHT_PANEL_WIDTH,
+		AntibodiesWindow.LEFT_RIGHT_HEIGHT
+	)
+	self.infectionsPanel:initialise()
+
+	self.hygienePanel = AntibodiesHygienePanel:new(
+		AntibodiesWindow.LEFT_RIGHT_SEP + AntibodiesWindow.LEFT_PANEL_WIDTH,
+		AntibodiesWindow.TAB_BOTTOM,
+		AntibodiesWindow.RIGHT_PANEL_WIDTH,
+		AntibodiesWindow.LEFT_RIGHT_HEIGHT
+	)
+	self.hygienePanel:initialise()
+
 	self.tabs:addView(getText("UI_Antibodies_KnoxInfection_ConditionEffects"), self.conditionPanel)
 	self.tabs:addView(getText("UI_Antibodies_KnoxInfection_WoundEffects"), self.woundsPanel)
-	--self.tabs:addView(getText("UI_Antibodies_KnoxInfection_InfectionEffects"), self.infectionsPanel)
-	--self.tabs:addView(getText("UI_Antibodies_KnoxInfection_HygieneEffects"), self.hygienePanel)
+	self.tabs:addView(getText("UI_Antibodies_KnoxInfection_InfectionEffects"), self.infectionsPanel)
+	self.tabs:addView(getText("UI_Antibodies_KnoxInfection_HygieneEffects"), self.hygienePanel)
 
 	self:createCloseBtn()
 end
@@ -226,8 +246,8 @@ function AntibodiesWindow:render()
 	self.progressPanel.medicalFile = medicalFile
 	self.conditionPanel.medicalFile = medicalFile
 	self.woundsPanel.medicalFile = medicalFile
-	--self.infectionsPanel.medicalFile = medicalFile
-	--self.hygienePanel.medicalFile = medicalFile
+	self.infectionsPanel.medicalFile = medicalFile
+	self.hygienePanel.medicalFile = medicalFile
 end
 
 function AntibodiesWindow:onGainJoypadFocus(joypadData)
@@ -235,16 +255,6 @@ function AntibodiesWindow:onGainJoypadFocus(joypadData)
 	if self.closeButton and self.closeButton:isVisible() then
 		self:setISButtonForB(self.closeButton)
 	end
-
-	--[[
-	if self.tabs then
-		local tabButton = self.tabs:getTabButton(self.tabs.activeView)
-		if tabButton then
-			tabButton:setJoypadFocused(true)
-			self.joypadFocused = tabButton
-		end
-	end
-	]]
 end
 
 function AntibodiesWindow:getCurrentView()

@@ -1,15 +1,14 @@
 local AntibodiesEnum = require("antibodies_enum")
 local AntibodiesUtils = require("antibodies_utils")
 local AntibodiesEffects = require("antibodies_effects")
-local AntibodiesConfig = require("antibodies_config")
 
 local AntibodiesCondition = {}
 AntibodiesCondition.__index = AntibodiesCondition
 AntibodiesCondition.__name = "AntibodiesCondition"
 
-function AntibodiesCondition.new(player)
-	local instance = setmetatable({}, AntibodiesCondition)
-	instance.effects = AntibodiesEffects.new()
+function AntibodiesCondition:new(player)
+	local instance = setmetatable({}, self)
+	instance.effects = AntibodiesEffects:new()
 	instance:update(player, nil)
 	return instance
 end
@@ -85,6 +84,7 @@ function AntibodiesCondition:calculateEffect(config)
 		end
 		self.effects:set(key, value)
 	end
+
 	return self
 end
 

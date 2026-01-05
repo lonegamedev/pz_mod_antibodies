@@ -6,8 +6,8 @@ local AntibodiesBody = {}
 AntibodiesBody.__index = AntibodiesBody
 AntibodiesBody.__name = "AntibodiesBody"
 
-function AntibodiesBody.new(player)
-	local instance = setmetatable({}, AntibodiesBody)
+function AntibodiesBody:new(player)
+	local instance = setmetatable({}, self)
 
 	instance.bodyParts = {}
 	instance.woundEffects = AntibodiesEffects:new()
@@ -17,9 +17,9 @@ function AntibodiesBody.new(player)
 
 	local bodyDamage = player:getBodyDamage()
 	for i = 0, bodyDamage:getBodyParts():size() - 1 do
-		local bodyPart = bodyDamage:getBodyParts():get(i)
-		local id = AntibodiesEnum.BodyPart.fromIndex(bodyPart:getType():index())
-		instance.bodyParts[id] = AntibodiesBodyPart.new(bodyPart)
+		local bodyPartNative = bodyDamage:getBodyParts():get(i)
+		local bodyPart = AntibodiesBodyPart:new(bodyPartNative)
+		instance.bodyParts[bodyPart.id] = bodyPart
 	end
 
 	instance:update(player, nil)
