@@ -13,7 +13,6 @@ python build.py \
     --MOD_ID="lgd_antibodies_dev" \
     --MOD_NAME="AntibodiesDEV" \
     --MOD_VERSION="1.94" \
-    --MOD_OPTIONS_VERSION="1_80" \
     --MOD_POSTER_FILTER="greyscale" \
     --WORKSHOP_ID="2748816881" \
     --WORKSHOP_VISIBILITY="unlisted" \

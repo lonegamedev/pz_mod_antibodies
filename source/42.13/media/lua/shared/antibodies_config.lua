@@ -1,3 +1,4 @@
+local Antibodies = require("antibodies")
 local AntibodiesEnum = require("antibodies_enum")
 local AntibodiesUtils = require("antibodies_utils")
 
@@ -30,10 +31,10 @@ function AntibodiesConfig:new()
 		[AntibodiesEnum.Condition.ENDURANCE] = -10.0,
 
 		[AntibodiesEnum.Condition.WEIGHT] = -20.0,
-		[AntibodiesEnum.Condition.CALORIES] = 0.0,
-		[AntibodiesEnum.Condition.CARBOHYDRATES] = 0.0,
-		[AntibodiesEnum.Condition.LIPIDS] = 0.0,
-		[AntibodiesEnum.Condition.PROTEINS] = 0.0,
+		--[AntibodiesEnum.Condition.CALORIES] = 0.0,
+		--[AntibodiesEnum.Condition.CARBOHYDRATES] = 0.0,
+		--[AntibodiesEnum.Condition.LIPIDS] = 0.0,
+		--[AntibodiesEnum.Condition.PROTEINS] = 0.0,
 
 		[AntibodiesEnum.Condition.HUNGER] = -20.0,
 		[AntibodiesEnum.Condition.THIRST] = -20.0,
@@ -193,11 +194,36 @@ function AntibodiesConfig:new()
 		[AntibodiesEnum.BodyPart.Treatment.STERILIZED_BANDAGE] = 0.25,
 		[AntibodiesEnum.BodyPart.Treatment.STERILIZED_WOUND] = 0.25,
 
-		[AntibodiesEnum.BodyPart.Treatment.GARLIC] = 0.0,
-		[AntibodiesEnum.BodyPart.Treatment.PLANTAIN] = 0.0,
-		[AntibodiesEnum.BodyPart.Treatment.COMFREY] = 0.0,
+		--[AntibodiesEnum.BodyPart.Treatment.GARLIC] = 0.0,
+		--[AntibodiesEnum.BodyPart.Treatment.PLANTAIN] = 0.0,
+		--[AntibodiesEnum.BodyPart.Treatment.COMFREY] = 0.0,
 	}
 
+	return instance
+end
+
+function AntibodiesConfig.getSandboxOptionPath(groupKey, propKey)
+	return "" .. Antibodies.info.modId .. "_" .. Antibodies.info.optionsVersion .. "_" .. groupKey .. "_" .. propKey
+end
+
+function AntibodiesConfig:fromConfigOptions()
+	local instance = AntibodiesConfig:new()
+	local blackListGroups = { "condition_curve" }
+	for groupKey, groupTable in pairs(instance) do
+		if not AntibodiesUtils.containsValue(blackListGroups, groupKey) then
+			if type(groupTable) == "table" then
+				for propKey, _ in pairs(groupTable) do
+					local path = AntibodiesConfig.getSandboxOptionPath(groupKey, propKey)
+					local sandboxValue = SandboxVars[path]
+					if sandboxValue ~= nil then
+						groupTable[propKey] = sandboxValue
+					else
+						print("Missing sandbox var: ", path)
+					end
+				end
+			end
+		end
+	end
 	return instance
 end
 
@@ -224,7 +250,7 @@ end
 
 function AntibodiesConfig.getCurrent()
 	if AntibodiesConfig.current == nil then
-		AntibodiesConfig.current = AntibodiesConfig:new()
+		AntibodiesConfig.current = AntibodiesConfig:fromConfigOptions()
 	end
 	return AntibodiesConfig.current
 end

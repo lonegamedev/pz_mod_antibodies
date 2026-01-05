@@ -50,6 +50,7 @@
         "getPlayerScreenHeight",
         "getPlayerScreenLeft",
         "getPlayerScreenWidth",
-        "JoypadState"
+        "JoypadState",
+        "SandboxVars"
     ]
 }

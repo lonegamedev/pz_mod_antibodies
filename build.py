@@ -150,7 +150,6 @@ def parse_arguments():
     parser.add_argument("--MOD_ID", type=str, help="Mod ID", required=True)
     parser.add_argument("--MOD_NAME", type=str, help="Mod Name", required=True)
     parser.add_argument("--MOD_VERSION", type=str, help="Mod Version", required=True)
-    parser.add_argument("--MOD_OPTIONS_VERSION", type=str, help="Mod Options Version", required=True)
     parser.add_argument("--MOD_POSTER_FILTER", type=str, help="Mod Poster Filter", required=False)
     parser.add_argument("--WORKSHOP_ID", type=str, help="Mod Workshop ID", required=True)
     parser.add_argument("--WORKSHOP_VISIBILITY", type=str, help="Mod Visibility", required=True)

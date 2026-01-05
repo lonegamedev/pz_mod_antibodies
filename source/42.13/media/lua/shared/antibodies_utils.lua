@@ -62,6 +62,15 @@ function AntibodiesUtils.deepCopy(val, seen)
 	return copy
 end
 
+function AntibodiesUtils.containsValue(t, value)
+	for _, v in ipairs(t) do
+		if v == value then
+			return true
+		end
+	end
+	return false
+end
+
 function AntibodiesUtils.formatFloat(num, chars)
 	if not chars then
 		chars = 1
