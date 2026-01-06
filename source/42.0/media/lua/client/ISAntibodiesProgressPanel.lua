@@ -7,7 +7,7 @@ local SPRITES_IN_ROW = 10
 local ROW_HEIGHT = 20
 local COL_WIDTH = 120
 
-local RADIAL_TEXTURE = getTexture("ui/lgd_antibodies_radial_progress.png")
+local RADIAL_TEXTURE = getTexture("media/ui/lgd_antibodies_radial_progress.png")
 
 ISAntibodiesProgressPanel.SPRITE_SIZE = SPRITE_SIZE
 

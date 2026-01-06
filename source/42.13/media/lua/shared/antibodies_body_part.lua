@@ -195,10 +195,15 @@ function AntibodiesBodyPart:calculateEffect(config)
 		return self
 	end
 
+	local doctorSkillTreatmentMod =
+		config[AntibodiesEnum.Config.GENERAL][AntibodiesEnum.Config.General.DOCTOR_SKILL_TREATMENT_MOD]
+
 	local hygieneTreatmentMod = 0
 	for _, key in ipairs(AntibodiesEnum.BodyPart.Treatment.list()) do
 		if self.treatment[key] then
-			self.treatmentEffects:set(key, config[AntibodiesEnum.Config.TREATMENT][key] or 0)
+			local baseEffect = config[AntibodiesEnum.Config.TREATMENT][key] or 0
+			local doctorSkill = self:getTreatmentSkill(key)
+			self.treatmentEffects:set(key, baseEffect * doctorSkill * doctorSkillTreatmentMod)
 			hygieneTreatmentMod = hygieneTreatmentMod + (config[AntibodiesEnum.Config.HYGIENE_TREATMENT_MOD][key] or 0)
 		end
 	end
@@ -245,10 +250,7 @@ function AntibodiesBodyPart:setTreatmentSkill(treatmentId, skill)
 end
 
 function AntibodiesBodyPart:getTreatmentSkill(treatmentId)
-	if self.treatmentSkill[treatmentId] then
-		return self.treatmentSkill[treatmentId]
-	end
-	return 0
+	return self.treatmentSkill[treatmentId] or 0
 end
 
 function AntibodiesBodyPart:toString()
