@@ -79,6 +79,8 @@ Sandbox_RU = {
     Sandbox_{{MOD_ID}}_condition_anger_tooltip = "Конвертируется в значение от -1 до 1, помноженное на заданный параметр.",
     Sandbox_{{MOD_ID}}_condition_fear = "Страх",
     Sandbox_{{MOD_ID}}_condition_fear_tooltip = "Конвертируется в значение от -1 до 1, помноженное на заданный параметр.",
+    Sandbox_{{MOD_ID}}_condition_intoxication = "Интоксикация",
+    Sandbox_{{MOD_ID}}_condition_intoxication_tooltip = "Конвертируется в значение от -1 до 1, помноженное на заданный параметр.",
 
     Sandbox_{{MOD_ID}}_wounds_bandaged = "Перевязан",
     Sandbox_{{MOD_ID}}_wounds_bandaged_tooltip = "Значение будет умноженно на навыки врача и множитель ухода. Применяется отдельно на каждую часть тела (всего 18 штук)",

@@ -79,6 +79,8 @@ Sandbox_EN = {
     Sandbox_{{MOD_ID}}_condition_anger_tooltip = "Raw value is converted to -1 to 1 value, and multiplied by this effect.",
     Sandbox_{{MOD_ID}}_condition_fear = "Fear",
     Sandbox_{{MOD_ID}}_condition_fear_tooltip = "Raw value is converted to -1 to 1 value, and multiplied by this effect.",
+    Sandbox_{{MOD_ID}}_condition_intoxication = "Intoxication",
+    Sandbox_{{MOD_ID}}_condition_intoxication_tooltip = "Raw value is converted to -1 to 1 value, and multiplied by this effect.",
 
     Sandbox_{{MOD_ID}}_wounds_bandaged = "Bandaged",
     Sandbox_{{MOD_ID}}_wounds_bandaged_tooltip = "Multiplied by the doctor's skill and the treatment mod. Applied per affected body part independently (18 in total)",

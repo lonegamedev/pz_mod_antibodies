@@ -79,6 +79,8 @@ Sandbox_TR = {
     Sandbox_{{MOD_ID}}_condition_anger_tooltip = "Hammadde değeri -1 ile 1 arasına dönüştürülür ve bu etkiyle çarpılır.",
     Sandbox_{{MOD_ID}}_condition_fear = "Korku",
     Sandbox_{{MOD_ID}}_condition_fear_tooltip = "Hammadde değeri -1 ile 1 arasına dönüştürülür ve bu etkiyle çarpılır.",
+    Sandbox_{{MOD_ID}}_condition_intoxication = "Zehirlenme",
+    Sandbox_{{MOD_ID}}_condition_intoxication_tooltip = "Hammadde değeri -1 ile 1 arasına dönüştürülür ve bu etkiyle çarpılır.",
 
     Sandbox_{{MOD_ID}}_wounds_bandaged = "Bandajlı",
     Sandbox_{{MOD_ID}}_wounds_bandaged_tooltip = "Doktorun yeteneği ve tedavi modifikâtörü ile çarpılır. Her etkilenen vücut parçasına ayrı ayrı uygulanır (toplam 18 parça).",
