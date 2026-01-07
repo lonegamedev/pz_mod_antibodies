@@ -32,9 +32,6 @@ function AntibodiesClient.validateIncoming(module, command, data)
 		end
 		return command
 	end
-	if command == AntibodiesEnum.Network.REQUEST_MEDICAL_FILE then
-		return command
-	end
 	return false
 end
 
@@ -79,14 +76,14 @@ local function onServerCommand(module, command, data)
 	if op == AntibodiesEnum.Network.SHARE_MEDICAL_FILE then
 		AntibodiesClient.recieveMedicalFile(data.medicalFile)
 	end
-	if op == AntibodiesEnum.Network.REQUEST_MEDICAL_FILE then
-		AntibodiesClient.sendMedicalFiles()
-	end
 end
 Events.OnServerCommand.Add(onServerCommand)
 
 local function onEveryOneMinute()
 	AntibodiesClient.updatePlayers()
+	if isClient() then
+		AntibodiesClient.sendMedicalFiles()
+	end
 end
 Events.EveryOneMinute.Add(onEveryOneMinute)
 

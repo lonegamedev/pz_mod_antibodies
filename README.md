@@ -48,3 +48,4 @@ Make sure to unsubscribe from Steam Workshop version (to ensure local version wi
 - `VVentos` for providing TR (Turkish) translation.
 - `llerafel` for providing RU (Russian) translation.
 - `Rookavite` for providing DE (German) translation.
+- `geuks` for providing FR (French) translation.

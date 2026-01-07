@@ -88,8 +88,9 @@ function AntibodiesBodyPart:probeBodyPart(bodyPartNative)
 		self.wound[AntibodiesEnum.BodyPart.Wound.DEEP_WOUNDED] = true
 	end
 	if bodyPartNative:bandaged() then
+		self.treatment[AntibodiesEnum.BodyPart.Treatment.BANDAGED] = true
 		if not bodyPartNative:isBandageDirty() then
-			self.treatment[AntibodiesEnum.BodyPart.Treatment.BANDAGED] = true
+			self.treatment[AntibodiesEnum.BodyPart.Treatment.CLEAN_BANDAGE] = true
 			if AntibodiesUtils.isAlcoholBandage(bodyPartNative:getBandageType()) then
 				self.treatment[AntibodiesEnum.BodyPart.Treatment.STERILIZED_BANDAGE] = true
 			end

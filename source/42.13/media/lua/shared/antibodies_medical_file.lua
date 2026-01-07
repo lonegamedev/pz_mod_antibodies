@@ -83,11 +83,17 @@ function AntibodiesMedicalFile:update(player, config)
 		end
 	end
 
-	--print(self:toString())
-	--print(self.condition:toString())
-	--print("HAND_L: ", self.body.bodyParts[AntibodiesEnum.BodyPart.HAND_L])
-
 	return self
+end
+
+function AntibodiesMedicalFile:applyToPlayer(player)
+	local bodyDamage = player:getBodyDamage()
+	local duration = bodyDamage:getInfectionMortalityDuration()
+	local newTime = self.hoursSurvived - (self.knoxInfectionLevel / 100) * duration
+	bodyDamage:setInfectionTime(newTime)
+	if self.knoxInfectionLevel <= 0 then
+		self:cureKnoxVirus(player)
+	end
 end
 
 function AntibodiesMedicalFile:updateAdaptiveEffects(config)
@@ -106,11 +112,10 @@ function AntibodiesMedicalFile:updateKnoxInfection(player)
 	else
 		self.hoursSurvived = GameTime:getInstance():getWorldAgeHours()
 	end
-	self.knoxInfectionLevel = AntibodiesMedicalFile.getKnoxInfectionLevel(player, self.hoursSurvived)
-	self.knoxInfectionDelta = AntibodiesMedicalFile.getKnoxInfectionDelta(player)
-	self.knoxActivationCurve = AntibodiesMedicalFile.getActivationCurve(self.knoxInfectionLevel)
-	self.knoxInfectionStage =
-		AntibodiesMedicalFile.getKnoxInfectionStage(self.knoxInfectionLevel, self.knoxAntibodiesLevel)
+	self.knoxInfectionLevel = self:getKnoxInfectionLevel(player)
+	self.knoxInfectionDelta = self:getKnoxInfectionDelta(player)
+	self.knoxActivationCurve = self:getActivationCurve()
+	self.knoxInfectionStage = self:getKnoxInfectionStage()
 end
 
 function AntibodiesMedicalFile:getKnoxRecoveryEffect(config)
@@ -138,19 +143,19 @@ function AntibodiesMedicalFile:getKnoxMutationEffect(config)
 	return AntibodiesUtils.clamp(days * mutationEffect, -mutationThreshold, mutationThreshold)
 end
 
-function AntibodiesMedicalFile.getKnoxInfectionLevel(character, survivedTime)
+function AntibodiesMedicalFile:getKnoxInfectionLevel(character)
 	local bodyDamage = character:getBodyDamage()
-	if not bodyDamage:isInfected() then
-		return 0.0
+	if bodyDamage:isInfected() or self.body:isKnoxInfected() then
+		local startTime = bodyDamage:getInfectionTime()
+		local duration = bodyDamage:getInfectionMortalityDuration()
+		local elapsed = self.hoursSurvived - startTime
+		local level = (elapsed / duration) * 100
+		return math.max(0.001, math.min(100, level))
 	end
-	local startTime = bodyDamage:getInfectionTime()
-	local duration = bodyDamage:getInfectionMortalityDuration()
-	local elapsed = survivedTime - startTime
-	local level = (elapsed / duration) * 100
-	return math.max(0, math.min(100, level))
+	return 0.0
 end
 
-function AntibodiesMedicalFile.getKnoxInfectionDelta(player)
+function AntibodiesMedicalFile:getKnoxInfectionDelta(player)
 	local bodyDamage = player:getBodyDamage()
 	local infectionDuration = bodyDamage:getInfectionMortalityDuration()
 	if infectionDuration > 0 then
@@ -159,26 +164,26 @@ function AntibodiesMedicalFile.getKnoxInfectionDelta(player)
 	return 0
 end
 
-function AntibodiesMedicalFile.getKnoxInfectionStage(knoxInfectionLevel, knoxAntibodiesLevel)
-	if knoxInfectionLevel > 0 then
-		if knoxAntibodiesLevel > knoxInfectionLevel then
-			if knoxInfectionLevel > 50 then
+function AntibodiesMedicalFile:getKnoxInfectionStage()
+	if self.knoxInfectionLevel > 0 then
+		if self.knoxAntibodiesLevel > self.knoxInfectionLevel then
+			if self.knoxInfectionLevel > 50 then
 				return AntibodiesEnum.InfectionStage.DECLINE
 			end
-			if knoxInfectionLevel < 50 then
+			if self.knoxInfectionLevel < 50 then
 				return AntibodiesEnum.InfectionStage.CONVALESCENCE
 			end
 		end
-		if knoxInfectionLevel < 25 then
+		if self.knoxInfectionLevel < 25 then
 			return AntibodiesEnum.InfectionStage.INCUBATION
 		end
-		if knoxInfectionLevel > 25 and knoxInfectionLevel < 50 then
+		if self.knoxInfectionLevel >= 25 and self.knoxInfectionLevel < 50 then
 			return AntibodiesEnum.InfectionStage.PRODROMAL
 		end
-		if knoxInfectionLevel > 50 and knoxInfectionLevel < 75 then
+		if self.knoxInfectionLevel >= 50 and self.knoxInfectionLevel < 75 then
 			return AntibodiesEnum.InfectionStage.ILLNESS
 		end
-		if knoxInfectionLevel > 75 then
+		if self.knoxInfectionLevel >= 75 then
 			return AntibodiesEnum.InfectionStage.TERMINAL
 		end
 	end
@@ -199,12 +204,13 @@ function AntibodiesMedicalFile:getKnoxAntibodiesDelta(config)
 	return AntibodiesUtils.lerp(0.0, antibodiesGrowth, self.knoxActivationCurve)
 end
 
-function AntibodiesMedicalFile.getActivationCurve(infectionLevel)
-	return AntibodiesUtils.clamp(math.sin((infectionLevel / 100) * math.pi), 0.0, 1.0)
+function AntibodiesMedicalFile:getActivationCurve()
+	return AntibodiesUtils.clamp(math.sin((self.knoxInfectionLevel / 100) * math.pi), 0.0, 1.0)
 end
 
 function AntibodiesMedicalFile:consumeKnoxInfection(player)
 	local difference = self.knoxAntibodiesLevel - self.knoxInfectionLevel
+
 	if difference <= 0 then
 		return false
 	end
@@ -212,9 +218,10 @@ function AntibodiesMedicalFile:consumeKnoxInfection(player)
 	local bodyDamage = player:getBodyDamage()
 	local infectionTime = bodyDamage:getInfectionTime()
 	local infectionDuration = bodyDamage:getInfectionMortalityDuration()
-	local healStep = (self.knoxInfectionDelta + difference) * 2.0
 
+	local healStep = self.knoxInfectionDelta + (difference * 2.0)
 	local newTime = infectionTime + ((healStep / 100) * infectionDuration)
+
 	bodyDamage:setInfectionTime(newTime)
 	self.knoxAntibodiesLevel = AntibodiesUtils.clamp(self.knoxAntibodiesLevel - difference, 0, 100)
 
