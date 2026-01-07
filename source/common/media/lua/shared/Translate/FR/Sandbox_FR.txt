@@ -79,6 +79,8 @@ Sandbox_FR = {
     Sandbox_{{MOD_ID}}_condition_anger_tooltip = "Valeur brute convertie de -1 à 1 puis multipliée par cet effet.",
     Sandbox_{{MOD_ID}}_condition_fear = "Peur",
     Sandbox_{{MOD_ID}}_condition_fear_tooltip = "Valeur brute convertie de -1 à 1 puis multipliée par cet effet.",
+    Sandbox_{{MOD_ID}}_condition_intoxication = "Intoxication",
+    Sandbox_{{MOD_ID}}_condition_intoxication_tooltip = "Valeur brute convertie de -1 à 1 puis multipliée par cet effet.",
 
     Sandbox_{{MOD_ID}}_wounds_bandaged = "Bandé",
     Sandbox_{{MOD_ID}}_wounds_bandaged_tooltip = "Multiplié par la compétence du docteur et le mod de traitement. Appliqué par partie du corps (18 au total)",

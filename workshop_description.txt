@@ -71,14 +71,20 @@ But hey, don't let me tell you how to play your game.
 [b]VVentos[/b] for providing TR (Turkish) translation.
 [b]llerafel[/b] for providing RU (Russian) translation.
 [b]Rookavite[/b] for providing DE (German) translation.
+[b]geuks[/b] for providing FR (French) translation.
 
 [hr][/hr]
 [h1]Translations:[/h1]
 
-For now only ENG, PL and ES translations are provided, but I'm happy to include more.
-
-You can contribute through here:
+I’m always happy to include more translations.
+You can contribute here - and if you don’t know how to use Git, just drop me a message:
 https://github.com/lonegamedev/pz_mod_antibodies
+
+[hr][/hr]
+[h1]Want to say thanks?[/h1]
+
+If you enjoy the mod and want to support future updates, you can do so here:
+[url=https://www.buymeacoffee.com/lonegamedev]Buy Me a Coffee[/url]
 
 [hr][/hr]
 [h1]Known conflicts:[/h1]

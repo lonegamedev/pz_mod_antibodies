@@ -62,6 +62,16 @@ function AntibodiesBody:update(player, config)
 	return self
 end
 
+function AntibodiesBody:isKnoxInfected()
+	for _, key in ipairs(AntibodiesEnum.BodyPart.list()) do
+		local bodyPart = self.bodyParts[key]
+		if bodyPart:isKnoxInfected() then
+			return true
+		end
+	end
+	return false
+end
+
 function AntibodiesBody:getBodyPartByIndex(index)
 	local id = AntibodiesEnum.BodyPart.fromIndex(index)
 	return self.bodyParts[id]

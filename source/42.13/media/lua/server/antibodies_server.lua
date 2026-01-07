@@ -1,5 +1,6 @@
 local Antibodies = require("antibodies")
 local AntibodiesEnum = require("antibodies_enum")
+local AntibodiesMedicalFile = require("antibodies_medical_file")
 
 AntibodiesServer = {}
 AntibodiesServer.__index = AntibodiesServer
@@ -8,16 +9,12 @@ AntibodiesServer.__name = "AntibodiesServer"
 AntibodiesServer.BROADCAST_RANGE = 8
 AntibodiesServer.BROADCAST_RANGE_SQ = AntibodiesServer.BROADCAST_RANGE * AntibodiesServer.BROADCAST_RANGE
 
-AntibodiesServer.timeAccumlator = 0
 AntibodiesServer.onlinePlayersByName = {}
 AntibodiesServer.nearbyPlayerMapping = {}
 
 function AntibodiesServer.ensureInitialization()
 	if not isServer() then
 		return false
-	end
-	if AntibodiesServer.timeAccumlator == nil then
-		AntibodiesServer.timeAccumlator = 0
 	end
 	if AntibodiesServer.onlinePlayersByName == nil then
 		AntibodiesServer.onlinePlayersByName = {}
@@ -91,14 +88,6 @@ function AntibodiesServer.computeNearbyPlayerMapping()
 	end
 end
 
-function AntibodiesServer.requestMedicalFiles()
-	for player, nearbyPlayers in pairs(AntibodiesServer.nearbyPlayerMapping) do
-		if nearbyPlayers and #nearbyPlayers > 0 then
-			sendServerCommand(player, Antibodies.info.modId, AntibodiesEnum.Network.REQUEST_MEDICAL_FILE, {})
-		end
-	end
-end
-
 function AntibodiesServer.broadcastMedicalFile(ownerPlayer, medicalFile)
 	local nearbyPlayers = AntibodiesServer.nearbyPlayerMapping[ownerPlayer]
 	if nearbyPlayers and medicalFile then
@@ -113,15 +102,6 @@ function AntibodiesServer.broadcastMedicalFile(ownerPlayer, medicalFile)
 	end
 end
 
-function AntibodiesServer.stepUpdate()
-	AntibodiesServer.timeAccumlator = AntibodiesServer.timeAccumlator + getGameTime():getInvMultiplier()
-	if AntibodiesServer.timeAccumlator >= 1.0 then
-		AntibodiesServer.timeAccumlator = 0.0
-		return true
-	end
-	return false
-end
-
 -----------------------------------------------------
 --CALLBACKS------------------------------------------
 -----------------------------------------------------
@@ -129,6 +109,10 @@ end
 local function onClientCommand(module, command, player, data)
 	local op = AntibodiesServer.validateIncoming(module, command, player, data)
 	if op == AntibodiesEnum.Network.SHARE_MEDICAL_FILE then
+		local md = Antibodies.getNamespacedModData(player)
+		md.medicalFile = data.medicalFile
+		AntibodiesMedicalFile.rehydrate(md.medicalFile)
+		md.medicalFile:applyToPlayer(player)
 		AntibodiesServer.broadcastMedicalFile(player, data.medicalFile)
 	end
 end
@@ -136,11 +120,8 @@ Events.OnClientCommand.Add(onClientCommand)
 
 local function onEveryOneMinute()
 	if AntibodiesServer.ensureInitialization() then
-		if AntibodiesServer.stepUpdate() then
-			AntibodiesServer.computeOnlineUsernameSet()
-			AntibodiesServer.computeNearbyPlayerMapping()
-			AntibodiesServer.requestMedicalFiles()
-		end
+		AntibodiesServer.computeOnlineUsernameSet()
+		AntibodiesServer.computeNearbyPlayerMapping()
 	end
 end
 Events.EveryOneMinute.Add(onEveryOneMinute)
