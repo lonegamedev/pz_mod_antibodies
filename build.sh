@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source .env
+
 if ! command -v virtualenv &> /dev/null; then
     echo "Error: virtualenv is not installed. Please install it using 'pip install virtualenv'."
     exit 1
@@ -12,7 +14,7 @@ pip install -r requirements.txt
 python build.py \
     --MOD_ID="lgd_antibodies" \
     --MOD_NAME="Antibodies" \
-    --MOD_VERSION="1.94" \
+    --MOD_VERSION=$ANTIBODIES_VERSION \
     --MOD_POSTER_FILTER="" \
     --WORKSHOP_ID="2392676812" \
     --WORKSHOP_VISIBILITY="listed" \

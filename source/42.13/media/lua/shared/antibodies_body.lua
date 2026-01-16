@@ -72,6 +72,10 @@ function AntibodiesBody:isKnoxInfected()
 	return false
 end
 
+function AntibodiesBody:getBodyPartById(id)
+	return self.bodyParts[id]
+end
+
 function AntibodiesBody:getBodyPartByIndex(index)
 	local id = AntibodiesEnum.BodyPart.fromIndex(index)
 	return self.bodyParts[id]

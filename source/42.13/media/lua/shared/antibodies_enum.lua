@@ -15,6 +15,19 @@ function AntibodiesEnum.createEnum()
 		return value
 	end
 
+	function enum.hasKey(name)
+		return enum[name] ~= nil
+	end
+
+	function enum.hasValue(value)
+		for _key, val in pairs(enum) do
+			if val == value then
+				return true
+			end
+		end
+		return false
+	end
+
 	function enum.list()
 		return enumList
 	end
@@ -23,7 +36,6 @@ function AntibodiesEnum.createEnum()
 end
 
 AntibodiesEnum.Network = AntibodiesEnum.createEnum()
-AntibodiesEnum.Network.define("REQUEST_MEDICAL_FILE", "requestMedicalFile")
 AntibodiesEnum.Network.define("SHARE_MEDICAL_FILE", "shareMedicalFile")
 
 AntibodiesEnum.InfectionStage = AntibodiesEnum.createEnum()
@@ -58,7 +70,7 @@ AntibodiesEnum.Config.General.define("HYGIENE_PANEL_ENABLED", string.lower)
 AntibodiesEnum.Config.General.define("DIAGNOSE_ENABLED", string.lower)
 AntibodiesEnum.Config.General.define("DIAGNOSE_SKILL_NEEDED", string.lower)
 AntibodiesEnum.Config.General.define("DOCTOR_SKILL_TREATMENT_MOD", string.lower)
-AntibodiesEnum.Config.General.define("DEBUG", string.lower)
+AntibodiesEnum.Config.General.define("IPC_DEBUG", string.lower)
 
 AntibodiesEnum.Config.Hygiene = AntibodiesEnum.createEnum()
 AntibodiesEnum.Config.Hygiene.define("BLOOD_EFFECT", string.lower)

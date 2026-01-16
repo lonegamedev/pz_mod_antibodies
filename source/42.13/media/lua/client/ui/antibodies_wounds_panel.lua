@@ -36,7 +36,7 @@ function AntibodiesWoundsPanel:composeEntries()
 		AntibodiesConfig.computeMaxMagnitude(AntibodiesConfig.getCurrent()[AntibodiesEnum.Config.TREATMENT]) or 1
 	)
 	for key, bodyPart in pairs(bodyParts) do
-		local value = bodyPart:getTotalEffect()
+		local value = bodyPart:getWoundTreatmentEffect()
 		if math.abs(value) > bodyPartMinMagnitude then
 			local label = getText(AntibodiesEnum.getBodyPartTranslationKey(key), AntibodiesUtils.formatFloat(value, 2))
 			local percent = AntibodiesUtils.clamp(value / maxMagnitude, -1.0, 1.0)
