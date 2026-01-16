@@ -1,6 +1,15 @@
-local Antibodies = require("antibodies")
+require("timedActions.is_apply_bandage")
+require("timedActions.is_comfrey_cataplasm")
+require("timedActions.is_disinfect")
+require("timedActions.is_garlic_cataplasm")
+require("timedActions.is_plantain_cataplasm")
+
 local AntibodiesEnum = require("antibodies_enum")
 local AntibodiesMedicalFile = require("antibodies_medical_file")
+local AntibodiesConfig = require("antibodies_config")
+local AntibodiesUtils = require("antibodies_utils")
+local AntibodiesNetwork = require("antibodies_network")
+local AntibodiesTime = require("antibodies_time")
 
 AntibodiesServer = {}
 AntibodiesServer.__index = AntibodiesServer
@@ -22,25 +31,7 @@ function AntibodiesServer.ensureInitialization()
 	if AntibodiesServer.nearbyPlayerMapping == nil then
 		AntibodiesServer.nearbyPlayerMapping = {}
 	end
-	return true
-end
-
-function AntibodiesServer.validateIncoming(module, command, player, data)
-	if module ~= Antibodies.info.modId then
-		return false
-	end
-	if command == AntibodiesEnum.Network.SHARE_MEDICAL_FILE then
-		if not data or not data.medicalFile then
-			print("WARNING: Player", player:getUsername(), "sent invalid or empty medicalFile")
-			return false
-		end
-		if player:getUsername() ~= data.medicalFile.userName then
-			print("WARNING: Player", player:getUsername(), "tried to send medical file for", data.medicalFile.userName)
-			return false
-		end
-		return command
-	end
-	return false
+	return AntibodiesConfig.getCurrent() ~= nil and AntibodiesTime.getInstance() ~= nil
 end
 
 function AntibodiesServer.computeOnlineUsernameSet()
@@ -90,14 +81,26 @@ end
 
 function AntibodiesServer.broadcastMedicalFile(ownerPlayer, medicalFile)
 	local nearbyPlayers = AntibodiesServer.nearbyPlayerMapping[ownerPlayer]
-	if nearbyPlayers and medicalFile then
-		for _, targetPlayer in ipairs(nearbyPlayers) do
-			sendServerCommand(
-				targetPlayer,
-				Antibodies.info.modId,
-				AntibodiesEnum.Network.SHARE_MEDICAL_FILE,
-				{ medicalFile = medicalFile }
-			)
+	if medicalFile then
+		local data = { medicalFile = medicalFile }
+		AntibodiesNetwork.sendServerCommand(ownerPlayer, AntibodiesEnum.Network.SHARE_MEDICAL_FILE, data)
+		if nearbyPlayers then
+			for _, targetPlayer in ipairs(nearbyPlayers) do
+				AntibodiesNetwork.sendServerCommand(targetPlayer, AntibodiesEnum.Network.SHARE_MEDICAL_FILE, data)
+			end
+		end
+	end
+end
+
+function AntibodiesServer.updatePlayers()
+	local minutesElapsed = AntibodiesTime:getInstance():getMinutesDelta()
+	if minutesElapsed > 0.0 then
+		local players = AntibodiesUtils.getOnlinePlayers()
+		local config = AntibodiesConfig.getCurrent()
+		for _, player in ipairs(players) do
+			local medicalFile = AntibodiesMedicalFile.of(player)
+			medicalFile:update(player, minutesElapsed, config)
+			AntibodiesServer.broadcastMedicalFile(player, medicalFile)
 		end
 	end
 end
@@ -106,22 +109,17 @@ end
 --CALLBACKS------------------------------------------
 -----------------------------------------------------
 
-local function onClientCommand(module, command, player, data)
-	local op = AntibodiesServer.validateIncoming(module, command, player, data)
-	if op == AntibodiesEnum.Network.SHARE_MEDICAL_FILE then
-		local md = Antibodies.getNamespacedModData(player)
-		md.medicalFile = data.medicalFile
-		AntibodiesMedicalFile.rehydrate(md.medicalFile)
-		md.medicalFile:applyToPlayer(player)
-		AntibodiesServer.broadcastMedicalFile(player, data.medicalFile)
-	end
+local function onServerStarted()
+	AntibodiesTime.getInstance():reset()
 end
-Events.OnClientCommand.Add(onClientCommand)
+Events.OnServerStarted.Add(onServerStarted)
 
 local function onEveryOneMinute()
 	if AntibodiesServer.ensureInitialization() then
+		AntibodiesTime:getInstance():step()
 		AntibodiesServer.computeOnlineUsernameSet()
 		AntibodiesServer.computeNearbyPlayerMapping()
+		AntibodiesServer.updatePlayers()
 	end
 end
 Events.EveryOneMinute.Add(onEveryOneMinute)
@@ -129,3 +127,5 @@ Events.EveryOneMinute.Add(onEveryOneMinute)
 -----------------------------------------------------
 -----------------------------------------------------
 -----------------------------------------------------
+
+return AntibodiesServer

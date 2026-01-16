@@ -38,6 +38,20 @@ function AntibodiesUtils.getLocalPlayers()
 	return result
 end
 
+function AntibodiesUtils.getOnlinePlayers()
+	local result = {}
+	local players = getOnlinePlayers()
+	for i = 0, players:size() - 1 do
+		local player = players:get(i)
+		table.insert(result, player)
+	end
+	return result
+end
+
+function AntibodiesUtils.isSinglePlayer()
+	return not isClient() and not isServer()
+end
+
 function AntibodiesUtils.getMedicalSkill(player)
 	return player:getPerkLevel(Perks.Doctor)
 end

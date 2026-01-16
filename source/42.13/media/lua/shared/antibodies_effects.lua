@@ -2,9 +2,10 @@ local AntibodiesEffects = {}
 AntibodiesEffects.__index = AntibodiesEffects
 AntibodiesEffects.__name = "AntibodiesEffects"
 
-function AntibodiesEffects:new(minMagnitude)
+function AntibodiesEffects:new(opts)
 	local instance = setmetatable({}, self)
-	instance.minMagnitude = tonumber(minMagnitude) or 0.01
+	opts = opts or {}
+	instance.minMagnitude = tonumber(opts.minMagnitude) or 0.01
 	instance:clear()
 	return instance
 end

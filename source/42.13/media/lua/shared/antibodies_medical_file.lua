@@ -29,7 +29,7 @@ function AntibodiesMedicalFile:new(player)
 	instance.condition = AntibodiesCondition:new(player)
 	instance.body = AntibodiesBody:new(player)
 
-	instance:update(player, nil)
+	instance:update(player, 0, nil)
 
 	return instance
 end
@@ -44,13 +44,24 @@ function AntibodiesMedicalFile.of(player, forceNew)
 	return md.medicalFile
 end
 
+function AntibodiesMedicalFile.migrateData(medicalFile)
+	--todo: no migrations needed at this moment
+	medicalFile.version = Antibodies.info.version
+	return medicalFile
+end
+
 function AntibodiesMedicalFile.rehydrate(medicalFile)
+	medicalFile = AntibodiesMedicalFile.migrateData(medicalFile)
+	if not medicalFile then
+		return nil
+	end
 	if getmetatable(medicalFile) ~= AntibodiesMedicalFile then
 		setmetatable(medicalFile, AntibodiesMedicalFile)
 		AntibodiesCondition.rehydrate(medicalFile.condition)
 		AntibodiesBody.rehydrate(medicalFile.body)
 		return medicalFile
 	end
+	return medicalFile
 end
 
 function AntibodiesMedicalFile.fromData(data)
@@ -61,7 +72,7 @@ function AntibodiesMedicalFile:clone()
 	return AntibodiesMedicalFile.rehydrate(AntibodiesUtils.deepCopy(self))
 end
 
-function AntibodiesMedicalFile:update(player, config)
+function AntibodiesMedicalFile:update(player, minutesElapsed, config)
 	self.timestamp = os.time()
 
 	self.condition:update(player, config)
@@ -74,7 +85,7 @@ function AntibodiesMedicalFile:update(player, config)
 		self:cureKnoxVirus(player)
 		self.knoxAntibodiesLevel = 0
 	else
-		self.knoxAntibodiesDelta = self:getKnoxAntibodiesDelta(config)
+		self.knoxAntibodiesDelta = self:getKnoxAntibodiesDelta(config, minutesElapsed)
 		self.knoxAntibodiesLevel = self.knoxAntibodiesLevel + self.knoxAntibodiesDelta
 		if self:consumeKnoxInfection(player) then
 			self:cureKnoxVirus(player)
@@ -84,16 +95,6 @@ function AntibodiesMedicalFile:update(player, config)
 	end
 
 	return self
-end
-
-function AntibodiesMedicalFile:applyToPlayer(player)
-	local bodyDamage = player:getBodyDamage()
-	local duration = bodyDamage:getInfectionMortalityDuration()
-	local newTime = self.hoursSurvived - (self.knoxInfectionLevel / 100) * duration
-	bodyDamage:setInfectionTime(newTime)
-	if self.knoxInfectionLevel <= 0 then
-		self:cureKnoxVirus(player)
-	end
 end
 
 function AntibodiesMedicalFile:updateAdaptiveEffects(config)
@@ -155,11 +156,12 @@ function AntibodiesMedicalFile:getKnoxInfectionLevel(character)
 	return 0.0
 end
 
-function AntibodiesMedicalFile:getKnoxInfectionDelta(player)
+function AntibodiesMedicalFile:getKnoxInfectionDelta(player, minutesElapsed)
 	local bodyDamage = player:getBodyDamage()
 	local infectionDuration = bodyDamage:getInfectionMortalityDuration()
 	if infectionDuration > 0 then
-		return (100 / infectionDuration) / 60 --every in-game minute
+		local perMinute = (100 / infectionDuration) / 60
+		return perMinute
 	end
 	return 0
 end
@@ -190,7 +192,7 @@ function AntibodiesMedicalFile:getKnoxInfectionStage()
 	return AntibodiesEnum.InfectionStage.NONE
 end
 
-function AntibodiesMedicalFile:getKnoxAntibodiesDelta(config)
+function AntibodiesMedicalFile:getKnoxAntibodiesDelta(config, minutesElapsed)
 	if not config then
 		return 0.0
 	end
@@ -200,7 +202,7 @@ function AntibodiesMedicalFile:getKnoxAntibodiesDelta(config)
 	effectSum = effectSum + self.recoveryEffect
 	effectSum = effectSum + self.mutationEffect
 	effectSum = effectSum * 0.01
-	local antibodiesGrowth = math.max(0, math.abs(self.knoxInfectionDelta) * effectSum)
+	local antibodiesGrowth = math.max(0, math.abs(self.knoxInfectionDelta) * effectSum * minutesElapsed)
 	return AntibodiesUtils.lerp(0.0, antibodiesGrowth, self.knoxActivationCurve)
 end
 
@@ -219,7 +221,7 @@ function AntibodiesMedicalFile:consumeKnoxInfection(player)
 	local infectionTime = bodyDamage:getInfectionTime()
 	local infectionDuration = bodyDamage:getInfectionMortalityDuration()
 
-	local healStep = self.knoxInfectionDelta + (difference * 2.0)
+	local healStep = self.knoxInfectionDelta + difference
 	local newTime = infectionTime + ((healStep / 100) * infectionDuration)
 
 	bodyDamage:setInfectionTime(newTime)

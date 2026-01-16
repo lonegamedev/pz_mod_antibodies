@@ -236,10 +236,6 @@ function AntibodiesBodyPart:calculateEffect(config)
 	return self
 end
 
-function AntibodiesBodyPart:getTotalEffect()
-	return self.woundEffects:getTotal() + self.treatmentEffects:getTotal()
-end
-
 function AntibodiesBodyPart:isKnoxInfected()
 	return self.infection[AntibodiesEnum.BodyPart.Infection.KNOX_SCRATCH]
 		or self.infection[AntibodiesEnum.BodyPart.Infection.KNOX_CUT]
@@ -252,6 +248,14 @@ end
 
 function AntibodiesBodyPart:getTreatmentSkill(treatmentId)
 	return self.treatmentSkill[treatmentId] or 0
+end
+
+function AntibodiesBodyPart:getWoundTreatmentEffect()
+	return math.min(0.0, self.treatmentEffects:getTotal() + self.infectionEffects:getTotal())
+end
+
+function AntibodiesBodyPart:getTotalEffect()
+	return self:getWoundTreatmentEffect() + self.woundEffects:getTotal() + self.hygieneEffects:getTotal()
 end
 
 function AntibodiesBodyPart:toString()

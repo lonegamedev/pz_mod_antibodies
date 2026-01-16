@@ -133,22 +133,6 @@ local mergeOptions = function(default, loaded)
 		if type(loaded[group_key]) == "table" then
 			for prop_key, prop_val in pairs(default[group_key]) do
 				if loaded[group_key][prop_key] ~= nil then
-					--[[
-					if result[group_key][prop_key] ~= loaded[group_key][prop_key] then
-						print(
-							string.format(
-								"%s overriding sandbox option %s %s %s %s %s %s",
-								Antibodies.info.modId,
-								group_key,
-								prop_key,
-								"from",
-								tostring(result[group_key][prop_key]),
-								"to",
-								tostring(loaded[group_key][prop_key])
-							)
-						)
-					end
-					]]
 					result[group_key][prop_key] = loaded[group_key][prop_key]
 				end
 			end
@@ -158,7 +142,6 @@ local mergeOptions = function(default, loaded)
 end
 
 local getOptions = function()
-	--return AntibodiesOptions.defaultOptions
 	return mergeOptions(AntibodiesOptions.defaultOptions, getAntibodiesSandboxOptions())
 end
 

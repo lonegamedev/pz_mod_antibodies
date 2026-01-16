@@ -4,6 +4,7 @@ local AntibodiesWindow = require("ui/antibodies_window")
 local AntibodiesConfig = require("antibodies_config")
 local AntibodiesEnum = require("antibodies_enum")
 local AntibodiesUtils = require("antibodies_utils")
+local AntibodiesMedicalFile = require("antibodies_medical_file")
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local UI_BORDER_SPACING = 10
@@ -47,13 +48,17 @@ function ISHealthPanel:update()
 	ISHealthPanel_update(self)
 
 	local showDiagnoseBtn = false
-	if self._antibodiesBtn and AntibodiesConfig.current ~= nil then
+	if
+		self._antibodiesBtn
+		and AntibodiesConfig.getCurrent() ~= nil
+		and AntibodiesMedicalFile.of(self:getPatient()) ~= nil
+	then
 		local diagnoseEnabled =
 			AntibodiesConfig.current[AntibodiesEnum.Config.GENERAL][AntibodiesEnum.Config.General.DIAGNOSE_ENABLED]
 		local requiredDoctorSkill =
 			AntibodiesConfig.current[AntibodiesEnum.Config.GENERAL][AntibodiesEnum.Config.General.DIAGNOSE_SKILL_NEEDED]
 		local doctorLevel = AntibodiesUtils.getMedicalSkill(self:getDoctor())
-		showDiagnoseBtn = doctorLevel >= requiredDoctorSkill
+		showDiagnoseBtn = (doctorLevel >= requiredDoctorSkill) and diagnoseEnabled
 	end
 	self._antibodiesBtn:setVisible(showDiagnoseBtn)
 
